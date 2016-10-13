@@ -86,6 +86,8 @@ function prepareTrack(level){
 
   image.src = url.href + 'public/tracks/' + level;
 
+  console.log("SRC", image.src);
+
   $(".track").css("background-image", "url(./public/tracks/"+level+")");
 
   $(image).on("load",function(){

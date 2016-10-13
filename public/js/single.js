@@ -14,9 +14,12 @@ $(document).ready(function(){
     race.startTrial();
   }
 
-  var trackRecord = playerRecords[race.trackShortname];
+  var trackRecord = playerRecords[race.trackShortname] || false;
 
-  race.addGhost(trackRecord);
+  if(trackRecord){
+    race.addGhost(trackRecord);
+  }
+
 
   gameLoop();
 });

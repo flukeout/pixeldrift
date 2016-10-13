@@ -1,7 +1,7 @@
 var soundContext = new AudioContext();
 var url = window.location;
 var path = url.pathname;
-path = "../public/";
+path = "./public";
 
 var sounds = {
   "dead" : {
@@ -35,7 +35,11 @@ for(var key in sounds) {
 }
 
 function loadSound(name){
+
+
   var url = sounds[name].url;
+
+  console.log(url);
   var buffer = sounds[name].buffer;
 
   var request = new XMLHttpRequest();

@@ -79,10 +79,6 @@ function prepareTrack(level){
   $(image).hide();
 
   var url = window.location;
-  console.log(url);
-  console.log(url.origin);
-  // path = "./public";
-  // console.log(url);
 
   image.src = url.href + 'public/tracks/' + level;
 

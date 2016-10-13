@@ -3,18 +3,22 @@ $(document).ready(function(){
   buildTrackChooser();
 
   var lastTrack = localStorage.getItem("lastSingleTrack");
-  var playerRecords = JSON.parse(localStorage.getItem("playerRecords"));
+  var playerRecords = JSON.parse(localStorage.getItem("playerRecords")) || false;
 
 
   if(!lastTrack){
     $(".track-chooser").show();
   } else {
     race.changeTrack(lastTrack);
-
     race.startTrial();
   }
 
-  var trackRecord = playerRecords[race.trackShortname] || false;
+  var trackRecord = false;
+
+  if(playerRecords){
+    trackRecord = playerRecords[race.trackShortname] || false;
+  }
+
 
   if(trackRecord){
     race.addGhost(trackRecord);

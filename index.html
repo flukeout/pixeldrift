@@ -1,0 +1,131 @@
+<html>
+  <head>
+    <title>Pixelracer - Drift Edition</title>
+    <meta charset="utf-8">
+
+    <link href='https://fonts.googleapis.com/css?family=Press+Start+2P' rel='stylesheet' type='text/css'> -->
+
+    <script src="public/js/jquery.js" type="text/javascript" charset="utf-8"></script>
+
+    <script src="public/js/sounds.js"></script>
+    <script src="public/js/tracks.js"></script>
+    <script src="public/js/utils.js"></script>
+
+    <script src="public/js/ghost.js"></script>
+    <script src="public/js/single.js"></script>
+    <script src="public/js/keys.js"></script>
+    <script src="public/js/standings.js"></script>
+
+    <link rel="stylesheet/less" href="public/css/single.less" type="text/css">
+    <link rel="stylesheet/less" href="public/css/style.less" type="text/css">
+
+    <script>
+      less = {
+        env: "development",
+        async: false,
+        fileAsync: false,
+        poll: 1000,
+        functions: {},
+        dumpLineNumbers: "comments",
+        relativeUrls: false,
+        rootpath: ":/a.com/"
+      };
+    </script>
+    <script src="public/js/less.js"></script>
+  </head>
+
+  <body>
+
+  <canvas class="track-source"></canvas>
+
+  <div class="main-wrapper">
+
+    <div class="laps">
+
+      <!--
+      <div class="player-rank-wrapper">
+        <div class="player-rank">
+          <span class="current-rank">10</span><span class="count-suffix">th</span><span class="total-records">/<span class="value">80</span></span>
+        </div>
+      </div>
+      -->
+
+      <div class="right">
+        <div class="lap-time-wrapper">
+          <span class="lap-time">0.00</span>
+        </div>
+        <div class="best-time-wrapper">
+          Best <span class="best-time"></span>
+        </div>
+        <div>
+          <span class="delta-time"></span>
+        </div>
+      </div>
+    </div> <!-- /laps & rank indicator -->
+
+    <div class="track-wrapper">
+
+    <div class="track-shadow"></div>
+      <div class="track">
+        <canvas class="skids"></canvas>
+      </div>
+    </div>
+
+    <div class="bottom-stuff">
+      <a class="change-track" href="#"><span class="key">C</span>hange track</a>
+      <a class="quick-restart" href="#"><span class="key">R</span>estart</a>
+      <!-- <a class="toggle-sound" href="#"><span class="key">T</span></a> -->
+    </div>
+
+    <div class="game-message">
+      <div class="message"></div>
+    </div>
+
+    <div class="track-chooser">
+      <div class="content">
+        <h1>CHOOSE A TRACK</h1>
+        <div class="tracks"></div>
+      </div>
+
+      <div class="track-template track-option">
+        <div class="track-thumbnail">
+          <img src="">
+          <div class="track-name"></div>
+        </div>
+
+        <div class="player-record">
+          <h2>YOUR RANK</h2>
+
+          <div class="player-time"></div>
+
+          <div>
+            <span class="player-rank"></span><span class="total-records">/<span class="value"></span></span>
+          </div>
+
+          <div class="leaders">
+            <h2>LEADERS</h2>
+            <div class="leaders-wrapper"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+</div> <!-- /main-wrapper -->
+
+<!--
+  <div class="player-name">
+    <span>Name</name>
+    <input class="driver-name" maxlength="3" type="text" /><a class="confirm" href="#">OK</a>
+  </div>
+-->
+
+<div class="leaderboard">
+  <h1> STANDINGS</h1>
+  <div class="loading-message">LOADING...</div>
+  <div class="players"></div>
+</div>
+  </body>
+
+</html>
+

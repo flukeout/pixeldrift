@@ -1,0 +1,399 @@
+.slower {
+  color: #de3232;
+}
+
+.faster {
+  color: #8fcf4b;
+}
+
+.laps {
+  color: white;
+  text-align: left;
+  margin: 0 auto;
+  position: absolute;
+  width: 100%;
+  padding: 25px;
+  box-sizing: border-box;
+  left: 0;
+
+
+  .player-rank-wrapper {
+    perspective:100px;
+    float: left;
+  }
+
+  .player-rank {
+
+    font-size: 32px;
+    // transform: rotateY(-35deg);
+    // transform-origin: left;
+
+    .count-suffix {
+      font-size: 20px;
+    }
+
+  }
+
+  .total-records {
+    opacity: .5;
+    font-size: 20px;
+  }
+
+  .best-time-wrapper {
+    display: none;
+  }
+
+  div {
+    margin-bottom: 8px;
+  }
+
+  .lap-time {
+    font-size: 32px;
+    margin-bottom: 5px;
+    float: right;
+  }
+
+  .right {
+    float: right;
+    // transform: rotateX(-15deg) rotateY(-15deg);
+    // transform-origin: top right;
+
+  }
+
+}
+
+.ghost {
+  position: absolute;
+  height: 15px;
+  width: 15px;
+  transform-style: preserve-3d;
+  opacity: .5;
+
+  z-index: 3;
+  left: 0;
+  top: 0;
+
+  .body {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: white;
+    // background: pink !important;
+  }
+
+  .shadow {
+    background: black;
+    opacity: .5;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.main-wrapper {
+  width: 100%;
+  position: absolute;
+  height: 100%;
+  left: 0;
+}
+
+.with-standings {
+  .main-wrapper {
+    width: ~"calc(100% - 275px)";
+  }
+  .standings {
+    display: block;
+  }
+}
+
+.bottom-stuff {
+  position: absolute;
+}
+
+.standings {
+  display: none;
+  position: absolute;
+  right: 0;
+  height: 100%;
+  width: 275px;
+  background: #222;
+  padding: 25px;
+  box-sizing: border-box;
+
+  h1 {
+    color: white;
+    font-size: 18px;
+    margin: 0 0 30px 0;
+  }
+
+  .standing {
+    font-size: 18px;
+    color: rgba(255,255,255,.5);
+    position: relative;
+    margin-bottom: 15px;
+    padding: 10px 10px 10px 44px;
+    opacity: .2;
+
+    &.achieved {
+      opacity: 1;
+    }
+
+    &:after {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 3px;
+      height: 30px;
+      width: 30px;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: 100%;
+      image-rendering: pixelated;
+    }
+
+    &.gold {
+      color: gold;
+      &:after {
+        background-image: ~"url(/img/medal-gold.png)";
+      }
+    }
+
+    &.silver {
+      color: silver;
+      &:after {
+        background-image: ~"url(/img/medal-silver.png)";
+      }
+    }
+
+    &.bronze {
+      color: #CD7F32;
+      &:after {
+        background-image: ~"url(/img/medal-bronze.png)";
+      }
+    }
+  }
+}
+
+@keyframes trackspin {
+  0% {
+    transform: rotateZ(0deg) ;
+  }
+  100% {
+    transform: rotateZ(359deg);
+  }
+}
+
+
+
+
+
+
+.leaderboard {
+  display: none;
+  position: absolute;
+  right: 0;
+  height: 100%;
+  width: 275px;
+  background: #222;
+  padding: 25px 35px;
+  box-sizing: border-box;
+  overflow-y: scroll;
+  font-size: 12px;
+
+  .loading-message {
+    display: none;
+    color: white;
+    animation: blink .5s linear infinite;
+  }
+
+  @keyframes blink {
+    0% {opacity: .4}
+    50% {opacity: 1}
+    100% {opacity: .4}
+  }
+
+  &.loading {
+    .loading-message {
+      display: block;
+    }
+  }
+
+  .rank-summary {
+    font-size: 14px;
+    margin-bottom: 10px;
+    color: rgba(255,255,255,.4);
+    border-bottom: solid 2px rgba(255,255,255,.4);
+    padding-bottom: 15px;
+
+    .player-rank {
+      font-size:22px;
+    }
+  }
+
+  .record {
+    border-bottom: solid 2px rgba(255,255,255,.2);
+    padding : 12px 0 7px 0;
+    display: block;
+    width: 100%;
+    position: relative;
+
+    &.player, &.showing {
+      position: relative;
+    }
+
+    &.showing:after {
+      content: "";
+      position: absolute;
+      background: ~"url(img/play.png)";
+      image-rendering: pixelated;
+      background-repeat: no-repeat;
+      background-size: contain;
+      background-position: center;
+      width: 18px;
+      height: 16px;
+      left: -25px;
+      top: 9px;
+      animation: playStrobe .5s linear infinite;
+    }
+
+    @keyframes playStrobe {
+      0% { opacity: 1; }
+      50% { opacity: .8;  transform: scale(.85);}
+      100% { opacity: 1; }
+    }
+
+    &.ghost {
+      color: rgba(255,255,255,.4);
+    }
+
+    &.showing {
+      color: rgba(255,255,255,.6);
+    }
+
+    &.player {
+      color: rgba(255,255,255,1);
+      position: relative;
+
+      // &:after {
+        // content: "P1";
+        // position: absolute;
+      // }
+    }
+
+  }
+
+  .time {
+    position: absolute;
+    right: 0;
+    top: 12px;
+  }
+
+  .rank, .name {
+    display: inline-block;
+  }
+
+  .rank {
+    width: 45px;
+  }
+
+  h1 {
+    color: white;
+    font-size: 16px;
+    margin: 0 0 15px 0;
+    text-align: left;
+  }
+
+  .standing {
+    font-size: 18px;
+    color: rgba(255,255,255,.5);
+    position: relative;
+    margin-bottom: 15px;
+    padding: 10px 10px 10px 44px;
+    opacity: .2;
+
+    &.achieved {
+      opacity: 1;
+    }
+
+    &:after {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 3px;
+      height: 30px;
+      width: 30px;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: 100%;
+      image-rendering: pixelated;
+    }
+
+    &.gold {
+      color: gold;
+      &:after {
+        background-image: ~"url(/img/medal-gold.png)";
+      }
+    }
+
+    &.silver {
+      color: silver;
+      &:after {
+        background-image: ~"url(/img/medal-silver.png)";
+      }
+    }
+
+    &.bronze {
+      color: #CD7F32;
+      &:after {
+        background-image: ~"url(/img/medal-bronze.png)";
+      }
+    }
+  }
+}
+
+.player-name {
+  text-align: left;
+  z-index: 4;
+  position: absolute;
+  left: 30px;
+  bottom: 30px;
+  color: white;
+
+  a.confirm {
+    color: inherit;
+    font-size: inherit;
+    text-decoration: none;
+    margin-left: 15px;
+    font-size: 16px;
+    background: white;
+    color: black;
+    padding: 7px 5px 5px 5px;
+  }
+
+  h2 {
+    font-size: 22px;
+    line-height: 30px;
+    margin: 0 0 25px 0;
+  }
+
+  input {
+    font-size: 16px;
+    width: 90px;
+    text-align: left;
+    color: white;
+    background: transparent;
+    padding: 0 0 4px 0;
+    border-width: 0 0 0 0 ;
+    text-transform: uppercase;
+    border-bottom: solid 2px rgba(255,255,255,.4);
+
+    &:hover {
+      cursor: pointer;
+    }
+
+    &:focus {
+      outline: none;
+      border-bottom: solid 2px white;
+    }
+  }
+}

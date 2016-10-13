@@ -82,8 +82,7 @@ function prepareTrack(level){
   // path = "./public";
   // console.log(url);
 
-
-  image.src = './public/tracks/' + level;
+  image.src = '/public/tracks/' + level;
 
   $(".track").css("background-image", "url(./public/tracks/"+level+")");
 

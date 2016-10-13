@@ -78,7 +78,9 @@ function prepareTrack(level){
   $("body").append(image);
   $(image).hide();
 
-  var url = window.location.pathname;
+  var url = window.location;
+  console.log(url);
+  console.log(url.origin);
   // path = "./public";
   // console.log(url);
 

@@ -77,9 +77,9 @@ function prepareTrack(level){
   var image = new Image();
   $("body").append(image);
   $(image).hide();
-  image.src = '../public/tracks/' + level;
+  image.src = './public/tracks/' + level;
 
-  $(".track").css("background-image", "url(../public/tracks/"+level+")");
+  $(".track").css("background-image", "url(./public/tracks/"+level+")");
 
   $(image).on("load",function(){
 

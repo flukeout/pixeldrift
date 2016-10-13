@@ -80,7 +80,7 @@ function prepareTrack(level){
 
   var url = window.location.pathname;
   // path = "./public";
-  console.log(url);
+  // console.log(url);
 
 
   image.src = './public/tracks/' + level;

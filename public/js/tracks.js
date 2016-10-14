@@ -2,15 +2,15 @@ var playerAchievements = {}; // So that we can remember.. what you have gotten..
 var trackData = {}; //Place holder for current track -  gets populated, yo.
 
 var includeTracks = [
-  // "html5",
-  // "offroad",
-  // "yellow",
-  // "darkloop",
-  // "chasm",
-  // "ampersand",
+  "html5",
+  "offroad",
+  "yellow",
+  "darkloop",
+  "chasm",
+  "ampersand",
   "turbo8",
-  // "testground",
-  // "oval"
+  "testground",
+  "oval"
 ]
 
 var trackTimes = {

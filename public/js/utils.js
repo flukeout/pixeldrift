@@ -78,15 +78,20 @@ function prepareTrack(level){
   $("body").append(image);
   $(image).hide();
 
+
   var url = window.location;
 
-  image.src = url.href + 'public/tracks/' + level;
+  var href = url.href.replace("#","");
 
-  console.log("SRC", image.src);
+  image.src = href + 'public/tracks/' + level;
+
+  console.log(image.src);
 
   $(".track").css("background-image", "url(./public/tracks/"+level+")");
 
   $(image).on("load",function(){
+
+    console.log("IMage loaded---------")
 
     $(".lamp, .tree, .windmill, .water").remove(); // maybe add a sprite clas to these?
 
@@ -288,6 +293,14 @@ function checkPosition(x,y){
   }
 }
 
+function checkColor(x,y){
+  var p = context.getImageData(x, y, 1, 1).data;
+  var hex = "#" + ("000000" + rgbToHex(p[0], p[1], p[2])).slice(-6);
+  return hex;
+}
+
+
+
 function rgbToHex(r, g, b) {
   if (r > 255 || g > 255 || b > 255)
     throw "Invalid color component";
@@ -438,10 +451,11 @@ function driveCar(car) {
   var frameAdjuster = delta / 16.67;
 
   speedchange = speedchange * frameAdjuster;
+
   car.maxspeed = car.baseMaxspeed * frameAdjuster;  // getting better
 
-  if(car.speed > 6) {
-    car.speed = 6;
+  if(car.speed > 4) {
+    car.speed = 4;
   }
 
   // console.log(car.speed); // need to divide this into vectors
@@ -479,7 +493,8 @@ function driveCar(car) {
     steeringVelocityMax = steeringVelocityMax / 3; // TODO - frameRate adjuster? like the over 3?...
     if(movedPixels) {
       for(var i = 0; i < 2; i++){
-        makeParticle(car.x, car.y, car.speed, car.angle, "water");
+
+        // makeParticle(car.x, car.y, car.speed, car.angle, "water");
       }
     }
   }
@@ -487,8 +502,47 @@ function driveCar(car) {
 
   if(car.currentPosition == "grass" && car.zPosition == 0){
     if(movedPixels) {
-      for(var i = 0; i < 2; i++){
-        makeParticle(car.x, car.y, car.speed, car.angle, "grass");
+      for(var i = 0; i < 1; i++){
+
+        var options = {
+          x : car.showx,
+          y : car.showy,
+          width : 15,
+          height: 15,
+          zV: 3.5,
+          gravity : .15,
+
+          xRv : getRandom(-1,1),
+          yRv : getRandom(-1,1),
+          zRv : getRandom(-3,3),
+
+          xV : getRandom(-1.5,1.5),
+          yV : getRandom(-1.5,1.5),
+          lifespan: 50,
+          color: checkColor(car.x,car.y)
+          // color: "#60aa1f", //asdf
+        }
+
+
+
+        makeParticle(options);
+
+        var newOptions = {
+          x : options.x,
+          y : options.y,
+          width : options.width,
+          height: options.height,
+          zRv : options.zRv,
+          xV : options.xV,
+          yV : options.yV,
+          lifespan: options.lifespan,
+          o : .15,
+          color: "black",
+        }
+
+        makeParticle(newOptions);
+
+
       }
     }
   }
@@ -706,7 +760,6 @@ function driveCar(car) {
   if(movedPixels && car.currentPosition == "grass" && car.zPosition == 0 && trackData.lawnmower) {
     ctx.fillStyle = "rgba(154,113,54,.3)";
     ctx.fillRect(car.x * scaling, car.y * scaling, scaling, scaling);
-
   }
 
 
@@ -807,11 +860,30 @@ function driveCar(car) {
       // if(angleDelta > 1) {
       //   skid = true;
       // }
-      // if(Mathcar.actualAngle - car.angle)
+
 
       if(car.currentPosition == "road" || car.currentPosition == "overpass" || car.currentPosition == "checkpoint") {
         ctx.fillStyle = "rgba(0,0,0,"+opacity+")";
         ctx.fillRect(car.x * scaling, car.y * scaling, scaling, scaling);
+
+
+          if(opacity > .2) {
+          //   var options = {
+          //     x : car.x * scaling,
+          //     y : car.y * scaling,
+          //     width : 15,
+          //     height: 15,
+          //     zV: .5,
+          //     o: .3,
+          //     oV: -.0025,
+          //     lifespan: 100,
+          //     color: "white",
+          //   }
+
+            // makeParticle(options);
+
+        }
+
       }
     }
   }
@@ -1420,164 +1492,6 @@ function buildTrackChooser(){
   });
 }
 
-var particles = [];
-
-// Ooky going to leave this off for now
-function makeParticle(x,y, speed, angle,type, xVel,yVel){
-
-  console.log("make particle");
-
-  // and... apply some motion and stuff to these...?
-  // Move them in a similar direction ot the car...... ?
-  var particle = {
-    xRot : 0,
-    yRot : 0,
-    zRot : 0
-  };
-
-  var lifespan = 2000;
-
-  if(type == undefined){
-    type = "crash";
-  }
-
-  if(type == "grass") {
-
-    particle.xVel = getRandom(-1.5,1.5);
-    particle.yVel = getRandom(-1.5,1.5);
-    particle.zVel = 1;
-    particle.gravity = .175;
-
-    particle.opacity = 1;
-    particle.opacityVelocity = 0.02;
-
-    particle.xPos = x * scaling;
-    particle.yPos = y * scaling;
-    particle.zPos = 0;
-
-    particle.xRotVel = getRandom(2,8);
-    particle.yRotVel = getRandom(2,8);
-    particle.zRotVel = getRandom(2,8);
-
-  } else if ( type == "water") {
-    particle.xVel = getRandom(-1.5,1.5);
-    particle.yVel = getRandom(-1.5,1.5);
-    particle.zVel = 1;
-    particle.gravity = .175;
-
-    particle.opacity = 1;
-    particle.opacityVelocity = 0.03;
-
-    particle.xPos = x * scaling;
-    particle.yPos = y * scaling;
-    particle.zPos = 0;
-
-    particle.xRotVel = 0;
-    particle.yRotVel = 0;
-    particle.zRotVel = 0;
-
-    particle.xRot = 90;
-  } else if (type == "ghost") {
-
-    particle.xVel = 0;
-    particle.yVel = 0;
-    particle.zVel = 2;
-    particle.gravity = 0;
-
-    particle.opacity = .4;
-    particle.opacityVelocity = .02;
-
-    particle.xPos = x * scaling;
-    particle.yPos = y * scaling;
-    particle.zPos = 0;
-
-    particle.xRotVel = 0;
-    particle.yRotVel = 0;
-    particle.zRotVel = 0;
-
-    lifespan = 1500;
-
-  } else {
-    var angleChange = getRandom(-20,20);
-    angle = angle + angleChange;
-
-    particle.xVel = getRandom(-3,3);
-    particle.yVel = getRandom(-3,3);
-    particle.zVel = speed;
-    particle.gravity = .175;
-
-    particle.opacity = 1;
-    particle.opacityVelocity = 0.02;
-
-    particle.xPos = x * scaling;
-    particle.yPos = y * scaling;
-    particle.zPos = 0;
-
-    particle.xRotVel = getRandom(2,10);
-    particle.yRotVel = getRandom(2,10);
-    particle.zRotVel = getRandom(2,10);
-  }
-
-  var trail = $("<div class='particle'></div>");
-  var rotator = $("<div class='rotator'></div>");
-  trail.append(rotator);
-
-  if(type == "grass"){
-    trail.find(".rotator").css("background",trackData.lawnmower);
-    particle.zVel = 4;
-  } else if (type == "water") {
-    trail.find(".rotator").css("background","#4cb5dc");
-    trail.addClass("droplet");
-    particle.zVel = 4;
-  } else {
-    trail.find(".rotator").css("background",trackData.carcolors[0]);
-  }
-
-  if(type == "ghost") {
-    trail.height(scaling).width(scaling);
-  } else {
-    trail.height(scaling/2).width(scaling/2);
-  }
-
-  particle.el = trail;
-
-  $(".track").append(particle.el); // <- gotta figure this out i guess
-
-  setTimeout(function(el,p) {
-    return function(){
-      el.remove();
-      for(var i = 0, len = particles.length; i < len; i++){
-        if(particles[i] == p){
-          particles.splice(i, 1);
-        }
-      }
-    };
-  }(trail,particle), lifespan);
-
-  particles.push(particle);
-}
-
-function animateParticles(){
-  for(var i = 0; i < particles.length; i++){
-    var p = particles[i];
-
-    //Position
-    p.xPos = p.xPos + p.xVel;
-    p.yPos = p.yPos + p.yVel;
-    p.zPos = p.zPos + p.zVel;
-    p.zVel = p.zVel - p.gravity;
-    p.el.css("transform", "translateY("+p.yPos+"px)  translateX("+p.xPos+"px) translateZ("+p.zPos+"px)");
-
-    p.opacity = p.opacity - p.opacityVelocity;
-    p.el.css("opacity",p.opacity);
-
-    //Rotation
-    p.xRot = p.xRot + p.xRotVel;
-    p.yRot = p.yRot + p.yRotVel;
-    p.zRot = p.zRot + p.zRotVel;
-    p.el.find(".rotator").css("transform", "rotateX("+p.xRot+"deg) rotateY("+p.yRot+"deg) rotateZ("+p.zRot+"deg)");
-  }
-}
 
 function getRandom(min,max){
   return min + Math.random() * (max - min);

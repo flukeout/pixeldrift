@@ -6,6 +6,8 @@ body, html {
   overflow: hidden;
   position: relative;
   height: 100%;
+  text-transform: uppercase;
+  // text-shadow: 0px 5px 0px rgba(255,255,255,.5)
 }
 
 body {
@@ -92,11 +94,7 @@ body {
   position: absolute;
   width: 100%;
   height: 100%;
-  top: 260px;
-  left: 110px;
   transform: rotateX(40deg) translateZ(-60px);
-  background: black;
-  opacity: .06;
 }
 
 .skids {
@@ -104,10 +102,7 @@ body {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 4;
-  // width: 600px;
-  // height: 300px;
-  // display: none;
+  // z-index: 4;
 }
 
 .trail {
@@ -152,6 +147,7 @@ body {
   transform-style: preserve-3d;
   z-index: 3;
   outline: solid 10px transparent;
+  transition: opacity .15s ease-out;
 
   .shadow {
     opacity: .3;
@@ -283,6 +279,7 @@ body {
     transform: translateX(20px) rotate(-45deg) scale(.75);
     height: 100%;
     width: 100%;
+    opacity: .4;
     border: solid 2px white;
     border-width: 6px 6px 0 0 ;
     animation: indicatorpulse .4s infinite;
@@ -512,7 +509,7 @@ body {
     top: 0;
     left: 15px;
     background: #277eba;
-    animation: flagwave 1s infinite;
+    animation: flagwave .5s infinite;
   }
 
   @keyframes flagwave {
@@ -537,21 +534,6 @@ body {
       transform: rotateY(-6deg);
       animation-timing-function: ease-in;
     }
-  }
-
-
-  //This is the shadow
-  &:before {
-    content: "";
-    position: absolute;
-    height: 55px;
-    width: 15px;
-    transform-origin: bottom;
-    bottom: 0;
-    left: 0px;
-    background: -webkit-linear-gradient(top, rgba(0,0,0,0),black);
-    transform: rotateX(90deg);
-    opacity: .25;
   }
 }
 
@@ -652,24 +634,6 @@ body {
 }
 
 
-@keyframes coinbounce {
-  0% {
-    transform: translateZ(8px);
-  }
-  50%{
-    transform: translateZ(12px);
-  }
-  100%{
-    transform: translateZ(8px);
-  }
-}
-
-@keyframes coingleam {
-  20% { background: gold;}
-  40% { background: white;}
-  45% { background: white;}
-  46% { background: gold;}
-}
 
 @keyframes windmill {
   0% {
@@ -677,15 +641,6 @@ body {
   }
   100%{
     transform: rotateZ(359deg) translateZ(1px);
-  }
-}
-
-@keyframes coinspin {
-  0% {
-    transform: rotateZ(0deg);
-  }
-  100%{
-    transform: rotateZ(359deg);
   }
 }
 
@@ -790,7 +745,9 @@ body {
     text-align: center;
     opacity: 0;
     transition: all .25s ease-out;
+    animation: blam .3s linear infinite;
   }
+
 
 }
 
@@ -800,9 +757,19 @@ body {
   bottom: 50px;
   text-align: center;
 
+
+
   a {
+    color: white;
+    opacity: .5;
     margin: 0 15px;
     text-decoration: none;
+    transition: opacity .2s ease-out;
+
+    &:hover {
+      opacity: 1;
+      text-decoration: none;
+    }
 
     .key {
       padding: 7px 5px 5px 7px;
@@ -946,12 +913,13 @@ nav {
   border-width: 0px 2px 0px 2px;
   width: 15px;
   box-sizing: content-box;
-  z-index: 3;
+  z-index: 5;
 
   .line {
     position: absolute;
     width: 100%;
     height: 100%;
+
   }
 
 }
@@ -1050,7 +1018,7 @@ nav {
     padding: 25px;
     padding: 20px 20px 20px 200px;
     position: relative;
-    min-height: 125px;
+    min-height: 225px;
     margin: 10px;
     background: rgba(255,255,255,1);
     box-shadow: 4px 4px 0px rgba(0,0,0,.2);
@@ -1082,9 +1050,10 @@ nav {
       border-bottom: solid 2px rgba(0,0,0,.2);
       padding-bottom: 10px;
       color: white;
-      opacity: .8;
+      opacity: 1;
+      font-size: 18px;
       position: absolute;
-      bottom: 4px;
+      bottom: 8px;
     }
 
     .leaders {
@@ -1187,7 +1156,8 @@ nav {
 
       position: absolute;
       left: 0px;
-      width: 175px;
+      width: 100%;
+      height: 100%;
       margin-bottom: 15px;
       perspective: 400px;
       background: black;
@@ -1195,33 +1165,23 @@ nav {
       height: 100%;
       text-align: center;
 
-      img {
-        transform: scale(2.15)  rotateX(35deg);
+      .track-thumbnail-wrapper {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 75%;
+        background-size: contain;
+        background-position: center;
+        background-repeat: no-repeat;
         image-rendering: pixelated;
         image-rendering: -moz-crisp-edges;
-        opacity: .8;
-        transition: all ease-out .1s;
-        position: relative;
-        top: 25%;
+        transform: rotateX(35deg);
       }
     }
-
-
-
-
-
   }
 }
 
-.bottom-stuff a {
-  color: white;
-  opacity: .5;
-
-  &:hover {
-    opacity: 1;
-    text-decoration: none;
-  }
-}
 
 .particle {
   height: 1px;

@@ -9,6 +9,8 @@
 
     <script src="public/js/sounds.js"></script>
     <script src="public/js/tracks.js"></script>
+    <script src="public/js/drivecar.js"></script>
+    <script src="public/js/effects.js"></script>
     <script src="public/js/utils.js"></script>
 
     <script src="public/js/particles.js"></script>
@@ -65,8 +67,6 @@
     </div> <!-- /laps & rank indicator -->
 
     <div class="track-wrapper">
-
-    <div class="track-shadow"></div>
       <div class="track">
         <canvas class="skids"></canvas>
       </div>
@@ -90,10 +90,11 @@
 
       <div class="track-template track-option">
         <div class="track-thumbnail">
-          <img src="">
+          <div class="track-thumbnail-wrapper"></div>
           <div class="track-name"></div>
         </div>
 
+        <!--
         <div class="player-record">
           <h2>YOUR RANK</h2>
 
@@ -108,25 +109,28 @@
             <div class="leaders-wrapper"></div>
           </div>
         </div>
+          -->
       </div>
 
     </div>
 
 </div> <!-- /main-wrapper -->
 
-<!--
-  <div class="player-name">
-    <span>Name</name>
-    <input class="driver-name" maxlength="3" type="text" /><a class="confirm" href="#">OK</a>
-  </div>
--->
+    <!--
+      <div class="player-name">
+        <span>Name</name>
+        <input class="driver-name" maxlength="3" type="text" /><a class="confirm" href="#">OK</a>
+      </div>
+    -->
 
-<div class="leaderboard">
-  <h1> STANDINGS</h1>
-  <div class="loading-message">LOADING...</div>
-  <div class="players"></div>
-</div>
+    <div class="leaderboard">
+      <h1>STANDINGS</h1>
+      <div class="loading-message">LOADING...</div>
+      <div class="players"></div>
+    </div>
   </body>
-
 </html>
+
+
+
 

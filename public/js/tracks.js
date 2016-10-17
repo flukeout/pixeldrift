@@ -2,15 +2,17 @@ var playerAchievements = {}; // So that we can remember.. what you have gotten..
 var trackData = {}; //Place holder for current track -  gets populated, yo.
 
 var includeTracks = [
-  "html5",
-  "offroad",
+  // "twitter",
+  // "html5",
+  // "offroad",
   "yellow",
-  "darkloop",
+  // "darkloop",
   "chasm",
   "ampersand",
   "turbo8",
-  "testground",
-  "oval"
+  // "testground",
+  "oval",
+  // "grass"
 ]
 
 var trackTimes = {
@@ -207,10 +209,10 @@ var trackList = {
     laps : 5,
     hexes : {
       "#5a5a5a" : "road",
-      "#8fcf4b" : "grass",
+      // "#8fcf4b" : "grass",
       "#bcb21b" : "turbo",
-      "#3ba9d2" : "water",
-      "#6ba52d" : "tree",
+      // "#3ba9d2" : "water",
+      // "#6ba52d" : "tree",
       "#ffffff" : "finish",
       "#d4c921" : "jump",
       "#707070" : "checkpoint"
@@ -333,6 +335,34 @@ var trackList = {
 
     }
   },
+  "grass.png" : {
+    filename : "grass.png",
+    carcolors : ["#ffffff"],
+    trailcolor : "#32a6dc",
+    shortname : "grass",
+    prettyname : "Grass",
+    lawnmower : "#60aa1f",
+    laps : 6,
+    leaveSkids : true,
+    hexes : {
+      "#424242" : "road",
+      "#5a5a5a" : "road",
+      "#8fcf4b" : "grass",
+      "#f1aa22" : "turbo",
+      "#b97d37" : "windmill",
+      "#2194ca" : "water",
+      "#6ba52d" : "tree",
+      "#ffffff" : "finish",
+      "#9ad957" : "ledge",
+      "#6b6b6b" : "overpass",
+      "#7dba3d" : "lamp",
+      "#d4c921" : "jump",
+      "#707070" : "checkpoint",
+      "#bbbbbb" : "wall",
+      "#d5d5d5" : "wall"
+
+    }
+  },
   "testground.png" : {
     filename : "testground.png",
     carcolors : ["#ffffff"],
@@ -344,15 +374,17 @@ var trackList = {
       "#4c4a4a" : "road",
       "#5a5a5a" : "road",
       "#8fcf4b" : "grass",
-      "#f1aa22" : "turbo",
+
       "#2194ca" : "water",
       "#6ba52d" : "tree",
       "#ffffff" : "finish",
       "#a9a9a9" : "ledge",
       "#747474" : "overpass",
       "#7dba3d" : "lamp",
+      "#f1aa22" : "turbo",
       "#d4c921" : "jump",
-      "#707070" : "checkpoint"
+      "#707070" : "checkpoint",
+      "#d5d5d5" : "wall"
     }
   }
 

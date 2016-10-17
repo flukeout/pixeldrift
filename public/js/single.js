@@ -114,13 +114,11 @@ var race = {
   },
   startTrial: function(){
 
-    console.log("startTrial");
-
     // standings.load();
 
     $(".track-wrapper").css("opacity",0);
 
-    showMessage("do fast laps!");
+    showMessage("GET READY!");
 
     //Resets all the the cars in case there are other ones...
 

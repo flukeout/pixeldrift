@@ -1,9 +1,7 @@
 var scaling = 15;  //1 pixel = 15 pixels
 var othercars = {}; //Wtf are these
 
-
 var cars = []; //This holds the player car?
-
 
 var playSounds = false;
 var keyboardcar;
@@ -137,8 +135,6 @@ function prepareTrack(level){
 
         if(result == "checkpoint"){
           trackData.checkpointPositions.push({"x": i, "y" : j});
-
-
         }
 
         if(result == "lamp"){
@@ -184,7 +180,6 @@ function prepareTrack(level){
 }
 
 function makeCheckpoints(){
-
 
   id = 1;
 
@@ -274,15 +269,8 @@ function getCar(id){
   return foundcar;
 }
 
-function easeOutCubic(currentIteration, startValue, changeInValue, totalIterations) {
-	return changeInValue * (Math.pow(currentIteration / totalIterations - 1, 3) + 1) + startValue;
-}
-
-function easeInCubic(currentIteration, startValue, changeInValue, totalIterations) {
-	return changeInValue * Math.pow(currentIteration / totalIterations, 3) + startValue;
-}
-
 function checkPosition(x,y){
+
   var p = context.getImageData(x, y, 1, 1).data;
 
   var hex = "#" + ("000000" + rgbToHex(p[0], p[1], p[2])).slice(-6);
@@ -293,6 +281,37 @@ function checkPosition(x,y){
   }
 }
 
+
+
+// Takes current and next position and mode to see if there is a collision coming up...
+
+function checkCollision(x, y, nextx, nexty, mode) {
+
+  var thisP = context.getImageData(x, y, 1, 1).data;
+  var thisHex = "#" + ("000000" + rgbToHex(thisP[0], thisP[1], thisP[2])).slice(-6);
+  var thisType = trackData.hexes[thisHex];
+
+  var nextP = context.getImageData(nextx, nexty, 1, 1).data;
+  var nextHex = "#" + ("000000" + rgbToHex(nextP[0], nextP[1], nextP[2])).slice(-6);
+  var nextType = trackData.hexes[nextHex];
+
+  if(nextType == "wall") {
+    return true;
+  }
+
+  if(mode == "under" && thisType == "overpass" && nextType == "road") {
+    return true;
+  }
+
+  if(mode == "normal" && thisType == "overpass" && nextType == "ledge") {
+    return true;
+  }
+
+  return false;
+
+}
+
+
 function checkColor(x,y){
   var p = context.getImageData(x, y, 1, 1).data;
   var hex = "#" + ("000000" + rgbToHex(p[0], p[1], p[2])).slice(-6);
@@ -300,6 +319,11 @@ function checkColor(x,y){
 }
 
 
+function checkRGB(x,y){
+  var color = context.getImageData(x, y, 1, 1).data;
+  // var hex = "#" + ("000000" + rgbToHex(p[0], p[1], p[2])).slice(-6);
+  return color;
+}
 
 function rgbToHex(r, g, b) {
   if (r > 255 || g > 255 || b > 255)
@@ -325,7 +349,6 @@ function tiltTrack(){
   var xdeg = 5 * (-1 + (2 * xavg / trackWidth));
   var ydeg = 45 + 5 * (1 - (2 * yavg / trackHeight));
   $(".track").css("transform","rotateX(" +ydeg+"deg) rotateY("+xdeg+"deg)");
-  $(".track-shadow").css("transform","translateZ(-60px) rotateX(40deg) rotateY(-"+xdeg/4+"deg)");
 }
 
 function formatTime(total){
@@ -369,6 +392,8 @@ function spawnCar(car,x,y,angle){
     car.angle = angle;
   }
 
+  car.actualAngle = car.angle;
+
   var random = Math.floor(Math.random() * trackData.startPositions.length);
 
   car.body.css("background",trackData.carcolors[0]);
@@ -401,682 +426,6 @@ function spawnCar(car,x,y,angle){
   car.showy = car.y * scaling;
 }
 
-function driveCar(car) {
-
-  car.x = Math.round(car.showx / scaling);
-  car.y = Math.round(car.showy / scaling);
-
-  //Only check the current terrIain if we are on a new pixel
-  movedPixels = false;
-  if(car.x != car.lastx || car.y != car.lasty) {
-    movedPixels = true;
-  }
-
-  // Add position to history if it traveled a pixel
-  if(movedPixels) {
-    car.currentPosition = checkPosition(car.x,car.y) || "grass";
-    if(car.mode != "crashed" && car.mode != "gone" && car.mode != "jumping" && car.zPosition == 0){
-      car.positionHistory.push({x : car.x, y: car.y, angle : car.angle});
-      if(car.positionHistory.length  > 10) {
-        car.positionHistory.shift();
-      }
-    }
-  }
-
-  if(car.currentPosition == "checkpoint") {
-    for(var i = 0; i < trackData.checkpointPositions.length; i++){
-      var p = trackData.checkpointPositions[i];
-      if(car.x == p.x && car.y == p.y) {
-        if(car.checkpoints.indexOf(p.id) < 0){
-          car.checkpoints.push(p.id);
-          playSound("checkpoint");
-        }
-      }
-    }
-  }
-
-  // SPEED
-  if(car.currentPosition == "turbo") {
-    car.speed = car.speed + 4; // TODO - adjust by framerate
-  }
-
-  if(car.speed > car.maxAbsoluteSpeed){
-    car.speed = car.maxAbsoluteSpeed;
-  }
-
-
-
-  var speedchange = car.acceleration;
-
-  var frameAdjuster = delta / 16.67;
-
-  speedchange = speedchange * frameAdjuster;
-
-  car.maxspeed = car.baseMaxspeed * frameAdjuster;  // getting better
-
-  if(car.speed > 4) {
-    car.speed = 4;
-  }
-
-  // console.log(car.speed); // need to divide this into vectors
-  // if(particle.angle) {
-  // particle.angle =  particle.angle - 180;
-
-
-  // console.log(car.xV);   // negative is left, positive is right
-  // console.log(car.yV);   // negative is down, positive is up
-
-  // console.log(car.speed);
-  // if(car.speed == 0){
-
-  car.indicator.css("opacity",.4);
-  car.el.addClass("idle");
-
-  // car.desiredIndicator.css("opacity",.4);
-
-  // } else {
-    // car.indicator.css("opacity",0);
-    // car.el.removeClass("idle");
-  // }
-
-
-  // CAR TURNING
-  var steeringVelocityMax = car.steeringVelocityMax * frameAdjuster;  // This should be in the car definition, not here... dumbdumb asdf
-
-  var turning = car.maxspeed - 1;  // wtf are these two
-
-  if(car.zPosition > 0 || car.zPosition < 0 || car.mode == "frozen" || car.mode == "crashed") {
-    turning = false;
-  }
-
-  if(car.currentPosition == "water"){
-    steeringVelocityMax = steeringVelocityMax / 3; // TODO - frameRate adjuster? like the over 3?...
-    if(movedPixels) {
-      for(var i = 0; i < 2; i++){
-
-        // makeParticle(car.x, car.y, car.speed, car.angle, "water");
-      }
-    }
-  }
-
-
-  if(car.currentPosition == "grass" && car.zPosition == 0){
-    if(movedPixels) {
-      for(var i = 0; i < 1; i++){
-
-        var options = {
-          x : car.showx,
-          y : car.showy,
-          width : 15,
-          height: 15,
-          zV: 3.5,
-          gravity : .15,
-
-          xRv : getRandom(-1,1),
-          yRv : getRandom(-1,1),
-          zRv : getRandom(-3,3),
-
-          xV : getRandom(-1.5,1.5),
-          yV : getRandom(-1.5,1.5),
-          lifespan: 50,
-          color: checkColor(car.x,car.y)
-          // color: "#60aa1f", //asdf
-        }
-
-
-
-        makeParticle(options);
-
-        var newOptions = {
-          x : options.x,
-          y : options.y,
-          width : options.width,
-          height: options.height,
-          zRv : options.zRv,
-          xV : options.xV,
-          yV : options.yV,
-          lifespan: options.lifespan,
-          o : .15,
-          color: "black",
-        }
-
-        makeParticle(newOptions);
-
-
-      }
-    }
-  }
-
-
-
-  var steeringAccel = car.steeringAccel * frameAdjuster;
-
-    if(car.direction == "right" || car.direction == "left"){
-      if(car.direction == "left") {
-        car.steeringVelocity = car.steeringVelocity - steeringAccel;
-        if(Math.abs(car.steeringVelocity) > steeringVelocityMax){
-          car.steeringVelocity = -1 * steeringVelocityMax;
-        }
-      }
-      if(car.direction == "right") {
-        car.steeringVelocity = car.steeringVelocity + steeringAccel;
-        if(car.steeringVelocity > Math.abs(steeringVelocityMax)){
-          car.steeringVelocity = steeringVelocityMax;
-        }
-      }
-    } else if (car.direction == "none") {
-      if(car.steeringVelocity > 0) {
-        car.steeringVelocity = car.steeringVelocity - steeringAccel;
-        if(car.steeringVelocity < 0){
-          car.steeringVelocity = 0;
-        }
-      }
-      if(car.steeringVelocity < 0 ){
-        car.steeringVelocity = car.steeringVelocity + steeringAccel;
-        if(car.steeringVelocity > 0){
-          car.steeringVelocity = 0;
-        }
-      }
-    }
-
-    if(turning) {
-      car.angle = car.angle + car.steeringVelocity;
-    }
-
-    var angleDelta = car.actualAngle - car.angle;
-    car.angleDelta = angleDelta;
-
-    if(angleDelta > 110) {
-      car.actualAngle = car.angle + 110;
-    }
-
-    if(angleDelta < -110) {
-      car.actualAngle = car.angle - 110;
-    }
-
-    // console.log(car.steeringAccel);
-    // car.angle - the desired angle of the car
-    // car.actualAngle - the angle we want
-    // car.actualAngle = car.angle;
-
-    if(Math.abs(car.turningVelocity) > car.turningVelocityMax) {
-      if(car.turningVelocity > 0) {
-        car.turningVelocity = car.turningVelocityMax;
-      }
-      if(car.turningVelocity < 0) {
-        car.turningVelocity = -1* car.turningVelocityMax;
-      }
-    }
-
-    car.turningAccel = .2;
-
-    var angleDelta = car.actualAngle - car.angle;
-
-
-    if(angleDelta > 0) {
-
-
-      if(Math.abs(angleDelta) <= 10 && car.turningVelocity < (car.turningAccel * -2)) {
-        car.turningVelocity += car.turningAccel;
-      } else {
-        car.turningVelocity -= car.turningAccel;
-      }
-
-
-
-    } else if (angleDelta < 0) {
-
-      if(Math.abs(angleDelta) <= 10 && car.turningVelocity > (car.turningAccel * 2)) {
-        car.turningVelocity -= car.turningAccel;
-      } else {
-        car.turningVelocity += car.turningAccel;
-      }
-
-
-    }
-
-    car.actualAngle = car.actualAngle + car.turningVelocity;
-
-    var newAngleDelta = car.actualAngle - car.angle;
-
-    if(Math.abs(newAngleDelta) <= .5) {
-      car.angle = car.actualAngle;
-      car.turningVelocity = 0;
-    }
-
-
-    var totalVelocity = Math.sqrt(Math.pow(Math.abs(car.xV),2) + Math.pow(Math.abs(car.yV),2));
-
-    var angleDelta = Math.round(Math.abs(car.actualAngle - car.angle));
-
-    // console.log(angleDelta);
-
-    var lateralVelocity = totalVelocity * Math.sin(angleDelta *(Math.PI/180)) - 2;
-
-    var lateralAngle = car.actualAngle + 180; // This will the the lateral force pushing back
-
-    var ratio = 1.2; // This is the slowdown ratio on lateral movement
-
-    if(lateralVelocity > 0) {
-      var xVlateral = Math.sin(lateralAngle * (Math.PI/180)) * lateralVelocity * ratio;
-      var yVlateral = -1 * Math.cos(lateralAngle * (Math.PI/180)) * lateralVelocity * ratio;
-    } else {
-      var xVlateral = 0;
-      var yVlateral = 0;
-    }
-
-
-    if(car.currentPosition == "grass" && car.speed > 0 && car.zPosition == 0) {
-      car.el.addClass("idle");
-    } else {
-      car.el.removeClass("idle");
-    }
-
-    if(car.gas == "on") {
-      car.speed = car.speed + .06;
-    }
-
-  var done = false;
-
-  while(done == false) {
-
-    car.xV = Math.sin(car.actualAngle * (Math.PI/180)) * car.speed;
-    car.yV = -1 * Math.cos(car.actualAngle * (Math.PI/180)) * car.speed;
-
-    car.xV = car.xV + xVlateral;
-    car.yV = car.yV + yVlateral;
-
-    car.nextx = Math.round((car.showx + car.xV) / scaling);
-    car.nexty = Math.round((car.showy + car.yV) / scaling);
-
-    var movedPixelPosition = false;
-    var nextPosition;
-
-    if(car.x != car.nextx || car.y != car.nexty) {
-      movedPixelPosition = true;
-    }
-
-    if(movedPixelPosition) {
-      nextPosition = checkPosition(car.nextx,car.nexty);
-    } else {
-      nextPosition = car.currentPosition;
-    }
-
-    if(nextPosition == "wall" && car.currentPosition == "wall"){
-      done = true;
-      car.speed = car.maxspeed;
-    }
-
-    //If the next position is a wall, then add the bump off
-    //and re-check the next position
-    if(nextPosition == "wall" && car.zPosition == 0 && car.speed < 4.5 && car.mode != "crashed") {
-      playSound("bump");
-
-      var direction = "forward";
-      if(car.speed < 0){
-        direction = "backwards";
-      }
-      if(direction == "forward") {
-        car.speed = -2;
-      } else {
-        car.speed = 2;
-      }
-    } else {
-      done = true;
-    }
-  }
-
-  //Write down the old position
-  car.lastx = car.x;
-  car.lasty = car.y;
-
-  if(nextPosition == "wall" && car.zPosition == 0){
-
-    if(car.speed >= 4.5 ) {
-      car.zVelocity =  .7 * car.speed; // .5 car speed for normal jump
-      car.speed = car.speed * .5;
-      car.mode = "crashed";
-      playSound("crash");
-
-      car.xRotationSpeed = getRandom(8,16);
-      car.yRotationSpeed = getRandom(1,3);
-      car.zRotationSpeed = getRandom(1,3);
-
-      for(var j = 0; j < 10; j++){
-        makeParticle(car.x, car.y, car.speed, car.angle);
-      }
-
-      trackAnimation("pop");
-    }
-  }
-
-  // CAR SKIDS
-  // Leave a skid mark on the track
-  // If it's on the road - then depends on speed and turning radius
-  // If it's not, then just rip it up a bit
-  var turnpercent = Math.abs(car.steeringVelocity) / car.steeringVelocityMax;
-  var speedpercent = car.speed / car.maxspeed;
-
-  if(movedPixels && car.currentPosition == "grass" && car.zPosition == 0 && trackData.lawnmower) {
-    ctx.fillStyle = "rgba(154,113,54,.3)";
-    ctx.fillRect(car.x * scaling, car.y * scaling, scaling, scaling);
-  }
-
-
-  // what are the conditions for a tilt
-  // * minimum skid duration
-  // * steering wheel adding turn
-  // * minimum speed
-
-  var tiltgain = 1;
-
-  if((car.direction == "left" || car.direction == "right")  && car.speed > 4 && car.skidDuration > 10) {
-    // Raising up
-    if(car.direction ==  "left" && car.speed > 4) {
-      car.tilt = car.tilt + tiltgain;
-    } else if (car.direction == "right" && car.speed > 4) {
-      car.tilt = car.tilt - tiltgain;
-    }
-  } else {
-    // Falling down
-
-    car.tiltGravity = .3;
-
-    if(car.tilt > 0) {
-      car.tiltVelocity = car.tiltVelocity - car.tiltGravity;
-      car.tilt = car.tilt + car.tiltVelocity;
-      if(car.tilt < 0) {
-        car.tilt = 0;
-        car.tiltVelocity = 0;
-      }
-    }
-
-    if(car.tilt < 0) {
-      car.tiltVelocity = car.tiltVelocity + car.tiltGravity;
-      car.tilt = car.tilt + car.tiltVelocity;
-      if(car.tilt > 0) {
-        car.tilt = 0;
-        car.tiltVelocity = 0;
-      }
-    }
-
-
-  }
-
-
-
-  var maxTilt = 25;
-  // var rotation = Math.abs(car.turnvelocity) / 4 * maxRotation;
-
-  if(Math.abs(car.tilt) > maxTilt){
-    if(car.tilt > 0) { car.tilt = maxTilt};
-    if(car.tilt < 0) { car.tilt = -1*maxTilt};
-  }
-
-  if(car.tilt > 0) {
-    $(".car .idler").css("transform-origin","right");
-  } else {
-    $(".car .idler").css("transform-origin","left");
-  }
-  $(".car .idler").css("transform","rotateY("+car.tilt+"deg) translateZ(0px)")
-
-  // if(movedPixels){
-  //   if(trackData.leaveSkids && car.mode != "jumping" && car.zPosition == 0 && car.skidDuration > 10) {
-  //
-  //     var averagepercent = (speedpercent + turnpercent) / 2 * 100;
-  //     var jam  = -75 + averagepercent;
-  //     var opacity = jam/25 * .1;
-      // if(opacity > .12){
-      //   opacity = .12;
-      // }
-      // if(car.currentPosition == "road" || car.currentPosition == "overpass" || car.currentPosition == "checkpoint") {
-      //   ctx.fillStyle = "rgba(0,0,0,"+opacity+")";
-      //   ctx.fillRect(car.x * scaling, car.y * scaling, scaling, scaling);
-      // } else if (car.currentPosition == "grass"){
-      //   ctx.fillStyle = "rgba(0,0,0,.05)";
-      //   ctx.fillRect(car.x * scaling, car.y * scaling, scaling, scaling);
-      // }
-  //   }
-  // }
-
-  if(movedPixels){
-    if(trackData.leaveSkids && car.mode != "jumping" && car.zPosition == 0) {
-
-      var skid = false;
-      // var startSkid = 15;
-
-      var skidAngle = 90;
-
-      var maxOpacity = .25;
-      var angleDelta = Math.abs(car.actualAngle - car.angle);
-
-      var opacity = maxOpacity * (angleDelta / skidAngle);
-
-
-
-      if(opacity > maxOpacity) {
-        opacity = maxOpacity;
-      }
-      // if(angleDelta > 1) {
-      //   skid = true;
-      // }
-
-
-      if(car.currentPosition == "road" || car.currentPosition == "overpass" || car.currentPosition == "checkpoint") {
-        ctx.fillStyle = "rgba(0,0,0,"+opacity+")";
-        ctx.fillRect(car.x * scaling, car.y * scaling, scaling, scaling);
-
-
-          if(opacity > .2) {
-          //   var options = {
-          //     x : car.x * scaling,
-          //     y : car.y * scaling,
-          //     width : 15,
-          //     height: 15,
-          //     zV: .5,
-          //     o: .3,
-          //     oV: -.0025,
-          //     lifespan: 100,
-          //     color: "white",
-          //   }
-
-            // makeParticle(options);
-
-        }
-
-      }
-    }
-  }
-
-
-
-
-
-  var move = true;
-
-  if(car.mode == "frozen"){
-    move = false;
-  }
-
-  if(car.mode == "normal") {
-    if(car.currentPosition == "overpass" && nextPosition == "ledge" ) {
-      move = false;
-    }
-    if(car.currentPosition == "road" && nextPosition == "ledge" ) {
-      car.mode = "under";
-    }
-  } else if (car.mode == "under") {
-    if(car.currentPosition == "overpass" && nextPosition == "road"){
-      move = false;
-    }
-    if(car.currentPosition == "ledge" && nextPosition == "road") {
-      car.mode = "normal";
-    }
-    if(car.currentPosition == "ledge" && nextPosition == "grass") {
-      move = false;
-    }
-  }
-
-  car.el.attr("mode",car.mode);
-
-  if(move){
-    car.showx = car.showx + car.xV;
-    car.showy = car.showy + car.yV;
-  } else {
-    car.speed = 1;
-  }
-
-  // CAR ENGINE
-  var maxfq = 400;
-  var minfq = 200;
-
-  if(car.mode == "jumping"){
-    maxfq = 600;
-  }
-
-  //ENGINE SOUNDS....
-
-  var frequency = minfq + ((car.speed/car.maxspeed) * (maxfq - minfq));
-  car.engine.frequency.value = frequency - (turnpercent * 50);
-  car.enginesine.frequency.value = 20 + (20 * speedpercent) + (turnpercent * 5);
-
-  if(car.mode == "crashed") {
-    car.enginevol.gain.value = 0;
-  } else {
-    car.enginevol.gain.value = .12;
-  }
-
-  if(turnpercent > .5 && speedpercent > .5) {
-    car.skidDuration++;
-  } else {
-    car.skidDuration = 0;
-  }
-
-  var skidPercent = car.skidDuration - 25 / 25;
-
-  if(skidPercent > 1) {
-    skidPercent = 1;
-  }
-
-  if(car.skidDuration > 25) {
-    car.skidVolume.gain.value = .025  * turnpercent || 0 * skidPercent;
-  } else {
-    car.skidVolume.gain.value = 0;
-  }
-
-  car.el.attr("mode",car.mode);
-
-  if(car.currentPosition == "finish"){
-    if(car.x != car.nextx) {
-      race.finishLap(car);
-      car.laptime = 0;
-    }
-  }
-
-  //JUMPING
-  if(car.currentPosition == "jump" && car.speed >= car.minJumpSpeed && car.zPosition == 0){
-    car.zVelocity = .5 * car.speed; // .5 car speed for normal jump
-    car.mode = "jumping";
-    // car.yRotationSpeed = getRandom(-2,2);
-    // car.xRotationSpeed = getRandom(-2,2);
-    playSound("jump");
-  }
-
-  //Apply any car rotations if the car is flyin'....
-  if(car.zPosition > 0 || car.zPosition < 0) {
-    car.xRotation = car.xRotation + car.xRotationSpeed;
-    car.yRotation = car.yRotation + car.yRotationSpeed;
-    car.zRotation = car.zRotation + car.zRotationSpeed;
-  }
-
-  if(car.currentPosition == "void" || car.zPosition > 0) {
-    car.zVelocity = car.zVelocity - car.gravity
-  }
-
-  car.zPosition = car.zPosition + car.zVelocity;
-
-  if(car.zPosition < 0 && car.currentPosition == "void") {
-    if(car.mode != "gone") {
-      if(!car.respawning){
-        car.respawn();
-        car.respawning = true;
-      }
-    }
-    car.mode = "gone";
-  } else {
-
-  }
-
-  // console.log(car.zPosition);
-
-  if(car.zPosition <= 0){
-    car.shadow.hide();
-  } else {
-    car.shadow.show();
-  }
-
-  // Safe Landing
-  if(car.zPosition < 0 && car.zVelocity < 0 && car.mode != "gone" && car.mode != "crashed"){
-
-    trackAnimation("carland");
-    $(".car .idler").addClass("carlanding");
-    setTimeout(function(){
-      $(".car .idler").removeClass("carlanding");
-    },400)
-
-    car.mode = "normal";
-    car.zPosition = 0;
-    car.zVelocity = 0;
-    car.zRotation = 0;
-    car.xRotation = 0;
-    car.yRotation = 0;
-  }
-
-  // Crash landing
-  if(car.zPosition < 0 && car.zVelocity < 0 && car.mode != "gone" && car.mode == "crashed"){
-    car.zPosition = 0;
-    car.speed = 0;
-    car.zRotationSpeed = 0;
-    car.xRotationSpeed = 0;
-    car.yRotationSpeed = 0;
-    if(!car.respawning){
-      car.respawn();
-      car.respawning = true;
-    }
-  }
-
-  // CAR JUMP TRAIL
-  if(movedPixels){
-    if(car.zPosition > 0 && car.mode != "crashed"){
-      var trail = $("<div class='trail'></div>");
-      trail.css("background",car.trailColor || "#32a6dc")
-      trail.height(scaling).width(scaling);
-      trail.css("left",car.x * scaling).css("top",car.y * scaling);
-      trail.css("transform","translateZ("+ car.zPosition +"px)");
-      $(".track").append(trail); // <- gotta figure this out i guess
-      setTimeout(function(el) { return function() { el.remove(); }; }(trail), 400);
-    }
-  }
-
-  // moves the car holder
-  car.el.css("transform", "translateY("+car.showy+"px) translateZ(1px) translateX("+car.showx+"px)");
-
-  //makes the body jump
-  if(car.currentPosition == "overpass" && car.mode == "normal") {
-    car.jumper.css("transform", "scale(1.1) rotateZ("+car.angle+"deg) translateZ("+car.zPosition+"px");
-    car.body.css("transform", "rotateZ("+car.zRotation+"deg)");
-  } else {
-    car.jumper.css("transform", " rotateZ("+car.angle+"deg) translateZ("+car.zPosition+"px");
-    car.body.css("transform", "rotateX("+car.xRotation+"deg) rotateY("+car.yRotation+"deg) rotateZ("+car.zRotation+"deg)");
-    car.nameEl.css("transform", "translateZ("+ parseInt(38 + car.zPosition) + "px) rotateX(-70deg)");
-  }
-
-
-  car.desiredIndicator.css("transform", "rotateZ("+car.angleDelta+"deg)"); //asdf
-
-  car.shadow.css("transform", "rotateZ("+car.angle+"deg)");
-}
-
 function newCar(id,config){
 
   var carconfig = config || {};
@@ -1087,14 +436,19 @@ function newCar(id,config){
     y : 0,
     checkpoints : [],
     crashed : false,
+
     showx : 410,
     showy : 230,
+
     nextx :0,
     nexty : 0,
+
     lastx : 0,
     lasty : 0,
+
     tiltGravity : .1,
     tiltVelocity : 0,
+
     tilt : 0,
 
     zRotation : 0,
@@ -1112,30 +466,27 @@ function newCar(id,config){
     jumpElapsed: 0,
     jumpTotal: 0,
     jumpHeight : 0,
+    jumpVelocity : .65, // Percentage of car speed
 
     zVelocity : 0,
     zPosition : 0,
 
-
-    desiredangle: 270,
     angle: 270,
     actualAngle : 270,
     acceleration : .06,  // accelleration, is this what we add to the speed?
 
     xVelocity : 0,
     yVelocity: 0,
-    friction : .06,  // each frame we need to add friction...
-
-    // we need to apply an impulse...
-    // impulse will have an X and Y component, and change the X and Y velocity
 
     steeringAccel : .5,       // How fast the steering wheel turn accellerates
     steeringVelocityMax : 4,  // maximum car turn speed
     steeringVelocity : 0,     // How quickly the car can turn at a maximum
 
     turningAccel : .5,        // how fast the car turn can accellerate
-    turningVelocityMax : 2,   // maximum car turn speed
+    turningVelocityMax : 3,   // maximum car turn speed
     turningVelocity : 0,      // How fast the car is turning
+
+    driftSlowdownRatio : .5, //Amount of 'friction' applied when drifting
 
     gravity : .180,
     minJumpSpeed : 2.5,
@@ -1144,17 +495,25 @@ function newCar(id,config){
     driver : "Bob",
     showname : true,
     laps : 0,
-    wheelturn : false,
+
     maxspeed : 5, // the value adjusted by framerate...
     baseMaxspeed : 5, // the base value...
     maxspeedModifier : 0,
     maxAbsoluteSpeed : 10,
+
+
+    turboBoost : 6,
+
+
     direction : "none",
     speed : 0,
+
     skidDuration : 0,
+
     trailColor : "#ffffff",
     bestlap : 0,
     laptime: 0,
+
 
 
 
@@ -1393,7 +752,7 @@ function buildTrackChooser(){
 
       trackOption.find(".player-time").text(formatTime(pRecord.lapTime));
 
-      trackOption.find("img").attr("src","../public/tracks/" + track.filename);
+      trackOption.find(".track-thumbnail-wrapper").css("background-image","url(../public/tracks/" + track.filename + ")");
 
       var trackName = track.prettyname || track.shortname;
 

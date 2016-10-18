@@ -1,4 +1,5 @@
 var soundContext = new AudioContext();
+
 var url = window.location;
 var path = url.pathname;
 path = "./public";
@@ -10,7 +11,7 @@ var sounds = {
   },
   "crash" : {
     buffer : null,
-    url : path + "/sounds/crash.mp3"
+    url : path + "/sounds/NFF-car-hit.wav"
   },
   "checkpoint" : {
     buffer : null,
@@ -27,7 +28,12 @@ var sounds = {
   "coin" : {
     buffer : null,
     url : path + "/sounds/coin.mp3"
+  },
+  "skid" : {
+    buffer : null,
+    url : path + "/sounds/skid.wav"
   }
+
 };
 
 for(var key in sounds) {
@@ -35,7 +41,6 @@ for(var key in sounds) {
 }
 
 function loadSound(name){
-
 
   var url = sounds[name].url;
 
@@ -56,13 +61,55 @@ function loadSound(name){
 }
 
 function playSound(name){
-  return;
+  // return;
 
   var buffer = sounds[name].buffer;
   if(buffer){
     var source = soundContext.createBufferSource(); // creates a sound source
     source.buffer = buffer;                    // tell the source which sound to play
-    source.connect(soundContext.destination);       // connect the source to the context's destination (the speakers)
+    
+    var volume = soundContext.createGain();
+    volume.gain.value = 1;
+    
+    if(name == "crash") {
+      volume.gain.value = .05;
+    }
+    
+    volume.connect(soundContext.destination)
+    
+    source.connect(volume);       // connect the source to the context's destination (the speakers)
     source.start(0);
   }
 }
+
+var skidBuffer;
+var skidVol;
+var skidSource;
+
+function startSkid() {
+	
+  var skidBuffer = sounds["skid"].buffer;
+  if(skidBuffer){
+
+    skidVol = soundContext.createGain();
+	  skidVol.gain.value = .02;
+    
+    skidVol.connect(soundContext.destination);
+
+
+    skidSource = soundContext.createBufferSource(); // creates a sound source
+    skidSource.buffer = skidBuffer;                    // tell the source which sound to play
+    
+    skidSource.connect(skidVol);       // connect the source to the context's destination (the speakers)
+
+    skidSource.start(0);
+	  skidSource.loop = true;
+  }
+	
+}
+
+setTimeout(function(){
+  startSkid();
+}, 1000);
+
+

@@ -348,7 +348,10 @@ function tiltTrack(){
   var yavg = ytotal / cars.length || 0;
   var xdeg = 5 * (-1 + (2 * xavg / trackWidth));
   var ydeg = 45 + 5 * (1 - (2 * yavg / trackHeight));
+
   $(".track").css("transform","rotateX(" +ydeg+"deg) rotateY("+xdeg+"deg)");
+
+
 }
 
 function formatTime(total){
@@ -514,9 +517,6 @@ function newCar(id,config){
     bestlap : 0,
     laptime: 0,
 
-
-
-
     gas : "off",
     left : "off",
     right : "off",
@@ -526,7 +526,7 @@ function newCar(id,config){
   car.shutDown = function(){
     car.engine.stop();
     car.enginesine.stop();
-    car.skidOscillator.stop();
+    // car.skidOscillator.stop();
     car.oscillator.stop();
   }
 
@@ -551,7 +551,7 @@ function newCar(id,config){
 
     car.oscillator = audioContext.createOscillator();
     car.oscillator.type = 'square';
-    car.oscillator.frequency.value = 900; // value in hertz
+    car.oscillator.frequency.value = 1200; // value in hertz
     car.oscillator.start(0);
     car.oscillator.connect(car.skidGain);
 
@@ -580,7 +580,7 @@ function newCar(id,config){
   }
 
   car.initAudio();
-  car.shutDown();
+  // car.shutDown();
 
   // Updates car defaults based on what is passed in
   for(var key in carconfig){

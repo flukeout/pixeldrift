@@ -233,10 +233,13 @@ function driveCar(car) {
 
     if(movedPixelPosition && car.zPosition == 0) {
       collision = checkCollision(car.x, car.y, car.nextx, car.nexty, car.mode);
+      
+      
     }
 
     if(collision) {
 
+      playSound("crash");
       var angleDelta;
       var rotations = Math.floor(car.actualAngle / 360);
       var tempAngle = car.actualAngle - (rotations * 360);
@@ -455,6 +458,33 @@ function driveCar(car) {
       ctx.fillStyle = "rgba(0,0,0,"+opacity+")";
       ctx.fillRect(car.x * scaling, car.y * scaling, scaling, scaling);
   }
+  
+  
+  
+  ///////
+  var skidAngle = 15;
+  var maxOpacity = .2;
+  var angleDelta = Math.abs(car.actualAngle - car.angle);
+  var percent = 0;
+
+  if(angleDelta > skidAngle) {
+    percent = (angleDelta - skidAngle) / skidAngle;
+    if(percent > 1) {
+      percent = 1;
+    }
+  }
+  console.log(percent);
+  
+  var maxGain = .3;
+  
+  if(car.speed > maxspeed/2 && car.zPosition == 0) {
+	  skidVol.gain.value = percent * maxGain;
+  } else {
+	  skidVol.gain.value = 0;
+  }
+
+  
+  //////
 
 
   var move = true;
@@ -492,33 +522,14 @@ function driveCar(car) {
 
   //ENGINE SOUNDS....
 
-  // var frequency = minfq + ((car.speed/car.maxspeed) * (maxfq - minfq));
-  // car.engine.frequency.value = frequency - (turnpercent * 50);
-  // car.enginesine.frequency.value = 20 + (20 * speedpercent) + (turnpercent * 5);
+  var frequency = minfq + ((car.speed/car.maxspeed) * (maxfq - minfq));
+  car.engine.frequency.value = frequency - (turnpercent * 50);
+  car.enginesine.frequency.value = 20 + (20 * speedpercent) + (turnpercent * 5);
+
+  // console.log(frequency);
+
   //
-  // if(car.mode == "crashed") {
-  //   car.enginevol.gain.value = 0;
-  // } else {
-  //   car.enginevol.gain.value = .12;
-  // }
-  //
-  // if(turnpercent > .5 && speedpercent > .5) {
-  //   car.skidDuration++;
-  // } else {
-  //   car.skidDuration = 0;
-  // }
-  //
-  // var skidPercent = car.skidDuration - 25 / 25;
-  //
-  // if(skidPercent > 1) {
-  //   skidPercent = 1;
-  // }
-  //
-  // if(car.skidDuration > 25) {
-  //   car.skidVolume.gain.value = .025  * turnpercent || 0 * skidPercent;
-  // } else {
-  //   car.skidVolume.gain.value = 0;
-  // }
+  car.enginevol.gain.value = .12;
 
   car.el.attr("mode",car.mode);
 

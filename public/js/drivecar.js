@@ -473,7 +473,7 @@ function driveCar(car) {
       percent = 1;
     }
   }
-  console.log(percent);
+  // console.log(percent);
   
   var maxGain = .3;
   
@@ -482,9 +482,25 @@ function driveCar(car) {
   } else {
 	  skidVol.gain.value = 0;
   }
+  
+
+  //////
+  
+  var minpitch = 1;
+  var maxpitch = 2.5;
+  
+  var percentSpeed = car.speed / maxspeed;
+  
+  enginePitch = 1 + (maxpitch * percentSpeed);
+  
+  if(enginePitch > maxpitch) {
+    enginePitch = maxpitch;
+  }
+  
+  engineSource.playbackRate.value = enginePitch;
+  
 
   
-  //////
 
 
   var move = true;

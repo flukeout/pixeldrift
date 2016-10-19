@@ -565,12 +565,12 @@ function newCar(id,config){
     car.engine.connect(car.enginevol);
     car.engine.type = 'sine';
     car.engine.frequency.value = 440; // value in hertz
-    car.engine.start(0);
+    // car.engine.start(0);
 
     car.enginesine = audioContext.createOscillator();
     car.enginesine.type = 'sine';
     car.enginesine.frequency.value = 40;
-    car.enginesine.start(0);
+    // car.enginesine.start(0);
 
     var sineGainba = audioContext.createGain();
     sineGainba.gain.value = 400;
@@ -752,7 +752,7 @@ function buildTrackChooser(){
 
       trackOption.find(".player-time").text(formatTime(pRecord.lapTime));
 
-      trackOption.find(".track-thumbnail-wrapper").css("background-image","url(../public/tracks/" + track.filename + ")");
+      trackOption.find(".track-thumbnail-wrapper").css("background-image","url(./public/tracks/" + track.filename + ")");
 
       var trackName = track.prettyname || track.shortname;
 

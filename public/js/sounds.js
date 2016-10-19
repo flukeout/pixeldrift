@@ -32,7 +32,11 @@ var sounds = {
   "skid" : {
     buffer : null,
     url : path + "/sounds/skid.wav"
-  }
+  },
+  "engine" : {
+    buffer : null,
+    url : path + "/sounds/engine.ogg"
+  }  
 
 };
 
@@ -92,7 +96,7 @@ function startSkid() {
   if(skidBuffer){
 
     skidVol = soundContext.createGain();
-	  skidVol.gain.value = .02;
+	  skidVol.gain.value = .015;
     
     skidVol.connect(soundContext.destination);
 
@@ -103,13 +107,49 @@ function startSkid() {
     skidSource.connect(skidVol);       // connect the source to the context's destination (the speakers)
 
     skidSource.start(0);
-	  skidSource.loop = true;
+    skidSource.loop = true;
   }
 	
 }
 
 setTimeout(function(){
   startSkid();
+}, 1000);
+
+
+var engineBuffer;
+var engineVol;
+var engineSource;
+var enginePitch = 1;
+
+function startEngine() {
+	
+  var engineBuffer = sounds["engine"].buffer;
+  if(engineBuffer){
+
+    engineVol = soundContext.createGain();
+	  engineVol.gain.value = .15;
+    
+    engineVol.connect(soundContext.destination);
+
+    engineSource = soundContext.createBufferSource(); // creates a sound source
+    engineSource.buffer = engineBuffer;                    // tell the source which sound to play
+    
+    // var currPitch = engineSource.playbackRate.value;
+    
+    engineSource.playbackRate.value = enginePitch;
+    
+    engineSource.connect(engineVol);       // connect the source to the context's destination (the speakers)
+
+
+	  engineSource.loop = true;
+    engineSource.start(0);
+  }
+	
+}
+
+setTimeout(function(){
+  startEngine();
 }, 1000);
 
 

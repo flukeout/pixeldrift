@@ -245,7 +245,7 @@ var trackList = {
     }
   },
   "ampersand.png" : {
-    filename : "ampersand.png",
+    filename : "ampersand.gif",
     carcolors : ["#ffffff"],
     trailcolor : "#32a6dc",
     lawnmower : "#8fcf4b",
@@ -260,6 +260,7 @@ var trackList = {
       "#f1aa22" : "turbo",
       "#2194ca" : "water",
       "#6ba52d" : "tree",
+      "#639c26" : "bigtree",
       "#ffffff" : "finish",
       "#a9a9a9" : "ledge",
       "#747474" : "overpass",

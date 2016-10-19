@@ -91,7 +91,7 @@ function prepareTrack(level){
 
     console.log("IMage loaded---------")
 
-    $(".lamp, .tree, .windmill, .water").remove(); // maybe add a sprite clas to these?
+    $(".bigtree, .lamp, .tree, .windmill, .water").remove(); // maybe add a sprite clas to these?
 
     context.clearRect(0, 0, 500, 500); //500 is max? ... lame...
     context.drawImage(image, 0, 0);
@@ -157,6 +157,14 @@ function prepareTrack(level){
           tree.css("left", scaling * (i - 1));
           tree.css("top", scaling * (j - 4));
         }
+
+        if(result == "bigtree"){
+          var tree = $("<div class='bigtree'><div class='tree-inner'></div></div>");
+          $(".track").append(tree)
+          tree.css("left", scaling * (i - 1));
+          tree.css("top", scaling * (j - 8));
+        }
+
 
         if(result == "water"){
           var chance = getRandom(0,4);

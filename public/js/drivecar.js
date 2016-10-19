@@ -576,7 +576,11 @@ function driveCar(car) {
 
   if(car.zPosition < 0 && car.currentPosition == "void") {
     if(car.mode != "gone") {
-      playSound("fall");
+
+      setTimeout(function(){
+        playSound("fall");        
+      },150);
+
       if(!car.respawning){
         car.respawn();
         car.respawning = true;

@@ -43,6 +43,7 @@ function driveCar(car) {
     // Turbo Boost
     if(car.currentPosition == "turbo" && car.zPosition == 0) {
       car.speed = maxspeed + turboBoost;
+      playSound("turbo");
     }
 
     // Checkpoint
@@ -233,13 +234,14 @@ function driveCar(car) {
 
     if(movedPixelPosition && car.zPosition == 0) {
       collision = checkCollision(car.x, car.y, car.nextx, car.nexty, car.mode);
-      
-      
     }
 
     if(collision) {
 
-      playSound("crash");
+      // playSound("crash");
+      
+
+      
       var angleDelta;
       var rotations = Math.floor(car.actualAngle / 360);
       var tempAngle = car.actualAngle - (rotations * 360);
@@ -256,6 +258,7 @@ function driveCar(car) {
       var newAngle = tempAngle;
       var angleChange = 0;
 
+
       if(tempAngle >= 0 && tempAngle <= 90) {
         if(car.x != car.nextx && car.y == car.nexty) {
           newAngle = 360 - tempAngle; // Right
@@ -268,7 +271,6 @@ function driveCar(car) {
            } else if (up) {
              console.log("up LL");
              newAngle = 360 - tempAngle;
-
            }
          }
          console.log("0 - 90");
@@ -334,8 +336,7 @@ function driveCar(car) {
           newAngle -= 360;
         }
 
-        console.log("before", tempAngle);
-        console.log("after ", newAngle);
+
 
         var angleChange = tempAngle - newAngle;
         angleChange = -1 * ((angleChange + 180) % 360 - 180);
@@ -354,6 +355,10 @@ function driveCar(car) {
         car.angle = car.angle + angleChange;
 
         car.speed = car.speed - (ferocity * car.speed);
+        
+
+        playSound("crash");
+        
 
     } else {
       done = true;
@@ -563,12 +568,15 @@ function driveCar(car) {
 
   if(car.currentPosition == "void" || car.zPosition > 0) {
     car.zVelocity = car.zVelocity - car.gravity
+
   }
+
 
   car.zPosition = car.zPosition + car.zVelocity;
 
   if(car.zPosition < 0 && car.currentPosition == "void") {
     if(car.mode != "gone") {
+      playSound("fall");
       if(!car.respawning){
         car.respawn();
         car.respawning = true;
@@ -591,6 +599,8 @@ function driveCar(car) {
   if(car.zPosition < 0 && car.zVelocity < 0 && car.mode != "gone" && car.mode != "crashed"){
 
     trackAnimation("carland");
+    // playSound("crash");
+
     $(".car .idler").addClass("carlanding");
     setTimeout(function(){
       $(".car .idler").removeClass("carlanding");

@@ -55,3 +55,41 @@ function mowGrass(car) {
 
 
 
+
+
+function crash(car) {
+
+    // playSound("crash");
+
+    for(var i = 0; i < 3; i++) {
+      var options = {
+        x : car.showx,
+        y : car.showy,
+        width : 15,
+        height: 15,
+        // zV: 3.5,
+        // gravity : .15,
+        angle : car.actualAngle,
+        speed : 2,
+
+        // xRv : getRandom(-1,1),
+        // yRv : getRandom(-1,1),
+        zRv : getRandom(-3,3),
+
+        lifespan: 50,
+        color: "#FFF"
+
+      }
+      
+      console.log(options.angle);
+
+      makeParticle(options);
+    }
+
+
+  
+
+}
+
+
+

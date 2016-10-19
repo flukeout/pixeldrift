@@ -9,6 +9,17 @@ var sounds = {
     buffer : null,
     url : path + "/sounds/dead.wav"
   },
+  "fall" : {
+    buffer : null,
+    url : path + "/sounds/NFF-chromatic-fall.wav",
+    volume : .05
+  },
+
+
+  "turbo" : {
+    buffer : null,
+    url : path + "/sounds/NFF-whizz.wav"
+  },
   "crash" : {
     buffer : null,
     url : path + "/sounds/NFF-car-hit.wav"
@@ -68,15 +79,24 @@ function playSound(name){
   // return;
 
   var buffer = sounds[name].buffer;
+  var soundVolume = sounds[name].volume || 1;
+  
+  console.log(soundVolume);
+
+
   if(buffer){
     var source = soundContext.createBufferSource(); // creates a sound source
     source.buffer = buffer;                    // tell the source which sound to play
     
     var volume = soundContext.createGain();
-    volume.gain.value = 1;
+    volume.gain.value = soundVolume;
+    
     
     if(name == "crash") {
       volume.gain.value = .05;
+    }
+    if(name == "turbo") {
+      volume.gain.value = .2;
     }
     
     volume.connect(soundContext.destination)

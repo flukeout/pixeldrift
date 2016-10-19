@@ -66,7 +66,7 @@ function trackAnimation(type){
 }
 
 function prepareTrack(level){
-  console.log("utils.prepareTrack("+level+")");
+
   canvasTrack = $("canvas.track-source");
   context = canvasTrack[0].getContext("2d");
 
@@ -76,20 +76,15 @@ function prepareTrack(level){
   $("body").append(image);
   $(image).hide();
 
-
   var url = window.location;
 
   var href = url.href.replace("#","");
 
   image.src = href + 'public/tracks/' + level;
 
-  console.log(image.src);
-
   $(".track").css("background-image", "url(./public/tracks/"+level+")");
 
   $(image).on("load",function(){
-
-    console.log("IMage loaded---------")
 
     $(".bigtree, .lamp, .tree, .windmill, .water").remove(); // maybe add a sprite clas to these?
 
@@ -147,7 +142,7 @@ function prepareTrack(level){
         if(result == "windmill"){
           var el = $("<div class='windmill'><div class='prop'></div>");
           $(".track").append(el)
-          el.css("left", scaling * (i - 1));
+          el.css("left", scaling * (i));
           el.css("top", scaling * (j - 3));
         }
 
@@ -295,6 +290,7 @@ function checkPosition(x,y){
 
 function checkCollision(x, y, nextx, nexty, mode) {
 
+
   var thisP = context.getImageData(x, y, 1, 1).data;
   var thisHex = "#" + ("000000" + rgbToHex(thisP[0], thisP[1], thisP[2])).slice(-6);
   var thisType = trackData.hexes[thisHex];
@@ -311,9 +307,16 @@ function checkCollision(x, y, nextx, nexty, mode) {
     return true;
   }
 
+  if(mode == "under" && thisType == "ledge" && nextType == "grass") {
+    return true;
+  }
+
+
   if(mode == "normal" && thisType == "overpass" && nextType == "ledge") {
     return true;
   }
+  
+  
 
   return false;
 
@@ -387,7 +390,6 @@ function toRadians (angle) {
 
 function spawnCars(){
 
-  // console.log("spawnCars() - placing cars near start line");
   for(var c in cars) {
     var car = cars[c];
     spawnCar(car);
@@ -396,7 +398,6 @@ function spawnCars(){
 
 function spawnCar(car,x,y,angle){
 
-  // console.log("spawnCar("+x,y+") - spawning individual car");
   if(angle == undefined) {
     car.angle = 270;
   } else {

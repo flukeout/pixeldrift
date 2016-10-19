@@ -487,14 +487,22 @@ function driveCar(car) {
   //////
   
   var minpitch = 1;
-  var maxpitch = 2.5;
+  var maxpitch;
+  
+  if(car.zPosition != 0) {
+    maxpitch = 3;
+  } else {
+    maxpitch = 2.5;
+  }
   
   var percentSpeed = car.speed / maxspeed;
   
+
+  
   enginePitch = 1 + (maxpitch * percentSpeed);
   
-  if(enginePitch > maxpitch) {
-    enginePitch = maxpitch;
+  if(enginePitch > 1 + maxpitch) {
+    enginePitch = 1 + maxpitch;
   }
   
   engineSource.playbackRate.value = enginePitch;
@@ -528,24 +536,7 @@ function driveCar(car) {
     car.speed = 1;
   }
 
-  // CAR ENGINE
-  var maxfq = 400;
-  var minfq = 200;
-
-  if(car.mode == "jumping"){
-    maxfq = 600;
-  }
-
   //ENGINE SOUNDS....
-
-  var frequency = minfq + ((car.speed/car.maxspeed) * (maxfq - minfq));
-  car.engine.frequency.value = frequency - (turnpercent * 50);
-  car.enginesine.frequency.value = 20 + (20 * speedpercent) + (turnpercent * 5);
-
-  // console.log(frequency);
-
-  //
-  car.enginevol.gain.value = .12;
 
   car.el.attr("mode",car.mode);
 

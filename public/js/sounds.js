@@ -96,10 +96,9 @@ function startSkid() {
   if(skidBuffer){
 
     skidVol = soundContext.createGain();
-	  skidVol.gain.value = .015;
+	  skidVol.gain.value = .01;
     
     skidVol.connect(soundContext.destination);
-
 
     skidSource = soundContext.createBufferSource(); // creates a sound source
     skidSource.buffer = skidBuffer;                    // tell the source which sound to play

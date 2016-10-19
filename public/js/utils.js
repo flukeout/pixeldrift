@@ -522,65 +522,7 @@ function newCar(id,config){
     right : "off",
     positionHistory : [],
   };
-
-  car.shutDown = function(){
-    car.engine.stop();
-    car.enginesine.stop();
-    // car.skidOscillator.stop();
-    car.oscillator.stop();
-  }
-
-  car.initAudio = function(){
-
-  // Skid Volume
-
-    car.skidVolume = audioContext.createGain();
-    car.skidVolume.gain.value = 0; //.02 is max basically
-    car.skidVolume.connect(audioContext.destination);
-
-    car.skidOscillator = audioContext.createOscillator();
-    car.skidOscillator.type = 'sine';
-    car.skidOscillator.frequency.value = 20;
-    car.skidOscillator.start(0);
-
-    car.skidGain = audioContext.createGain();
-    car.skidGain.gain.value = .5;
-    car.skidGain.connect(car.skidVolume);
-
-    car.skidOscillator.connect(car.skidGain.gain);
-
-    car.oscillator = audioContext.createOscillator();
-    car.oscillator.type = 'square';
-    car.oscillator.frequency.value = 1200; // value in hertz
-    car.oscillator.start(0);
-    car.oscillator.connect(car.skidGain);
-
-    // ENGINE
-
-    car.enginevol = audioContext.createGain();
-    car.enginevol.gain.value = .12;
-    car.enginevol.connect(audioContext.destination);
-
-    car.engine = audioContext.createOscillator();
-    car.engine.connect(car.enginevol);
-    car.engine.type = 'sine';
-    car.engine.frequency.value = 440; // value in hertz
-    // car.engine.start(0);
-
-    car.enginesine = audioContext.createOscillator();
-    car.enginesine.type = 'sine';
-    car.enginesine.frequency.value = 40;
-    // car.enginesine.start(0);
-
-    var sineGainba = audioContext.createGain();
-    sineGainba.gain.value = 400;
-
-    car.enginesine.connect(sineGainba); //connecxts the sine wave to the gain
-    sineGainba.connect(car.engine.frequency);
-  }
-
-  car.initAudio();
-  // car.shutDown();
+ 
 
   // Updates car defaults based on what is passed in
   for(var key in carconfig){

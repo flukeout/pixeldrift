@@ -124,7 +124,6 @@ var race = {
 
     for(var i = 0; i < cars.length; i++){
       var thisCar = cars[i];
-      thisCar.shutDown();
     }
 
     cars = [];

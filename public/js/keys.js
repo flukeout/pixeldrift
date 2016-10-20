@@ -1,18 +1,8 @@
 $(document).ready(function(){
 
-  $(window).on("keypress",function(e){
-    if(e.keyCode == 114){
-      race.quickRestart();
-    }
-    if(e.keyCode == 99){
-      $(".track-chooser").show();
-    }
-  });
-
   $(".quick-restart").on("click",function(){
     race.quickRestart();
   });
-
 
   $(".player-name").on("click",".confirm", function(){
     var newName = $(".player-name input").val();
@@ -21,8 +11,30 @@ $(document).ready(function(){
     }
   });
 
+  $(".change-track").on("click",function(){
+    $(".track-chooser").show();
+  });
+
 
   $(window).on("keydown",function(e){
+
+
+    if(e.keyCode == 27 && $(".track-chooser:visible").length > 0){
+      $(".track-chooser").hide();
+    }
+
+    if(e.keyCode == 84) {
+      console.log("toggle sound");
+    }
+
+    if(e.keyCode == 82){
+      race.quickRestart();
+    }
+
+    if(e.keyCode == 67){
+      $(".track-chooser").show();
+    }
+
     if(e.keyCode == 37) {
       keyboardcar.setDirection("steering","left-on");
     }

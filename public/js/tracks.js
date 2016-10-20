@@ -6,7 +6,7 @@ var includeTracks = [
   // "html5",
   // "offroad",
   "yellow",
-  // "darkloop",
+  "darkloop",
   "chasm",
   "ampersand",
   "turbo8",
@@ -46,7 +46,7 @@ var trackTimes = {
     silver : 3500,
     bronze : 4000
   },
-  "ampersand.png" : {
+  "ampersand.gif" : {
     gold : 6100,
     silver : 6550,
     bronze : 7000
@@ -244,7 +244,7 @@ var trackList = {
       "#707070" : "checkpoint"
     }
   },
-  "ampersand.png" : {
+  "ampersand.gif" : {
     filename : "ampersand.gif",
     carcolors : ["#ffffff"],
     trailcolor : "#32a6dc",

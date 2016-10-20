@@ -24,29 +24,32 @@ $(document).ready(function(){
     race.addGhost(trackRecord);
   }
 
-
   gameLoop();
 });
 
 var race = {
+
+  // Ghost stuff... might want to simplify this stuff to just get commands, will be more lifelike.
   ghostRecording : false,
   ghostData : [],
   tinyGhostData : [],
   ghostFrameIndex : 0,
   ghostPlayData : [],
+  ghostPlaying : false,
+
   updateTime : false,
   currentlap: 0,
-  ghostPlaying : false,
   laptime : 0,
-  track : "",
 
+  track : "",
   trackShortname : "",
 
   ghostCars : [],
-  bestlap : "",
+  bestlap : false,
+
+  lapHistory : [],
 
   quickRestart : function(){
-    console.log(" race.quickRestart()");
 
     spawnCars();
     this.laptime = 0;
@@ -77,14 +80,11 @@ var race = {
       }
     }
 
-    // console.log(trackRecord);
     // this.addGhost()
 
   },
 
-
   addGhost : function(ghostData) {
-    console.log("addGhost");
 
     var newGhost = createGhost(ghostData);
 
@@ -96,12 +96,13 @@ var race = {
 
     this.ghostCars.push(newGhost);
   },
+  
   killGhosts : function(){
-    console.log("kill all ghosts"); // never gets used
+
   },
+  
   updateGhosts : function(){
 
-    console.log("updating Ghosts");
 
     $(".track .ghost").remove();
     this.ghostCars = [];
@@ -112,6 +113,7 @@ var race = {
     }
 
   },
+  
   startTrial: function(){
 
     // standings.load();
@@ -144,8 +146,8 @@ var race = {
     },1000);
 
   },
+
   changeTrack: function(trackName){
-    console.log("race.changeTrack() - " + trackName);
 
     standings.clearLeaderBoard();
 
@@ -170,6 +172,7 @@ var race = {
     this.resetStandings();
 
   },
+  
   resetStandings : function(){
     var standingsEl = $(".standings");
     $("body").removeClass("with-standings");
@@ -182,6 +185,7 @@ var race = {
       // $("body").addClass("with-standings");
     // }
   },
+  
   finishLap : function(car){
     playSound("coin");
 
@@ -218,11 +222,21 @@ var race = {
       var faster = false;
       $(".delta-time").removeClass("slower").removeClass("faster");
 
-      if(this.currentlap == 1) {
-        this.bestlap = this.laptime;
-      }
+
+
+
+
+
+
+
+
 
       if(this.currentlap > 0) {
+
+
+        if(this.laptime < this.bestlap || !this.bestlap) {
+          this.bestlap = this.laptime;
+        }
 
         if(this.laptime - this.bestlap > 0) {
           timeString = timeString + "+";
@@ -232,7 +246,7 @@ var race = {
           $(".delta-time").addClass("faster");
         }
 
-        timeString = timeString + formatTime(Math.abs(this.laptime - this.bestlap))
+        timeString = timeString + formatTime(Math.abs(this.laptime - this.bestlap));
 
         $(".delta-time").text(timeString);
         $(".best-time-wrapper").show();
@@ -249,29 +263,45 @@ var race = {
         "z" : Math.round(keyboardcar.zPosition.toFixed(1))
       });
 
-
       if(this.currentlap > 0){
         var f = JSON.parse(JSON.stringify(this.ghostData));
         standings.updatePlayer(this.laptime,f);
+
+        this.lapHistory.push(this.laptime);
+      
+        var avgTime = this.getAverageLaptime();
+        $(".avg-lap-time").text(formatTime(avgTime));
+
       }
 
+      
       this.ghostData = [];
       this.laptime = 0;
       this.currentlap++;
       trackAnimation("finish");
 
     }
+  },
+  
+  getAverageLaptime : function() {
+    var totalLaps = this.lapHistory.length;
+    var totalTime = 0;
 
-    console.log("end of finish lap");
-
+    for(var i = 0; i < this.lapHistory.length; i++) {
+      var thisLap = this.lapHistory[i];
+      totalTime += thisLap;
+    }
+    var averageTime = Math.round(totalTime / totalLaps);
+    
+    return averageTime;
+    
   }
-
-
-
+  
+  
 }
 
 function prepareRandomTrack(){
-  // console.log("prepareRandomTrack() - picks a track at random and loads it");
+
 
   var tracknames = [];
   for(key in trackList){
@@ -284,6 +314,9 @@ function prepareRandomTrack(){
   trackData = trackList[trackName];
   prepareTrack(trackData.filename);
 }
+
+
+
 
 var ticky = 0;
 
@@ -328,10 +361,6 @@ function gameLoop() {
   }
 
   tiltTrack();
-
-  // if(particles.length > 0) {
-  //   animateParticles();
-  // }
 
   window.requestAnimationFrame(gameLoop);
 }

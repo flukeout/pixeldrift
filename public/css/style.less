@@ -32,34 +32,7 @@ canvas.track-source {
   font-size: 20px;
 }
 
-.laps {
-  color: white;
-  text-align: center;
-  margin: 0 auto;
-  position: absolute;
-  width: 100%;
-  padding-top: 10px;
-  left: 0;
 
-  .lap-wrapper {
-    margin-top: 15px;
-    font-size: 25px;
-    display: inline-block;
-
-    div {
-      margin-bottom: 8px;
-    }
-
-  }
-
-  .restart {
-    cursor: pointer;
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-
-}
 
 .track {
   margin: 0px auto 0 auto;
@@ -69,40 +42,16 @@ canvas.track-source {
   transform-style: preserve-3d;
   transform-origin: center;
   position: absolute;
-
-  &:after {
-    content: "";
-    position: absolute;
-    height: 15px;
-    background: pink;
-    bottom: -15px;
-    width: 100%;
-    transform-origin: top;
-    transform: rotateX(-90deg);
-    background: #5d9320;
-    display: none;
-  }
-}
-
-body {
-  // background: #84c42a;
-  // background-image: linear-gradient(#79b721,#466e0c);
-  // background-image: linear-gradient(#466e0c,#79b721);
-}
-
-.track-shadow {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  transform: rotateX(40deg) translateZ(-60px);
 }
 
 .skids {
   display: block;
   position: absolute;
   top: 0;
+  width: 100%;
+  height: 100%;
   left: 0;
-  // z-index: 4;
+  z-index: 4;
 }
 
 .trail {
@@ -145,7 +94,7 @@ body {
   top: 0px;
   left: 0px;
   transform-style: preserve-3d;
-  z-index: 3;
+  z-index: 4;
   outline: solid 10px transparent;
   transition: opacity .15s ease-out;
 
@@ -227,23 +176,24 @@ body {
   }
 
 
-  &.idle .idler {
-    animation: vibrate .1s linear infinite;
+  .idler.idle {
+    animation: vibrate .15s linear infinite;
+    transform-origin: center center;
   }
 
 
   @keyframes vibrate {
     0% {
-        transform: rotate(0);
+        transform: rotate(0) scale(.95);
     }
     25%{
-        transform: rotate(5deg) translateZ(2px);
+        transform: rotateZ(2deg) translateZ(1px) scale(1);
     }
     50%{
-        transform: rotate(0deg);
+        transform: rotate(0deg) scale(.98);
     }
     75%{
-        transform: rotate(-5deg) translateZ(2px);
+        transform: rotateZ(-2deg) translateZ(1px) scale(1);
     }
   }
 
@@ -270,6 +220,7 @@ body {
     width: 100%;
     height: 100%;
     z-index: 10;
+    transform-origin: bottom;
   }
 
   .indicator {
@@ -291,7 +242,7 @@ body {
     display: none;
     height: 60px;
     right: 6px;
-    opacity: .2;
+    opacity: .7;
     width: 4px;
     background: #0fa1ed;
     transform-origin: 50% 100%;
@@ -742,7 +693,7 @@ body {
   top: 0;
   left: 0;
   right: 0;
-  height: 90vh;
+  height: 100vh;
   perspective: 900px;
   transition: opacity 1s linear;
   transform-style: preserve-3d;

@@ -59,7 +59,6 @@ function loadSound(name){
 
   var url = sounds[name].url;
 
-  console.log(url);
   var buffer = sounds[name].buffer;
 
   var request = new XMLHttpRequest();
@@ -80,9 +79,6 @@ function playSound(name){
 
   var buffer = sounds[name].buffer;
   var soundVolume = sounds[name].volume || 1;
-  
-  console.log(soundVolume);
-
 
   if(buffer){
     var source = soundContext.createBufferSource(); // creates a sound source
@@ -133,7 +129,7 @@ function startSkid() {
 
 setTimeout(function(){
   startSkid();
-}, 1000);
+}, 3000);
 
 
 var engineBuffer;
@@ -152,9 +148,7 @@ function startEngine() {
     engineVol.connect(soundContext.destination);
 
     engineSource = soundContext.createBufferSource(); // creates a sound source
-    engineSource.buffer = engineBuffer;                    // tell the source which sound to play
-    
-    // var currPitch = engineSource.playbackRate.value;
+    engineSource.buffer = engineBuffer;               // tell the source which sound to play
     
     engineSource.playbackRate.value = enginePitch;
     
@@ -169,6 +163,6 @@ function startEngine() {
 
 setTimeout(function(){
   startEngine();
-}, 1000);
+}, 3000);
 
 

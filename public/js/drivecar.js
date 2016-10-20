@@ -114,7 +114,47 @@ function driveCar(car) {
   // TURNING
 
   // Difference between desired angle and actual angle
+
+
+  // console.log(angleDelta);
+  //
+  // if(angleDelta > 270) {
+  //   console.log("Hh");
+  //   car.actualAngle = 360 - angleDelta;
+  //   angleDelta = car.actualAngle - car.angle;
+  // }
+
+
+  // console.log(car.actualAngle, car.angle);
+
+  // var angleDiff = car.actualAngle - car.angle;
+  // angleDiff = -1 * ((angleDiff + 180) % 360 - 180);
+  //
+  // console.log(Math.round(angleDiff));
+
+
+  // Just to make sure we never deal with negative angles, makes things easier
+  if(car.actualAngle < 360) {
+    car.actualAngle += 360;
+  }
+
+  if(car.angle < 360) {
+    car.angle += 360;
+  }
+
   var angleDelta = car.actualAngle - car.angle;
+  
+  // console.log(Math.abs(Math.round(car.angleDelta)));
+  
+  if(angleDelta < -180) {
+    car.actualAngle += 360;
+  }
+
+  if(angleDelta > 180) {
+    car.actualAngle -= 360;
+  }
+ 
+  angleDelta = car.actualAngle - car.angle;
 
   if(angleDelta > 90 && car.zPosition == 0) {
     car.actualAngle = car.angle + 90;
@@ -125,6 +165,10 @@ function driveCar(car) {
     car.actualAngle = car.angle - 90;
     angleDelta = -90;
   }
+
+
+  //
+  // console.log(angleDelta);
 
   if(angleDelta > 0) {
     if(Math.abs(angleDelta) <= 10 && car.turningVelocity < (turningAccel * -2)) {
@@ -254,6 +298,7 @@ function driveCar(car) {
       var newAngle = tempAngle;
       var angleChange = 0;
 
+      // TODO - simplify the conditionals below?
 
       if(tempAngle >= 0 && tempAngle <= 90) {
         if(car.x != car.nextx && car.y == car.nexty) {
@@ -262,9 +307,9 @@ function driveCar(car) {
           newAngle = 180 - tempAngle; // Up
          } else if (car.x != car.nextx && car.y != car.nexty) {
            if(right) {
-             newAngle = 180 - tempAngle;
-           } else if (up) {
              newAngle = 360 - tempAngle;
+           } else if (up) {
+             newAngle = 180 - tempAngle;
            }
          }
        }
@@ -272,16 +317,14 @@ function driveCar(car) {
      // Down & right
      if(tempAngle >= 90 && tempAngle <= 180) {
        if(car.x != car.nextx && car.y == car.nexty) {
-         // Right
-         newAngle = 360 - tempAngle;
+         newAngle = 360 - tempAngle; // Right
        } else if(car.x == car.nextx && car.y != car.nexty) {
-         // Down
-         newAngle = 180 - tempAngle;
+         newAngle = 180 - tempAngle; // Down
         } else if (car.x != car.nextx && car.y != car.nexty) {
           if(right) {
-            newAngle = 180 - tempAngle;
-          } else if (down) {
             newAngle = 360 - tempAngle;
+          } else if (down) {
+            newAngle = 180 - tempAngle;
           }
         }
       }
@@ -337,8 +380,21 @@ function driveCar(car) {
           ferocity = .5;
         }
 
+        // Max angle change on crash
+        var maxChange = 90;
+        if(Math.abs(angleChange) > maxChange) {
+          if(angleChange > 0) {
+            angleChange = maxChange;
+          }
+          if(angleChange < 0) {
+            angleChange = -maxChange;
+          }
+        }
+
         car.actualAngle = car.actualAngle + angleChange;
         car.angle = car.angle + angleChange;
+        
+
 
         car.speed = car.speed - (ferocity * car.speed);
         
@@ -417,34 +473,35 @@ function driveCar(car) {
 
   if(car.tilt > 0) {
     $(".car .idler").css("transform-origin","right");
-  } else {
+  } else if (car.tilt < 0) {
     $(".car .idler").css("transform-origin","left");
+  } else {
+    $(".car .idler").css("transform-origin","center");
   }
   $(".car .idler").css("transform","rotateY("+car.tilt+"deg) translateZ(0px)")
-
 
 
   if(movedPixels
      && trackData.leaveSkids
      && car.zPosition == 0
-     && (car.currentPosition == "road" || car.currentPosition == "overpass" || car.currentPosition == "checkpoint"))
+     && (car.currentPosition == "road" || (car.currentPosition == "overpass" && car.mode == "normal") || car.currentPosition == "checkpoint"))
       {
 
-      var skidAngle = 15;
-      var maxOpacity = .2;
-      var angleDelta = Math.abs(car.actualAngle - car.angle);
-      var percent = 0;
+    var skidAngle = 15;
+    var maxOpacity = .2;
+    var angleDelta = Math.abs(car.actualAngle - car.angle);
+    var percent = 0;
 
-      if(angleDelta > skidAngle) {
-        percent = (angleDelta - skidAngle) / skidAngle;
-        if(percent > 1) {
-          percent = 1;
-        }
+    if(angleDelta > skidAngle) {
+      percent = (angleDelta - skidAngle) / skidAngle;
+      if(percent > 1) {
+        percent = 1;
       }
+    }
 
-      var opacity = maxOpacity * percent;
-      ctx.fillStyle = "rgba(0,0,0,"+opacity+")";
-      ctx.fillRect(car.x * scaling, car.y * scaling, scaling, scaling);
+    var opacity = maxOpacity * percent;
+    ctx.fillStyle = "rgba(0,0,0,"+opacity+")";
+    ctx.fillRect(car.x * scaling, car.y * scaling, scaling, scaling);
   }
   
   
@@ -464,12 +521,15 @@ function driveCar(car) {
 
   
   var maxGain = .3;
-  
-  if(car.speed > maxspeed/2 && car.zPosition == 0) {
-	  skidVol.gain.value = percent * maxGain;
-  } else {
-	  skidVol.gain.value = 0;
+
+  if(skidVol) {
+    if(car.speed > maxspeed/2 && car.zPosition == 0) {
+  	  skidVol.gain.value = percent * maxGain;
+    } else {
+  	  skidVol.gain.value = 0;
+    }
   }
+  
   
 
   // Engine Sounds
@@ -491,7 +551,10 @@ function driveCar(car) {
     enginePitch = 1 + maxpitch;
   }
   
-  engineSource.playbackRate.value = enginePitch;
+  if(engineSource) {
+    engineSource.playbackRate.value = enginePitch;    
+  }
+
   
 
 
@@ -550,7 +613,7 @@ function driveCar(car) {
 
       setTimeout(function(){
         playSound("fall");        
-      },150);
+      },250);
 
       if(!car.respawning){
         car.respawn();
@@ -558,21 +621,25 @@ function driveCar(car) {
       }
     }
     car.mode = "gone";
+    car.shadow.css("opacity",0);
+  } else {
+    car.shadow.css("opacity",.3);
   }
 
-  if(car.zPosition <= 0){
-    car.shadow.hide();
+  if(car.speed == 0) {
+    car.idler.addClass("idle");
   } else {
-    car.shadow.show();
+    car.idler.removeClass("idle");
   }
 
   // Safe Landing
   if(car.zPosition < 0 && car.zVelocity < 0 && car.mode != "gone" && car.mode != "crashed"){
 
     trackAnimation("carland");
-    // playSound("crash");
+
 
     $(".car .idler").addClass("carlanding");
+
     setTimeout(function(){
       $(".car .idler").removeClass("carlanding");
     },400)
@@ -617,13 +684,23 @@ function driveCar(car) {
   //makes the body jump
   if(car.currentPosition == "overpass" && car.mode == "normal") {
     car.jumper.css("transform", "scale(1.1) rotateZ("+car.angle+"deg) translateZ("+car.zPosition+"px");
-    car.body.css("transform", "rotateZ("+car.zRotation+"deg)");
+    // car.body.css("transform", "rotateZ("+car.zRotation+"deg)");
   } else {
     car.jumper.css("transform", " rotateZ("+car.angle+"deg) translateZ("+car.zPosition+"px");
-    car.body.css("transform", "rotateX("+car.xRotation+"deg) rotateY("+car.yRotation+"deg) rotateZ("+car.zRotation+"deg)");
+    // car.body.css("transform", "rotateX("+car.xRotation+"deg) rotateY("+car.yRotation+"deg) rotateZ("+car.zRotation+"deg)");
     car.nameEl.css("transform", "translateZ("+ parseInt(38 + car.zPosition) + "px) rotateX(-70deg)");
   }
 
+  // Stretching......
+  var percent = car.speed / maxspeed - 1;
+  var scaler = 1;
+  if(percent > 0) {
+    scaler = scaler + percent;
+  }
+  
+  car.body.css("transform","scaleY("+scaler+")");
+
   car.desiredIndicator.css("transform", "rotateZ("+car.angleDelta+"deg)");
+
   car.shadow.css("transform", "rotateZ("+car.angle+"deg)");
 }

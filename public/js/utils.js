@@ -365,19 +365,30 @@ function tiltTrack(){
 
 }
 
-function formatTime(total){
-  var ms = Math.floor(total / 1 % 1000);
+function formatTime(totalms){
+
+  var min = Math.floor((totalms/1000/60));
+  var sec = Math.floor((totalms/1000) % 60);
+  var ms = Math.floor(totalms % 1000);
 
   if(ms < 10){
     ms = "00" + ms;
   } else  if ( ms < 100) {
     ms = "0" + ms;
   }
+  
+  if(min > 0 && sec < 10) {
+    sec = "0" + sec;
+  }
 
-  var totalSec = Math.floor(total/1000);
-  // var sec = Math.floor(total / 1000 % 60);
+  if(min > 0) {
+    min = min + ":";
+  } else {
+    min = "";
+  }
 
-  return totalSec + "." + ms;
+  var timeString = min + sec + "." + ms;
+  return timeString;
 }
 
 function toDegrees (angle) {
@@ -787,19 +798,8 @@ function buildTrackChooser(){
    // });
 
 
-  $(window).on("keydown",function(e){
-    if(e.keyCode == 27 && $(".track-chooser:visible").length > 0){
-      $(".track-chooser").hide();
-    }
 
-    if(e.keyCode == 84) {
-      console.log("toggle sound");
-    }
-  });
 
-  $(".change-track").on("click",function(){
-    $(".track-chooser").show();
-  });
 }
 
 

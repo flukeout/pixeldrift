@@ -222,15 +222,6 @@ var race = {
       var faster = false;
       $(".delta-time").removeClass("slower").removeClass("faster");
 
-
-
-
-
-
-
-
-
-
       if(this.currentlap > 0) {
 
 

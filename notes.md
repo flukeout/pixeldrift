@@ -1,9 +1,6 @@
 TODO
 
 
-* Lines 127, 128 in drivecar 
-
-
 Fix collision angles
  * Collisions are a bit crazy, you shouldn't rebound at nearly 180 degrees from this stuff.
  * Make the rebound angles a bit saner when you hit the wall, less sharp on high angles.

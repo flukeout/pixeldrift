@@ -150,7 +150,7 @@ function prepareTrack(level){
           var tree = $("<div class='tree'><div class='tree-inner'></div></div>");
           $(".track").append(tree)
           tree.css("left", scaling * (i - 1));
-          tree.css("top", scaling * (j - 4));
+          tree.css("top", scaling * (j - 3));
         }
 
         if(result == "bigtree"){
@@ -159,7 +159,6 @@ function prepareTrack(level){
           tree.css("left", scaling * (i - 1));
           tree.css("top", scaling * (j - 8));
         }
-
 
         if(result == "water"){
           var chance = getRandom(0,4);

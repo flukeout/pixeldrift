@@ -10,7 +10,7 @@ var includeTracks = [
   "chasm",
   "ampersand",
   "turbo8",
-  // "testground",
+  "testground",
   "oval",
   // "grass"
 ]
@@ -91,6 +91,7 @@ var trackList = {
     prettyname: "HTML 5",
     trailcolor : "#d04415",
     leaveSkids : false,
+    difficulty : "expert",
     laps : 3,
     hexes : {
       "#ffffff" : "road", //yellow
@@ -114,6 +115,7 @@ var trackList = {
     carcolors : ["#ffffff"],
     trailcolor : "#ffffff",
     leaveSkids : false,
+    difficulty : "expert",
     laps : 3,
     hexes : {
       "#e4d900" : "road", //yellow
@@ -131,6 +133,7 @@ var trackList = {
     prettyname : "Offroad",
     shortname: "offroad",
     leaveSkids : false,
+    difficulty : "expert",
     laps : 5,
     hexes : {
       "#de5322" : "wall",
@@ -153,6 +156,7 @@ var trackList = {
     shortname : "yellow",
     prettyname : "Yellow Road",
     leaveSkids : false,
+    difficulty : "medium",
     laps : 5,
     hexes : {
       "#eee76a" : "road",
@@ -169,6 +173,7 @@ var trackList = {
     shortname : "darkloop",
     prettyname : "Dark Loop",
     leaveSkids : false,
+    difficulty : "expert",
     laps : 5,
     hexes : {
       "#ffffff" : "road",
@@ -185,6 +190,7 @@ var trackList = {
     trailcolor : "#32a6dc",
     shortname : "superjump",
     leaveSkids : true,
+    difficulty : "expert",  
     laps : 5,
     lawnmower : "#8fcf4b",
     hexes : {
@@ -204,15 +210,13 @@ var trackList = {
     trailcolor : "#32a6dc",
     lawnmower : "#8fcf4b",
     leaveSkids : true,
+    difficulty : "expert",    
     shortname: "chasm",
     prettyname : "The Chasm",
     laps : 5,
     hexes : {
       "#5a5a5a" : "road",
-      // "#8fcf4b" : "grass",
       "#bcb21b" : "turbo",
-      // "#3ba9d2" : "water",
-      // "#6ba52d" : "tree",
       "#ffffff" : "finish",
       "#d4c921" : "jump",
       "#707070" : "checkpoint"
@@ -237,6 +241,7 @@ var trackList = {
     trailcolor : "#32a6dc",
     shortname : "twitter",
     leaveSkids : true,
+    difficulty : "intermediate",
     laps : 5,
     hexes : {
       "#5a5a5a" : "road",
@@ -251,6 +256,7 @@ var trackList = {
     lawnmower : "#8fcf4b",
     shortname : "ampersand",
     prettyname : "Ampersand",
+    difficulty : "intermediate",    
     laps : 6,
     leaveSkids : true,
     hexes : {
@@ -278,6 +284,7 @@ var trackList = {
     laps : 10,
     leaveSkids : true,
     lawnmower : "#8fcf4b",
+    difficulty : "beginner",    
     hexes : {
       "#5a5a5a" : "road",
       "#4c4a4a" : "road",
@@ -299,7 +306,9 @@ var trackList = {
     trailcolor : "#32a6dc",
     shortname : "oval",
     laps : 12,
+    difficulty : "beginner",
     leaveSkids : true,
+    lawnmower : true,
     hexes : {
       "#717171" : "checkpoint",
       "#5a5a5a" : "road",
@@ -316,6 +325,7 @@ var trackList = {
     shortname : "turbo8",
     prettyname : "Turbo 8",
     lawnmower : "#60aa1f",
+    difficulty : "intermediate",
     laps : 6,
     leaveSkids : true,
     hexes : {
@@ -334,7 +344,6 @@ var trackList = {
       "#707070" : "checkpoint",
       "#bbbbbb" : "wall",
       "#d5d5d5" : "wall"
-
     }
   },
   "grass.png" : {
@@ -373,21 +382,22 @@ var trackList = {
     laps : 10,
     leaveSkids : true,
     hexes : {
-      "#4c4a4a" : "road",
       "#5a5a5a" : "road",
+      "#464646" : "road",
+      "#8c8c8c" : "road",
+      "#8a864e" : "road",
       "#8fcf4b" : "grass",
-
+      "#515151" : "lamp",
+      "#c8c8c8" : "lamp",      
       "#2194ca" : "water",
       "#6ba52d" : "tree",
       "#ffffff" : "finish",
       "#a9a9a9" : "ledge",
       "#747474" : "overpass",
-      "#7dba3d" : "lamp",
       "#f1aa22" : "turbo",
       "#d4c921" : "jump",
-      "#707070" : "checkpoint",
-      "#d5d5d5" : "wall"
+      "#d5d5d5" : "wall",
+      "#797979" : "wall"
     }
   }
-
 }

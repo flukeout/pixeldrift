@@ -290,10 +290,19 @@ function driveCar(car) {
       var currentY = car.showy - (Math.floor(car.showy / scaling) * scaling);
       var oldAngle = tempAngle;
 
-      var up = checkPosition(car.x, car.y - 1);
-      var right = checkPosition(car.x + 1, car.y);
-      var down = checkPosition(car.x, car.y + 1);
-      var left = checkPosition(car.x - 1, car.y);
+
+      // thisisn't good enough 
+      // var up = checkPosition(car.x, car.y - 1);
+      var up = checkCollision(car.x, car.y, car.x, car.y - 1, car.mode);
+      
+      // var right = checkPosition(car.x + 1, car.y);
+      var right = checkCollision(car.x, car.y, car.x + 1, car.y, car.mode);
+      
+      // var down = checkPosition(car.x, car.y + 1);
+      var down = checkCollision(car.x, car.y, car.x, car.y + 1, car.mode);
+
+      // var left = checkPosition(car.x - 1, car.y);
+      var left = checkCollision(car.x, car.y, car.x - 1, car.y, car.mode);
 
       var newAngle = tempAngle;
       var angleChange = 0;
@@ -306,6 +315,7 @@ function driveCar(car) {
         } else if(car.x == car.nextx && car.y != car.nexty) {
           newAngle = 180 - tempAngle; // Up
          } else if (car.x != car.nextx && car.y != car.nexty) {
+           console.log("UP & RIGHT");
            if(right) {
              newAngle = 360 - tempAngle;
            } else if (up) {
@@ -321,6 +331,10 @@ function driveCar(car) {
        } else if(car.x == car.nextx && car.y != car.nexty) {
          newAngle = 180 - tempAngle; // Down
         } else if (car.x != car.nextx && car.y != car.nexty) {
+
+          console.log("Down & Right");
+          console.log(right,down);
+
           if(right) {
             newAngle = 360 - tempAngle;
           } else if (down) {
@@ -329,7 +343,7 @@ function driveCar(car) {
         }
       }
 
-      // Dow & left
+      // Down & left
       if(tempAngle >= 180 && tempAngle <= 270) {
         if(car.x != car.nextx && car.y == car.nexty) {
           newAngle = 360 - tempAngle; // Left
@@ -337,9 +351,10 @@ function driveCar(car) {
           newAngle = 180 - tempAngle; // Down
          } else if (car.x != car.nextx && car.y != car.nexty) {
            if(left) {
-             newAngle = 180 - tempAngle;
-           } else if (down) {
+             console.log("DOWN AND LEFT")
              newAngle = 360 - tempAngle;
+           } else if (down) {
+             newAngle = 180 - tempAngle;
            }
          }
        }
@@ -351,10 +366,11 @@ function driveCar(car) {
          } else if(car.x == car.nextx && car.y != car.nexty) {
            newAngle = 180 - tempAngle; // Up
          } else if (car.x != car.nextx && car.y != car.nexty) {
+           console.log("UP & LEFT");
             if(left) {
-              newAngle = 180 - tempAngle; // Up
-            } else if (up) {
               newAngle = 360 - tempAngle; // Left
+            } else if (up) {
+              newAngle = 180 - tempAngle; // Up
             }
           }
         }
@@ -380,23 +396,29 @@ function driveCar(car) {
           ferocity = .5;
         }
 
-        // Max angle change on crash
-        var maxChange = 90;
-        if(Math.abs(angleChange) > maxChange) {
-          if(angleChange > 0) {
-            angleChange = maxChange;
-          }
-          if(angleChange < 0) {
-            angleChange = -maxChange;
-          }
+        // we just need half of the angle change,
+        // at half it just goes along the wall it hits
+        
+        angleChange = angleChange * .5;
+
+        if(angleChange > 0) {
+          angleChange += 10;
         }
 
-        car.actualAngle = car.actualAngle + angleChange;
-        car.angle = car.angle + angleChange;
+        if(angleChange < 0) {
+          angleChange -= 10;
+        }
         
 
 
+        car.actualAngle = car.actualAngle + (1.5 * angleChange);
+        car.angle = car.angle + angleChange;
+
         car.speed = car.speed - (ferocity * car.speed);
+
+        if(car.mode == "normal") {
+          crashDebris(car.showx, car.showy, car.actualAngle);
+        }
         
         playSound("crash");
         
@@ -488,7 +510,7 @@ function driveCar(car) {
       {
 
     var skidAngle = 15;
-    var maxOpacity = .2;
+    var maxOpacity = .1;
     var angleDelta = Math.abs(car.actualAngle - car.angle);
     var percent = 0;
 
@@ -555,11 +577,6 @@ function driveCar(car) {
     engineSource.playbackRate.value = enginePitch;    
   }
 
-  
-
-
-
-
   if(car.mode == "normal") {
     if(car.currentPosition == "road" && nextPosition == "ledge" ) {
       car.mode = "under";
@@ -578,10 +595,11 @@ function driveCar(car) {
   
   car.el.attr("mode",car.mode);
 
+  // Only count the finish line left to right...
   if(car.currentPosition == "finish"){
-    if(car.x != car.nextx) {
+    if(car.x > car.nextx) {
       race.finishLap(car);
-      car.laptime = 0;
+      car.lapTime = 0;
     }
   }
 
@@ -601,7 +619,6 @@ function driveCar(car) {
 
   if(car.currentPosition == "void" || car.zPosition > 0) {
     car.zVelocity = car.zVelocity - car.gravity
-
   }
 
 
@@ -636,7 +653,6 @@ function driveCar(car) {
   if(car.zPosition < 0 && car.zVelocity < 0 && car.mode != "gone" && car.mode != "crashed"){
 
     trackAnimation("carland");
-
 
     $(".car .idler").addClass("carlanding");
 
@@ -697,10 +713,8 @@ function driveCar(car) {
   if(percent > 0) {
     scaler = scaler + percent;
   }
-  
   car.body.css("transform","scaleY("+scaler+")");
 
   car.desiredIndicator.css("transform", "rotateZ("+car.angleDelta+"deg)");
-
   car.shadow.css("transform", "rotateZ("+car.angle+"deg)");
 }

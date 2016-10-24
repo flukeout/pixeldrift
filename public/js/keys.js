@@ -18,11 +18,15 @@ $(document).ready(function(){
 
   $(window).on("keydown",function(e){
 
-
-    if(e.keyCode == 27 && $(".track-chooser:visible").length > 0){
-      $(".track-chooser").hide();
+    if(e.keyCode == 27){
+      if($(".track-chooser:visible").length > 0) {
+        $(".track-chooser").hide();        
+      } else {
+        $(".track-chooser").show();        
+      }      
     }
 
+    // TODO - later
     if(e.keyCode == 84) {
       console.log("toggle sound");
     }

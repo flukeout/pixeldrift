@@ -1,6 +1,44 @@
-function mowGrass(car) {
+// Scatters a bit of debris on the track when the car hits a wall.
 
-    // console.log(checkRGB(car.x,car.y));
+function crashDebris(x,y,angle) {
+
+    for(var i = 0; i < 3; i++){
+
+      var debrisOptions = {
+        x : x + 3,
+        y : y + 3,
+        width : 9,
+        height: 9,
+        angle : 360 - angle + getRandom(-30,30),
+        speed : getRandom(1,4),
+        speedA : -.04,
+        zV: getRandom(1.5,3.5),
+        gravity : .15,
+        xRv : getRandom(-1,1),
+        yRv : getRandom(-1,1),
+        zRv : getRandom(-5,5),
+        o : 2,
+        oV : -.04,
+        lifespan: 400,
+        color: "white"
+      }
+
+      makeParticle(debrisOptions);
+
+      // Shadow particle options
+      
+      var shadowOptions = JSON.parse(JSON.stringify(debrisOptions));
+      shadowOptions.color = "rgba(0,0,0,.15)";
+      shadowOptions.zV = 0;
+      makeParticle(shadowOptions);
+    }
+  }
+
+
+// Throws a grass pixel into the air
+// TODO - probably shouldn't pass the whole car object into this
+
+function mowGrass(car) {
 
     var groundColor = checkRGB(car.x,car.y);
 
@@ -52,44 +90,3 @@ function mowGrass(car) {
     makeParticle(newOptions);
 
 }
-
-
-
-
-
-function crash(car) {
-
-    // playSound("crash");
-
-    for(var i = 0; i < 3; i++) {
-      var options = {
-        x : car.showx,
-        y : car.showy,
-        width : 15,
-        height: 15,
-        // zV: 3.5,
-        // gravity : .15,
-        angle : car.actualAngle,
-        speed : 2,
-
-        // xRv : getRandom(-1,1),
-        // yRv : getRandom(-1,1),
-        zRv : getRandom(-3,3),
-
-        lifespan: 50,
-        color: "#FFF"
-
-      }
-      
-      console.log(options.angle);
-
-      makeParticle(options);
-    }
-
-
-  
-
-}
-
-
-

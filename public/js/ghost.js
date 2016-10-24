@@ -50,30 +50,30 @@ function createGhost(ghostData){
     },
     lapEnd : function(){
 
-      if(this.state == "idle") {
-        this.state = "active";
-        this.el.show();
-      }
+      // if(this.state == "idle") {
+      //   this.state = "active";
+      //   this.el.show();
+      // }
 
-      if(this.status == "active" && this.lapTime > race.laptime){
-        this.status = "stopped";
+      // if(this.status == "active" && this.lapTime > race.laptime){
+      //   this.status = "stopped";
 
-        var xD = this.frames[this.frameIndex].x - this.frames[this.frameIndex-1].x ;
-        var yD = this.frames[this.frameIndex].y - this.frames[this.frameIndex-1].y ;
-        makeParticle(this.x/15, this.y/15, 5, 20, "ghost",xD,yD); // could just include a count here... in
+        // var xD = this.frames[this.frameIndex].x - this.frames[this.frameIndex-1].x ;
+        // var yD = this.frames[this.frameIndex].y - this.frames[this.frameIndex-1].y ;
+        // makeParticle(this.x/15, this.y/15, 5, 20, "ghost",xD,yD); // could just include a count here... in
 
         // this.el.hide();
-      }
+      // }
 
-      if(this.status == "active" && this.lapTime < race.laptime){
+      // if(this.status == "active" && this.lapTime < race.laptime){
         this.frameIndex = 0;
         this.timeAlive = 0;
         this.el.show();
-      }
+      // }
 
-      if(this.status == "idle"){
+      // if(this.status == "idle"){
         this.status = "active";
-      }
+      // }
 
     },
     drive : function(){

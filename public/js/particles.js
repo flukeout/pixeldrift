@@ -293,8 +293,15 @@ function makeParticle(options){
       p.lifespan = 0;
     }
 
+
+
     p.z = p.z + p.zV;
     p.zV = p.zV - p.gravity
+    
+    if(p.z < 0) {
+      p.z = 0;
+      p.zV = -.65 * p.zV;
+    }
 
     p.scale = p.scale + p.scaleV;
     p.scaleV = p.scaleV + p.scaleVa;

@@ -1,23 +1,17 @@
-var scaling = 15;  //1 pixel = 15 pixels
-var othercars = {}; //Wtf are these
+var scaling = 15;   // 1 pixel = 15 pixels
 
 var cars = []; //This holds the player car?
 
 var playSounds = false;
+
 var keyboardcar;
-var enginevol;
+var enginevol;    // Engine volume
 var time, delta, elapsedTime; //keep track of time between laps
 var canvasTrack, context, trackHeight, trackWidth; //Need to revisit where these gos
 var trackData = {};
 var audioContext = new AudioContext();
 
-// filename
-// carcolors
-// trailcolor
-// leaveskids
-// hexes
-// startPositions - added by prepareTrack()
-// laps
+// Shows a message in an overlay over the game
 
 function showMessage(message){
 
@@ -36,8 +30,13 @@ function showMessage(message){
   },2000);
 }
 
+
+// Adds an animation to the track
+// * pop - when you finish a lap
+// * carland - when a car lands after a jump 
+
 function trackAnimation(type){
-  // console.log("utils.trackAnimation("+type+")");
+
   if(type == "pop") {
     $(".track-wrapper").addClass("trackpop");
     setTimeout(function(){
@@ -88,7 +87,7 @@ function prepareTrack(level){
 
     $(".bigtree, .lamp, .tree, .windmill, .water").remove(); // maybe add a sprite clas to these?
 
-    context.clearRect(0, 0, 500, 500); //500 is max? ... lame...
+    context.clearRect(0, 0, 500, 500);
     context.drawImage(image, 0, 0);
 
     trackHeight = $(this).height();
@@ -208,14 +207,13 @@ function makeCheckpoints(){
 
 }
 
+
+
 function addFinishLine(){
-  // console.log("addFinishline() - utils.js");
 
   $(".track .finish-line").remove();
 
-
-
-  //This is such garbage... come on.
+  //TODO - This is such garbage... come on.
   var startX = 999999999;
   var endX = -1;
   var startY = 999999999;
@@ -238,7 +236,6 @@ function addFinishLine(){
       endY = sP[i].y
     }
   }
-
 
   var finishColor = "orange";
   var roadColor = "pink";
@@ -284,11 +281,10 @@ function checkPosition(x,y){
 }
 
 
-
-// Takes current and next position and mode to see if there is a collision coming up...
+// Takes current and next position and mode to see if there is a collision coming up
+// takes into account the current state (mode) of the car for things like overpasses
 
 function checkCollision(x, y, nextx, nexty, mode) {
-
 
   var thisP = context.getImageData(x, y, 1, 1).data;
   var thisHex = "#" + ("000000" + rgbToHex(thisP[0], thisP[1], thisP[2])).slice(-6);
@@ -310,15 +306,11 @@ function checkCollision(x, y, nextx, nexty, mode) {
     return true;
   }
 
-
   if(mode == "normal" && thisType == "overpass" && nextType == "ledge") {
     return true;
   }
   
-  
-
   return false;
-
 }
 
 
@@ -534,7 +526,7 @@ function newCar(id,config){
 
     trailColor : "#ffffff",
     bestlap : 0,
-    laptime: 0,
+    lapTime: 0,
 
     gas : "off",
     left : "off",

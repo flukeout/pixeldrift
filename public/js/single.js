@@ -1,9 +1,11 @@
+var playerRecords, lastTrack;
+
 $(document).ready(function(){
 
   buildTrackChooser();
 
-  var lastTrack = localStorage.getItem("lastSingleTrack");
-  var playerRecords = JSON.parse(localStorage.getItem("playerRecords")) || false;
+  lastTrack = localStorage.getItem("lastSingleTrack");
+  playerRecords = JSON.parse(localStorage.getItem("playerRecords")) || false;
 
 
   if(!lastTrack){
@@ -19,9 +21,10 @@ $(document).ready(function(){
     trackRecord = playerRecords[race.trackShortname] || false;
   }
 
-
+  // Adds a ghost with the player's track record
+  // TODO - Need to update this as well when you beat the ghost
   if(trackRecord){
-    race.addGhost(trackRecord);
+    // race.addGhost(trackRecord);
   }
 
   gameLoop();
@@ -39,7 +42,7 @@ var race = {
 
   updateTime : false,
   currentlap: 0,
-  laptime : 0,
+  lapTime : 0,
 
   track : "",
   trackShortname : "",
@@ -52,13 +55,13 @@ var race = {
   quickRestart : function(){
 
     spawnCars();
-    this.laptime = 0;
+    this.lapTime = 0;
     this.currentlap = 0;
     this.ghostRecording = false;
     this.ghostData = [];
     this.updateTime = false;
     this.ghostPlaying = false;
-    $(".lap-time").text(formatTime(race.laptime));
+    $(".lap-time").text(formatTime(race.lapTime));
 
     for(var i = 0; i < this.ghostCars.length; i++){
       var ghost = this.ghostCars[i];
@@ -86,6 +89,8 @@ var race = {
 
   addGhost : function(ghostData) {
 
+    console.log("Add Ghost");
+
     var newGhost = createGhost(ghostData);
 
     $(".track").append(newGhost.el);
@@ -102,7 +107,6 @@ var race = {
   },
   
   updateGhosts : function(){
-
 
     $(".track .ghost").remove();
     this.ghostCars = [];
@@ -159,7 +163,7 @@ var race = {
     this.track = trackName;
 
     this.trackShortname = trackList[trackName].shortname;
-    this.laptime = 0;
+    this.lapTime = 0;
     this.bestlap = 0;
     this.currentlap = 0;
     this.ghostRecording = false;
@@ -224,12 +228,11 @@ var race = {
 
       if(this.currentlap > 0) {
 
-
-        if(this.laptime < this.bestlap || !this.bestlap) {
-          this.bestlap = this.laptime;
+        if(this.lapTime < this.bestlap || !this.bestlap) {
+          this.bestlap = this.lapTime;
         }
 
-        if(this.laptime - this.bestlap > 0) {
+        if(this.lapTime - this.bestlap > 0) {
           timeString = timeString + "+";
           $(".delta-time").addClass("slower");
         } else {
@@ -237,7 +240,7 @@ var race = {
           $(".delta-time").addClass("faster");
         }
 
-        timeString = timeString + formatTime(Math.abs(this.laptime - this.bestlap));
+        timeString = timeString + formatTime(Math.abs(this.lapTime - this.bestlap));
 
         $(".delta-time").text(timeString);
         $(".best-time-wrapper").show();
@@ -247,7 +250,7 @@ var race = {
 
       //Add one last frame to the ghost data right at the finish line...
       this.ghostData.push({
-        "time" : race.laptime,
+        "time" : race.lapTime,
         "x" : Math.round(keyboardcar.showx.toFixed(1)),
         "y" : Math.round(keyboardcar.showy.toFixed(1)),
         "angle" : Math.round(keyboardcar.angle.toFixed(1)),
@@ -256,25 +259,45 @@ var race = {
 
       if(this.currentlap > 0){
         var f = JSON.parse(JSON.stringify(this.ghostData));
-        standings.updatePlayer(this.laptime,f);
+        standings.updatePlayer(this.lapTime,f);
 
-        this.lapHistory.push(this.laptime);
+        this.lapHistory.push(this.lapTime);
       
-        var avgTime = this.getAverageLaptime();
+        var avgTime = this.getAveragelapTime();
         $(".avg-lap-time").text(formatTime(avgTime));
+      }
 
+      
+      if(this.currentlap > 0) {
+        for(var i = 0; i < this.ghostCars.length; i++){
+          var ghost = this.ghostCars[i];
+
+          if(this.lapTime < ghost.lapTime) {
+            console.log("udpated the ghost with new frames");
+            ghost.lapTime = this.lapTime;
+            ghost.frames = this.ghostData;
+            updatePlayerRecord(this.lapTime, this.ghostData);
+          }
+        }
+        
+        if(this.ghostCars.length == 0) {
+          this.addGhost({
+            lapTime : this.lapTime,
+            frames : this.ghostData
+          })
+        }
       }
 
       
       this.ghostData = [];
-      this.laptime = 0;
+      this.lapTime = 0;
       this.currentlap++;
       trackAnimation("finish");
 
     }
   },
   
-  getAverageLaptime : function() {
+  getAveragelapTime : function() {
     var totalLaps = this.lapHistory.length;
     var totalTime = 0;
 
@@ -285,32 +308,25 @@ var race = {
     var averageTime = Math.round(totalTime / totalLaps);
     
     return averageTime;
-    
   }
-  
-  
 }
 
-function prepareRandomTrack(){
+function updatePlayerRecord(time, frames){
+  
 
-
-  var tracknames = [];
-  for(key in trackList){
-    tracknames.push(key);
+  if(playerRecords){
+    trackRecord = playerRecords[race.trackShortname] || false;
+    trackRecord = {
+      lapTime : time,
+      frames : frames
+    }
+    localStorage.setItem("playerRecords",JSON.stringify(playerRecords));
   }
 
-  var randomIndex = Math.floor(Math.random() * tracknames.length);
-  var trackName = tracknames[randomIndex];
-
-  trackData = trackList[trackName];
-  prepareTrack(trackData.filename);
 }
 
 
-
-
-var ticky = 0;
-
+var ticks = 0;
 
 function gameLoop() {
 
@@ -324,19 +340,17 @@ function gameLoop() {
     driveCar(car);
   }
 
-  // Ghost Stuff - I SHOULD TAKE THIS OUT OF DRIVECAR
-  ticky++;
-
-  if(race.ghostRecording && ticky > 7){
+  // Ghost Stuff - record a ghost frame every 8 frames
+  ticks++;
+  if(race.ghostRecording && ticks > 7){
     race.ghostData.push({
-      "time" : race.laptime,
+      "time" : race.lapTime,
       "x" : Math.round(keyboardcar.showx.toFixed(1)),
       "y" : Math.round(keyboardcar.showy.toFixed(1)),
       "angle" : Math.round(keyboardcar.angle.toFixed(1)),
       "z" : Math.round(car.zPosition.toFixed(1))
     });
-    ticky = 0;
-
+    ticks = 0;
   }
 
   for(var i = 0; i < race.ghostCars.length; i++){
@@ -345,10 +359,10 @@ function gameLoop() {
     ghostCar.drive();
   }
 
-  race.laptime = race.laptime + delta; //update the race lap timer
+  race.lapTime = race.lapTime + delta; //Update the race lap timer
 
   if(race.updateTime){
-    $(".lap-time").text(formatTime(race.laptime));
+    $(".lap-time").text(formatTime(race.lapTime));
   }
 
   tiltTrack();

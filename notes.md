@@ -1,10 +1,20 @@
 ###TODO TODO
 
+Fix z-indexing
+
+* someething weird between .line, .car and .skids
+
 BUGS 
 
 * When you go faster than your best lap, it shows the delta as -0.000 even though there is a bigger diff
 
 
+Ghosts
+
+* Change to record inputs intead of position
+  * Will need starting x,y,z, rotation etc then just controls
+* Fix ghosts not loading for levels  
+  
 
 Ease of Experience
 

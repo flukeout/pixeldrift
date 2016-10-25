@@ -177,10 +177,12 @@ var trackList = {
     difficulty : "expert",
     laps : 5,
     hexes : {
+      "#636363" : "road",
       "#ffffff" : "road",
-      "#e4e4e4" : "finish",
+      "#db0fed" : "finish",
       "#c9c9c9" : "jump",
       "#3c3c3c" : "softledge",
+      "#ececec" : "softledge",
       "#fefefe" : "overpass"
       
     }

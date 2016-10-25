@@ -1,6 +1,5 @@
 
 function driveCar(car) {
-  console.log("STARTLOOOP");
 
   var frameAdjuster = delta / 16.67;
 
@@ -662,7 +661,7 @@ function driveCar(car) {
   if(car.mode == "gone") {
     car.shadow.css("opacity",0);
   } else {
-    car.shadow.css("opacity",.3);
+    car.shadow.css("opacity",.2);
   }
 
   if(car.speed == 0) {
@@ -732,7 +731,6 @@ function driveCar(car) {
 
   car.nameEl.css("transform", "translateZ("+ parseInt(38 + car.zPosition) + "px) rotateX(-70deg)");
 
-  console.log(car.mode, car.zPosition);
 
   car.el.attr("mode",car.mode);
 

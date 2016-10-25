@@ -1,6 +1,8 @@
 // Scatters a bit of debris on the track when the car hits a wall.
 
-function crashDebris(x,y,angle) {
+function crashDebris(x,y,angle, color) {
+
+  console.log(color);
 
     for(var i = 0; i < 3; i++){
 
@@ -20,7 +22,7 @@ function crashDebris(x,y,angle) {
         o : 2,
         oV : -.04,
         lifespan: 400,
-        color: "white"
+        color: color
       }
 
       makeParticle(debrisOptions);

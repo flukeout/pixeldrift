@@ -27,9 +27,9 @@ $(document).ready(function(){
     }
 
     // TODO - later
-    if(e.keyCode == 84) {
-      console.log("toggle sound");
-    }
+    // if(e.keyCode == 84) {
+    //    console.log("toggle sound");
+    //  }
 
     if(e.keyCode == 82){
       race.quickRestart();
@@ -38,26 +38,26 @@ $(document).ready(function(){
     if(e.keyCode == 67){
       $(".track-chooser").show();
     }
-
-    if(e.keyCode == 37) {
+    
+    if(e.keyCode == 37 || e.keyCode == 65) {
       keyboardcar.setDirection("steering","left-on");
     }
-    if(e.keyCode == 39) {
+    if(e.keyCode == 39 || e.keyCode == 68) {
       keyboardcar.setDirection("steering","right-on");
     }
-    if(e.keyCode == 38 || e.keyCode == 90) {
+    if(e.keyCode == 38 || e.keyCode == 90 || e.keyCode == 87) {
       keyboardcar.setDirection("gas","on");
     }
   });
 
   $(window).on("keyup",function(e){
-    if(e.keyCode == 37) {
+    if(e.keyCode == 37 || e.keyCode == 65) {
       keyboardcar.setDirection("steering","left-off");
     }
-    if(e.keyCode == 39) {
+    if(e.keyCode == 39 || e.keyCode == 68) {
       keyboardcar.setDirection("steering","right-off");
     }
-    if(e.keyCode == 38 || e.keyCode == 90) {
+    if(e.keyCode == 38 || e.keyCode == 90 || e.keyCode == 87) {
       keyboardcar.setDirection("gas","off");
     }
   });

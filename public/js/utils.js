@@ -450,6 +450,7 @@ function newCar(id,config){
     y : 0,
     checkpoints : [],
     crashed : false,
+    color : "",
 
     showx : 410,
     showy : 230,
@@ -669,6 +670,10 @@ function newCar(id,config){
   var randomColor = Math.floor(Math.random() * trackData.carcolors.length);
 
   var chosenColor = trackData.carcolors[randomColor]
+  
+  car.color = chosenColor;
+  
+  console.log(car.color);
 
   car.body.css("background", chosenColor);
   indicator.css("border-color", chosenColor);

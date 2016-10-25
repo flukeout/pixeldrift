@@ -1,5 +1,11 @@
 ###TODO TODO
 
+BUGS 
+
+* When you go faster than your best lap, it shows the delta as -0.000 even though there is a bigger diff
+
+
+
 Ease of Experience
 
 * If you do a lap but don't hit the checkpoints, reset the lap so they can go again, don't make them go get that one checkpoint they missed, son.

@@ -12,6 +12,7 @@ var includeTracks = [
   "turbo8",
   "testground",
   "oval",
+  // "superjump"
   // "grass"
 ]
 
@@ -177,11 +178,11 @@ var trackList = {
     laps : 5,
     hexes : {
       "#ffffff" : "road",
-      "#e0be35" : "turbo",
       "#e4e4e4" : "finish",
-      "#373737" : "overpass",
       "#c9c9c9" : "jump",
-      "#fdfdfd" : "checkpoint"
+      "#3c3c3c" : "softledge",
+      "#fefefe" : "overpass"
+      
     }
   },
   "superjump.png" : {

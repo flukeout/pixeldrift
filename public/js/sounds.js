@@ -1,4 +1,27 @@
+$(document).ready(function(){
+  $(".toggle-sound").on("click",function(){
+    toggleSound();
+  });
+});
+
+$(window).on("keydown",function(e){
+  if(e.keyCode == 84) {
+    toggleSound();
+  }
+});
+
+function toggleSound(){
+  if(soundEnabled){
+    soundEnabled = false;
+    disableSound();
+  } else {
+    soundEnabled = true;
+    enableSound();
+  }
+}
+
 var soundContext = new AudioContext();
+var soundEnabled = true;
 
 var url = window.location;
 var path = url.pathname;
@@ -15,7 +38,10 @@ var sounds = {
     volume : .05
   },
 
-
+  "boom" : {
+    buffer : null,
+    url : path + "/sounds/boom.wav"
+  },
   "turbo" : {
     buffer : null,
     url : path + "/sounds/NFF-whizz.wav"
@@ -75,7 +101,9 @@ function loadSound(name){
 }
 
 function playSound(name){
-  // return;
+  if(!soundEnabled) {
+    return;
+  }
 
   var buffer = sounds[name].buffer;
   var soundVolume = sounds[name].volume || 1;
@@ -105,6 +133,7 @@ function playSound(name){
 var skidBuffer;
 var skidVol;
 var skidSource;
+var maxSkidGain = .3;
 
 function startSkid() {
 	
@@ -143,7 +172,7 @@ function startEngine() {
   if(engineBuffer){
 
     engineVol = soundContext.createGain();
-	  engineVol.gain.value = .15;
+    engineVol.gain.value = .15;
     
     engineVol.connect(soundContext.destination);
 
@@ -153,9 +182,8 @@ function startEngine() {
     engineSource.playbackRate.value = enginePitch;
     
     engineSource.connect(engineVol);       // connect the source to the context's destination (the speakers)
-
-
-	  engineSource.loop = true;
+    
+    engineSource.loop = true;
     engineSource.start(0);
   }
 	
@@ -165,4 +193,15 @@ setTimeout(function(){
   startEngine();
 }, 3000);
 
+function enableSound(){
+  soundEnabled = true;
+  engineVol.gain.value = .15;
+  maxSkidGain = .3;
+}
+
+function disableSound(){
+  soundEnabled = false;
+  engineVol.gain.value = 0;
+  maxSkidGain = 0;
+}
 

@@ -1,8 +1,6 @@
 // Scatters a bit of debris on the track when the car hits a wall.
 
-function crashDebris(x,y,angle, color) {
-
-  console.log(color);
+function crashDebris(x, y, angle, color) {
 
     for(var i = 0; i < 3; i++){
 
@@ -22,7 +20,8 @@ function crashDebris(x,y,angle, color) {
         o : 2,
         oV : -.04,
         lifespan: 400,
-        color: color
+        color: color,
+        bounce : true
       }
 
       makeParticle(debrisOptions);
@@ -71,7 +70,6 @@ function mowGrass(car) {
       yV : getRandom(-1.5,1.5),
       lifespan: 50,
       color: checkColor(car.x,car.y)
-      // color: "#60aa1f",
     }
 
     makeParticle(options);
@@ -88,7 +86,62 @@ function mowGrass(car) {
       o : .15,
       color: "black",
     }
-
     makeParticle(newOptions);
+}
 
+
+function addAnimationClass(el, className) {
+  el.removeClass(className).width(el.width());
+  el.addClass(className);
+}
+
+
+// Adds a bomb to the board at x,y
+// Pixel position, not grid position
+
+function makeExplosion(xposition, yposition, size){
+
+  playSound("boom");
+  // shakeScreen();
+
+  var blastOffset = (size - 20) / 2;
+  var x = xposition - blastOffset;
+  var y = yposition - blastOffset;
+
+  var particle = {};
+  particle.el = $("<div class='boom'><div class='shock'/><div class='body'/></div>");
+  particle.el.css("height", size);
+  particle.el.css("width", size);
+  particle.el.css("transform","translate3d("+x+"px,"+y+"px,0)");
+
+  setTimeout(function(el) {
+    return function(){
+      el.remove();
+    };
+  }(particle.el),500);
+
+  $(".track").append(particle.el);
+
+  // Make smoke puffs around the explosion
+  for(var i = 0; i < 6; i++){
+
+    var options = {
+      x : xposition,
+      y : yposition,
+      angle: getRandom(0,359),
+      zR : getRandom(-15,15),
+      z : 1,
+      scale : 1,
+      scaleV : -.01,
+      width : getRandom(30,55),
+      className : 'puff',
+      lifespan: 125,
+    }
+
+    options.x = options.x - (options.width/2) + 10;
+    options.y = options.y - (options.width/2) + 10;
+    options.height = options.width;
+    options.speed = 1 + (4 * (1 - options.width / 50)); // The bigger the particle, the lower the speed
+    makeParticle(options);
+  }
 }

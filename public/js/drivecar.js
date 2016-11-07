@@ -1,5 +1,47 @@
 
-function driveCar(car) {
+
+function driveCar(car, lapTime) {
+
+  if(car.type == "ghost") {
+
+    // console.log("driving ghost", lapTime);
+
+    var useControl; // Controls to run this frame... 
+    
+    for(var i = 0; i < car.controls.length; i++) {
+      var frame = car.controls[i];
+
+      if(lapTime < frame.time) {
+        break;
+      } 
+      useControl = frame;
+    }
+    
+    if(i > car.frameIndex) {
+
+
+      var xdelta = Math.round(Math.abs(car.showx - useControl.showx));
+      var ydelta = Math.round(Math.abs(car.showy - useControl.showy)); 
+      var diff = Math.abs(lapTime - useControl.time);
+
+      car.showx = useControl.showx;
+      car.showy = useControl.showy;
+      car.gas = useControl.gas;
+
+      car.direction = useControl.direction;
+      car.actualAngle = useControl.actualAngle;
+      car.angle = useControl.angle;
+      car.speed = useControl.speed;
+
+      car.steeringVelocity = useControl.steeringVelocity;
+      car.turningVelocity = useControl.turningVelocity;
+
+
+      car.frameIndex = i;
+    }
+  }
+
+
 
   var frameAdjuster = delta / 16.67;
 
@@ -42,16 +84,20 @@ function driveCar(car) {
     // Turbo Boost
     if(car.currentPosition == "turbo" && car.zPosition == 0) {
       car.speed = maxspeed + turboBoost;
-      playSound("turbo");
+      if(car.type != "ghost") {
+        playSound("turbo");        
+      }
+
     }
 
     // Checkpoint
-    if(car.currentPosition == "checkpoint") {
+    if(car.currentPosition == "checkpoint" && car.type != "ghost") {
       for(var i = 0; i < trackData.checkpointPositions.length; i++){
         var p = trackData.checkpointPositions[i];
         if(car.x == p.x && car.y == p.y) {
           if(car.checkpoints.indexOf(p.id) < 0){
             car.checkpoints.push(p.id);
+            $("[checkpoint="+p.id+"]").addClass("cleared");
             playSound("checkpoint");
           }
         }
@@ -60,7 +106,9 @@ function driveCar(car) {
 
     // Grass
     if(car.currentPosition == "grass" && car.zPosition == 0 && trackData.lawnmower) {
-      mowGrass(car);
+      if(car.type != "ghost") {
+        mowGrass(car);        
+      }
     }
 
     // TODO - for later - water particles
@@ -252,9 +300,14 @@ function driveCar(car) {
 
     var collision = false;
 
+    if(movedPixelPosition && car.currentPosition == "wall" && car.zPosition == 0) {
+      race.explodeCar(car);
+    }
+
     if(movedPixelPosition && car.zPosition == 0) {
       collision = checkCollision(car.x, car.y, car.nextx, car.nexty, car.mode);
     }
+
 
     if(collision) {
       
@@ -265,7 +318,6 @@ function driveCar(car) {
       var currentX = car.showx - (Math.floor(car.showx / scaling) * scaling);
       var currentY = car.showy - (Math.floor(car.showy / scaling) * scaling);
       var oldAngle = tempAngle;
-
 
       // thisisn't good enough 
       // var up = checkPosition(car.x, car.y - 1);
@@ -282,7 +334,7 @@ function driveCar(car) {
 
       var newAngle = tempAngle;
       var angleChange = 0;
-
+      
       // TODO - simplify the conditionals below?
 
       if(tempAngle >= 0 && tempAngle <= 90) {
@@ -291,7 +343,6 @@ function driveCar(car) {
         } else if(car.x == car.nextx && car.y != car.nexty) {
           newAngle = 180 - tempAngle; // Up
          } else if (car.x != car.nextx && car.y != car.nexty) {
-           console.log("UP & RIGHT");
            if(right) {
              newAngle = 360 - tempAngle;
            } else if (up) {
@@ -307,10 +358,6 @@ function driveCar(car) {
        } else if(car.x == car.nextx && car.y != car.nexty) {
          newAngle = 180 - tempAngle; // Down
         } else if (car.x != car.nextx && car.y != car.nexty) {
-
-          console.log("Down & Right");
-          console.log(right,down);
-
           if(right) {
             newAngle = 360 - tempAngle;
           } else if (down) {
@@ -374,7 +421,13 @@ function driveCar(car) {
 
         // we just need half of the angle change,
         // at half it just goes along the wall it hits
-        
+
+        if(car.type != "ghost" && car.mode != "gone") {
+          if(Math.abs(angleChange) > 120 && car.speed > car.maxspeed * .8) {
+            race.explodeCar(car);
+          }
+        }
+
         angleChange = angleChange * .5;
 
         if(angleChange > 0) {
@@ -385,17 +438,18 @@ function driveCar(car) {
           angleChange -= 10;
         }
         
-
         car.actualAngle = car.actualAngle + (1.5 * angleChange);
         car.angle = car.angle + angleChange;
 
         car.speed = car.speed - (ferocity * car.speed);
 
-        if(car.mode == "normal") {
+        if(car.mode == "normal" && car.type != "ghost") {
           crashDebris(car.showx, car.showy, car.actualAngle, car.color);
         }
         
-        playSound("crash");
+        if(car.type != "ghost") {
+          playSound("crash");
+        }
 
     } else {
       done = true;
@@ -405,43 +459,23 @@ function driveCar(car) {
   //Write down the old position
   car.lastx = car.x;
   car.lasty = car.y;
-
-
-  if(nextPosition == "wall" && car.zPosition == 0){
-    if(car.speed >= 4.5 ) {
-      // car.zVelocity =  .7 * car.speed; // .5 car speed for normal jump
-      // car.speed = car.speed * .5;
-      // car.mode = "crashed";
-      // playSound("crash");
-      //
-      // car.xRotationSpeed = getRandom(8,16);
-      // car.yRotationSpeed = getRandom(1,3);
-      // car.zRotationSpeed = getRandom(1,3);
-      //
-      // for(var j = 0; j < 10; j++){
-      //   makeParticle(car.x, car.y, car.speed, car.angle);
-      // }
-      //
-      // trackAnimation("pop");
-    }
-  }
   
-  // console.log(car.currentPosition);
-
   if(car.mode == "under-soft" && car.currentPosition == "overpass" && (nextPosition != "overpass" && nextPosition != "softledge")){
-
-    console.log("bye------------------------------------------");
     
     if(car.mode != "gone") {
 
+
       setTimeout(function(){
-        playSound("fall");        
+        if(car.type != "ghost") {
+          playSound("fall");
+        }
       },250);
 
-      if(!car.respawning){
-        car.respawn();
-        car.respawning = true;
-      }
+      setTimeout(function(){
+        if(car.type != "ghost") {
+          race.quickRestart();
+        }
+      },750);
 
       car.mode = "gone";
 
@@ -489,17 +523,19 @@ function driveCar(car) {
   }
 
   if(car.tilt > 0) {
-    $(".car .idler").css("transform-origin","right");
+    car.idler.css("transform-origin","right");
   } else if (car.tilt < 0) {
-    $(".car .idler").css("transform-origin","left");
+    car.idler.css("transform-origin","left");
   } else {
-    $(".car .idler").css("transform-origin","center");
+    car.idler.css("transform-origin","center");
   }
-  $(".car .idler").css("transform","rotateY("+car.tilt+"deg) translateZ(0px)")
+  car.idler.css("transform","rotateY("+car.tilt+"deg) translateZ(0px)")
   
   // Skids
 
   if(movedPixels
+     
+     && car.type != "ghost"
      && trackData.leaveSkids
      && car.zPosition == 0
      && (car.currentPosition == "road" || (car.currentPosition == "overpass" && car.mode == "normal") || car.currentPosition == "checkpoint"))
@@ -522,55 +558,51 @@ function driveCar(car) {
     ctx.fillRect(car.x * scaling, car.y * scaling, scaling, scaling);
   }
   
-  
-  
-  // Skid Sounds
-  var skidAngle = 15;
-  var maxOpacity = .2;
-  var angleDelta = Math.abs(car.actualAngle - car.angle);
-  var percent = 0;
+  if(car.type != "ghost") {
+    // Skid Sounds
+    var skidAngle = 15;
+    var maxOpacity = .2;
+    var angleDelta = Math.abs(car.actualAngle - car.angle);
+    var percent = 0;
 
-  if(angleDelta > skidAngle) {
-    percent = (angleDelta - skidAngle) / skidAngle;
-    if(percent > 1) {
-      percent = 1;
+    if(angleDelta > skidAngle) {
+      percent = (angleDelta - skidAngle) / skidAngle;
+      if(percent > 1) {
+        percent = 1;
+      }
     }
-  }
 
+    if(skidVol) {
+      if(car.speed > maxspeed/2 && car.zPosition == 0) {
+        skidVol.gain.value = percent * maxSkidGain;
+      } else {
+        skidVol.gain.value = 0;
+      }
+    }
+
+    // Engine Sounds
   
-  var maxGain = .3;
-
-  if(skidVol) {
-    if(car.speed > maxspeed/2 && car.zPosition == 0) {
-  	  skidVol.gain.value = percent * maxGain;
+    var minpitch = 1;
+    var maxpitch;
+  
+    if(car.zPosition != 0) {
+      maxpitch = 3;
     } else {
-  	  skidVol.gain.value = 0;
+      maxpitch = 2.5;
     }
-  }
   
+    var percentSpeed = car.speed / maxspeed;
   
-
-  // Engine Sounds
+    enginePitch = 1 + (maxpitch * percentSpeed);
   
-  var minpitch = 1;
-  var maxpitch;
+    if(enginePitch > 1 + maxpitch) {
+      enginePitch = 1 + maxpitch;
+    }
   
-  if(car.zPosition != 0) {
-    maxpitch = 3;
-  } else {
-    maxpitch = 2.5;
-  }
-  
-  var percentSpeed = car.speed / maxspeed;
-  
-  enginePitch = 1 + (maxpitch * percentSpeed);
-  
-  if(enginePitch > 1 + maxpitch) {
-    enginePitch = 1 + maxpitch;
-  }
-  
-  if(engineSource) {
-    engineSource.playbackRate.value = enginePitch;    
+    if(engineSource) {
+      engineSource.playbackRate.value = enginePitch;
+    }
+    
   }
 
   if(car.mode == "normal") {
@@ -599,8 +631,6 @@ function driveCar(car) {
   car.showx = car.showx + car.xV;
   car.showy = car.showy + car.yV;
 
-  
-
 
   // Only count the finish line left to right...
   if(car.currentPosition == "finish"){
@@ -614,16 +644,19 @@ function driveCar(car) {
   if(car.currentPosition == "jump" && car.speed >= car.minJumpSpeed && car.zPosition == 0){
     car.zVelocity = car.jumpVelocity * car.speed;
     car.mode = "jumping";
-    playSound("jump");
+    if(car.type != "ghost") {
+      playSound("jump");      
+    }
   }
 
   // Jumping down from a "soft ledge"
   if(car.currentPosition == "overpass" && car.zPosition == 0 && nextPosition == "softledge" && car.mode == "normal"){
     car.zVelocity = 1.5;
     car.mode = "jumping";
-    playSound("jump");
+    if(car.type != "ghost") {
+      playSound("jump");      
+    }
   }
-
 
 
   //Apply any car rotations if the car is flyin'....
@@ -634,7 +667,7 @@ function driveCar(car) {
   }
 
   if(car.currentPosition == "void" || car.zPosition > 0 || car.mode == "gone") {
-    car.zVelocity = car.zVelocity - car.gravity; //asdf
+    car.zVelocity = car.zVelocity - car.gravity; 
   }
 
   
@@ -646,13 +679,17 @@ function driveCar(car) {
     if(car.mode != "gone") {
 
       setTimeout(function(){
-        playSound("fall");        
+        if(car.type != "ghost") {
+          playSound("fall");
+        }
       },250);
 
-      if(!car.respawning){
-        car.respawn();
-        car.respawning = true;
-      }
+      setTimeout(function(){
+        if(car.type != "ghost") {
+          race.quickRestart();
+        }
+      },750);
+
     }
     car.mode = "gone";
     
@@ -664,24 +701,23 @@ function driveCar(car) {
     car.shadow.css("opacity",.2);
   }
 
-  if(car.speed == 0) {
+  // Idling animation...
+  if(car.speed == 0 && car.zPosition == 0) {
     car.idler.addClass("idle");
   } else {
     car.idler.removeClass("idle");
   }
 
 
-
   // Safe Landing
   if(car.zPosition < 0 && car.zVelocity < 0 && car.mode != "gone" && car.mode != "crashed"){
 
     trackAnimation("carland");
+    car.idler.addClass("carlanding");
 
-    $(".car .idler").addClass("carlanding");
-
-    setTimeout(function(){
-      $(".car .idler").removeClass("carlanding");
-    },400)
+    setTimeout(function(el) { return function() { 
+      el.removeClass("carlanding");
+    }; }(car.idler), 400);
 
     car.mode = "normal";
     car.zPosition = 0;
@@ -705,7 +741,7 @@ function driveCar(car) {
   }
 
   // CAR JUMP TRAIL
-  if(movedPixels){
+  if(movedPixels && car.type != "ghost"){
     if(car.zPosition > 0 && car.mode != "crashed"){
       var trail = $("<div class='trail'></div>");
       trail.css("background",car.trailColor || "#32a6dc")
@@ -725,13 +761,9 @@ function driveCar(car) {
   
   // moves the car holder
   car.el.css("transform", "translateY("+car.showy+"px) translateZ("+tempZ+"px) translateX("+car.showx+"px)");
-
-
   car.jumper.css("transform", " rotateZ("+car.angle+"deg) translateZ("+car.zPosition+"px");
 
   car.nameEl.css("transform", "translateZ("+ parseInt(38 + car.zPosition) + "px) rotateX(-70deg)");
-
-
   car.el.attr("mode",car.mode);
 
 

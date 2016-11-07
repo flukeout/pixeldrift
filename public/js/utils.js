@@ -64,198 +64,7 @@ function trackAnimation(type){
 
 }
 
-function prepareTrack(level){
 
-  canvasTrack = $("canvas.track-source");
-  context = canvasTrack[0].getContext("2d");
-
-  trackData = trackList[level];
-
-  var image = new Image();
-  $("body").append(image);
-  $(image).hide();
-
-  var url = window.location;
-
-  var href = url.href.replace("#","");
-
-  image.src = href + 'public/tracks/' + level;
-
-  $(".track").css("background-image", "url(./public/tracks/"+level+")");
-
-  $(image).on("load",function(){
-
-    $(".bigtree, .lamp, .tree, .windmill, .water").remove(); // maybe add a sprite clas to these?
-
-    context.clearRect(0, 0, 500, 500);
-    context.drawImage(image, 0, 0);
-
-    trackHeight = $(this).height();
-    trackWidth = $(this).width();
-    $(".track").height(trackHeight * scaling).width(trackWidth * scaling);
-
-    $(".track-shadow").height(trackHeight * scaling).width(trackWidth * scaling);
-
-    var h = trackHeight * scaling / 2;
-    var w = trackWidth * scaling / 2;
-    $(".track").css("top","calc(45% - "+h+"px)");
-    $(".track").css("left","calc(50% - "+w+"px)");
-
-    h = h - 50;
-    $(".track-shadow").css("top","calc(45% - "+h+"px)");
-    $(".track-shadow").css("left","calc(50% - "+w+"px)");
-
-
-    $(".track").css("min-height",trackHeight * scaling).css("min-width",trackWidth * scaling);
-
-    canvasTrack.height(trackHeight);
-    canvasTrack.width(trackWidth);
-
-    // Set up the skid canvas
-    var skidCanvas = $(".skids");
-    ctx = skidCanvas[0].getContext("2d");
-    skidCanvas.attr("width", trackWidth * scaling).attr("height",trackHeight * scaling);
-
-    trackData.startPositions = [];
-    trackData.checkpointPositions = [];
-
-    for(var i = 0; i < parseInt(trackWidth); i++){
-      for(var j = 0; j < parseInt(trackHeight); j++){
-        var result = checkPosition(i,j);
-
-        if(result == "finish"){
-          trackData.startPositions.push({"x": i, "y" : j});
-        }
-
-        if(result == "checkpoint"){
-          trackData.checkpointPositions.push({"x": i, "y" : j});
-        }
-
-        if(result == "lamp"){
-          var lamp = $("<div class='lamp'></div>");
-          $(".track").append(lamp)
-          lamp.css("left", scaling * (i));
-          lamp.css("top", scaling * (j - 3));
-        }
-
-        if(result == "windmill"){
-          var el = $("<div class='windmill'><div class='prop'></div>");
-          $(".track").append(el)
-          el.css("left", scaling * (i));
-          el.css("top", scaling * (j - 3));
-        }
-
-        if(result == "tree"){
-          var tree = $("<div class='tree'><div class='tree-inner'></div></div>");
-          $(".track").append(tree)
-          tree.css("left", scaling * (i - 1));
-          tree.css("top", scaling * (j - 3));
-        }
-
-        if(result == "bigtree"){
-          var tree = $("<div class='bigtree'><div class='tree-inner'></div></div>");
-          $(".track").append(tree)
-          tree.css("left", scaling * (i - 1));
-          tree.css("top", scaling * (j - 8));
-        }
-
-        if(result == "water"){
-          var chance = getRandom(0,4);
-          if(chance < 1) {
-            var delay = getRandom(0,8);
-            var el = $("<div class='water'></div>");
-            el.css("animation-delay",delay+"s");
-            $(".track").append(el)
-            el.css("left", scaling * i);
-            el.css("top", scaling * j);
-          }
-        }
-      }
-    }
-
-    makeCheckpoints();
-    addFinishLine();
-
-  });
-
-}
-
-function makeCheckpoints(){
-
-  id = 1;
-
-  for(var i = 0; i < trackData.checkpointPositions.length; i++){
-    var p = trackData.checkpointPositions[i];
-
-    if(p.id == undefined) {
-      p.id = id;
-      id++;
-    }
-
-    for(var j = 0; j < trackData.checkpointPositions.length; j++){
-      var q = trackData.checkpointPositions[j];
-      if(i != j) {
-        if((p.x == q.x && p.y + 1 == q.y) || (p.y == q.y && p.x + 1 == q.x)) {
-          q.id = p.id;
-        }
-      }
-    }
-  }
-
-
-  trackData.checkPoints = id - 1;
-
-}
-
-
-
-function addFinishLine(){
-
-  $(".track .finish-line").remove();
-
-  //TODO - This is such garbage... come on.
-  var startX = 999999999;
-  var endX = -1;
-  var startY = 999999999;
-  var endY = -1;
-
-  var sP = trackData.startPositions;
-
-  for(i = 0; i < sP.length; i++){
-    if(sP[i].x < startX) {
-      startX = sP[i].x
-    }
-    if(sP[i].x > endX) {
-      endX = sP[i].x
-    }
-
-    if(sP[i].y < startY) {
-      startY = sP[i].y
-    }
-    if(sP[i].y > endY) {
-      endY = sP[i].y
-    }
-  }
-
-  var finishColor = "orange";
-  var roadColor = "pink";
-
-  for(var k in trackData.hexes){
-    if(trackData.hexes[k] == "road"){
-      roadColor = k;
-    }
-    if(trackData.hexes[k] == "finish"){
-      finishColor = k;
-    }
-  }
-
-  var finishLine = $("<div class='finish-line'><div class='line'></div></div>");
-  finishLine.css("top",startY * scaling).css("left",startX * scaling).height((endY - startY + 1) * scaling).width(scaling);
-  finishLine.find(".line").css("background",finishColor);
-  finishLine.css("background",roadColor);
-  finishLine.css("border-color",roadColor);
-  $(".track").append(finishLine);
-}
 
 function getCar(id){
   var foundcar;
@@ -298,6 +107,10 @@ function checkCollision(x, y, nextx, nexty, mode) {
     return true;
   }
 
+  if(nextType == "tree") {
+    // return true;
+  }
+
   if(mode == "under" && thisType == "overpass" && nextType == "road") {
     return true;
   }
@@ -335,7 +148,8 @@ function rgbToHex(r, g, b) {
 
 function tiltTrack(){
 
-  //Tilts the track according to where all the cars are
+  // Tilts the track according to where all the cars are all the cars?? what about just the 
+  // player..?
 
   var xtotal = 0;
   var ytotal = 0;
@@ -351,12 +165,27 @@ function tiltTrack(){
   var xdeg = 5 * (-1 + (2 * xavg / trackWidth));
   var ydeg = 45 + 5 * (1 - (2 * yavg / trackHeight));
 
-  $(".track").css("transform","rotateX(" +ydeg+"deg) rotateY("+xdeg+"deg)");
+  var cameraFollow = false;
 
+  var xoff = 0;
+  if(cars[0] && cameraFollow) {
+    xoff = (.5 * trackWidth * 15) - (cars[0].showx * 1);
+  }
 
+  var yoff = 0;
+  if(cars[0] && cameraFollow) {
+    yoff = (.5 * trackHeight * 15) - (cars[0].showy * 1);
+  }
+
+  $(".track").css("transform","rotateX(" +ydeg+"deg) rotateY("+xdeg+"deg) translateX(" + xoff +"px) translateY(" + yoff +"px)");
 }
 
+
 function formatTime(totalms){
+
+  if(!totalms) {
+    return "-.---";
+  }
 
   var min = Math.floor((totalms/1000/60));
   var sec = Math.floor((totalms/1000) % 60);
@@ -442,6 +271,8 @@ function spawnCar(car,x,y,angle){
 
 function newCar(id,config){
 
+  // console.log("newCar", config);
+
   var carconfig = config || {};
 
   var car = {
@@ -455,8 +286,11 @@ function newCar(id,config){
     showx : 410,
     showy : 230,
 
-    nextx :0,
+    nextx : 0,
     nexty : 0,
+
+    // lapTime : 0, // for ghosts
+    
 
     lastx : 0,
     lasty : 0,
@@ -508,7 +342,7 @@ function newCar(id,config){
 
     mode: "normal",
     driver : "Bob",
-    showname : true,
+    showname : false,
     laps : 0,
 
     maxspeed : 5, // the value adjusted by framerate...
@@ -516,9 +350,7 @@ function newCar(id,config){
     maxspeedModifier : 0,
     maxAbsoluteSpeed : 10,
 
-
     turboBoost : 6,
-
 
     direction : "none",
     speed : 0,
@@ -530,8 +362,6 @@ function newCar(id,config){
     lapTime: 0,
 
     gas : "off",
-    left : "off",
-    right : "off",
     positionHistory : [],
   };
  
@@ -540,7 +370,7 @@ function newCar(id,config){
   for(var key in carconfig){
     car[key] = carconfig[key];
   }
-
+  
   car.respawn = function(){
     setTimeout(function(c){
       return function() {
@@ -572,10 +402,10 @@ function newCar(id,config){
     car.el.prepend(messageEl);
     setTimeout(function(el) {
       return function() {
-        el.parent().find(".name").css("opacity",.8);
+        // el.parent().find(".name").css("opacity",.8);
         el.remove();
       };
-    }(messageEl), 2000);
+    }(messageEl), 1500);
   }
 
   car.setDirection = function(action, direction){
@@ -626,10 +456,14 @@ function newCar(id,config){
 
   car.el = $("<div class='car'></div>");
 
+  if(car.type == "ghost") {
+    car.el.addClass("g");
+  }
+
   car.el.width(scaling);
   car.el.height(scaling);
 
-  $(".track").append(car.el)
+  $(".track").append(car.el);
 
   var nameEl = $("<div class='name'>" + car.driver + "</div>");
   car.nameEl = nameEl;
@@ -637,7 +471,6 @@ function newCar(id,config){
   if(car.showname){
     car.el.append(car.nameEl);
   }
-
 
 
   var shadow = $("<div class='shadow'></div>");
@@ -666,14 +499,11 @@ function newCar(id,config){
   car.jumper.append(desiredIndicator);
 
 
-
   var randomColor = Math.floor(Math.random() * trackData.carcolors.length);
-
   var chosenColor = trackData.carcolors[randomColor]
   
   car.color = chosenColor;
-  
-  console.log(car.color);
+
 
   car.body.css("background", chosenColor);
   indicator.css("border-color", chosenColor);
@@ -685,119 +515,6 @@ function newCar(id,config){
 
   return car;
 }
-
-function buildTrackChooser(){
-
-  //Get records from localstorage
-  var playerRecords = JSON.parse(localStorage.getItem("playerRecords")) || {};
-
-  // one of the problems is we have to figure out the fricken player Rank vs global board...
-
-  for(var k in trackList){
-
-    var track = trackList[k];
-
-    if(includeTracks.indexOf(track.shortname) > -1) {
-
-      //Clone the template...
-
-      var trackOption = $(".track-template").clone();
-      trackOption.removeClass("track-template");
-      trackOption.attr("track", track.filename);
-      trackOption.attr("trackname", track.shortname);
-
-      var pRecord = playerRecords[track.shortname] || {};
-
-      trackOption.find(".player-time").text(formatTime(pRecord.lapTime));
-
-      trackOption.find(".track-thumbnail-wrapper").css("background-image","url(./public/tracks/" + track.filename + ")");
-
-      var trackName = track.prettyname || track.shortname;
-
-      trackOption.find(".track-name").text(trackName);
-
-      $(".track-chooser .tracks").append(trackOption)
-
-      trackOption.on("click",function(){
-        var track = $(this).attr('track');
-        trackData = trackList[track];
-        race.changeTrack(trackData.filename);
-        race.startTrial();
-        $(".track-chooser").hide();
-      });
-    }
-
-  } // End track chooser
-
-
-   // var times = new Firebase('https://pixelracer.firebaseio.com/');
-
-   // times.once("value", function(snapshot) {
-   //   return; // dont do weird firebase shit
-   //   var fbRecords = snapshot.val();
-   //
-   //   // This goes through all of the tracks..
-   //   for(var key in fbRecords){
-   //     if(includeTracks.indexOf(key) > -1) {
-   //
-   //       var trackName = key;
-   //
-   //       var playerKey = playerRecords[key].key; //The localstorage record key
-   //
-   //       var chooserEl = $(".track-chooser .track-option[trackname="+trackName+"]");
-   //
-   //       var trackData = fbRecords[key];
-   //       var numRecords = Object.keys(trackData).length;
-   //
-   //       var trackRecords = [];
-   //
-   //       for(var r in trackData) {
-   //         var data = trackData[r];
-   //         var record = {
-   //           "lapTime" : data.lapTime,
-   //           "name" : data.name,
-   //           "key" : data.key
-   //         }
-   //
-   //
-   //         if(record.key == playerKey){
-   //           record.type = "player";
-   //         }
-   //
-   //         trackRecords.push(record);
-   //
-   //         // console.log(trackRecords);
-   //       }
-   //
-   //       trackRecords = trackRecords.sort(sortRecords);
-   //
-   //       var playerRank = "unranked";
-   //
-   //       for(var i = 0; i < trackRecords.length; i++) {
-   //         var record = trackRecords[i];
-   //         if(i < 3) {
-   //           var recordWrapper = chooserEl.find(".leaders-wrapper");
-   //           var newRecord = $("<div class='fastest-time'><div class='name'>" + record.name + "</div> <div class='time'>"+formatTime(record.lapTime)+"</div></div>");
-   //           recordWrapper.append(newRecord);
-   //         }
-   //         if(record.type == "player") {
-   //           playerRank = i + 1;
-   //         }
-   //       }
-   //
-   //           // this.records = this.records.sort(this.sortRecords);
-   //
-   //       chooserEl.find(".total-records .value").text(numRecords);
-   //       chooserEl.find(".player-rank").text(playerRank);
-   //     }
-   //   }
-   // });
-
-
-
-
-}
-
 
 function getRandom(min,max){
   return min + Math.random() * (max - min);

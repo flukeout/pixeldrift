@@ -4,13 +4,6 @@ $(document).ready(function(){
     race.quickRestart();
   });
 
-  $(".player-name").on("click",".confirm", function(){
-    var newName = $(".player-name input").val();
-    if(newName.length != 0){
-      standings.changePlayerName(newName);
-    }
-  });
-
   $(".change-track").on("click",function(){
     $(".track-chooser").show();
   });
@@ -23,13 +16,8 @@ $(document).ready(function(){
         $(".track-chooser").hide();        
       } else {
         $(".track-chooser").show();        
-      }      
+      }
     }
-
-    // TODO - later
-    // if(e.keyCode == 84) {
-    //    console.log("toggle sound");
-    //  }
 
     if(e.keyCode == 82){
       race.quickRestart();

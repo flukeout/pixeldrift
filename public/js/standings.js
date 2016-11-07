@@ -35,8 +35,6 @@ var standings = {
 
     race.ghostPlayData = [];
 
-
-
     for(var i = start; i >= end; i--) {
       var record = this.records[i];
       if(record.frames.length > 0) {
@@ -124,7 +122,7 @@ var standings = {
     trackRecord.lapTime = lapTime;
     trackRecord.key = score.key;
     trackRecord.frames = lapFrames;
-
+    console.log("Standings");
     localStorage.setItem("playerRecords",JSON.stringify(localRecords));
 
 
@@ -315,4 +313,3 @@ var standings = {
   }
 
 }
-

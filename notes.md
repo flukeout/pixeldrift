@@ -1,19 +1,86 @@
-###TODO TODO
+###Left off working on
 
-Fix z-indexing
+* When it loads the leaderboard, it shoudl update your 'rank' in localstorage? Should it, for what?
+  * For the menu ??
 
-* someething weird between .line, .car and .skids
+
+Big stuff
+
+* Move to a moving average .. 
+* Figure out how to enforce getting the checkpoints in the right order
+
+* Also how to punish for grass?
+  * .. if you can rip right through the grass, what's holding people back from just smashing through it to get good times?
+  * what about if you hit grass, we let you finish but mark it as a 'bad lap' somehow?
+  * You can only get a good lap if you dont hit the grass...
+  * Put an X on it, only perfect laps allowed!
+
+
+Easy stuff 
+
+* if player is in the 'top' then highlight the player too
+* when you cross the finish without hitting the checkpints, the ghost doesn't restart with u
+
+last shit
+ * once you create a ghost, it doesn't seem to be the fastest.. does it get updated?
+* if a ghost falls off, it does a quickrestart now! boo...
+* ghost shouldn't do a trackbounce if it lands after a jump, only player car..... . .   
+* add 'difficulty' to tracks
+* maybe separate each achievement / track into a separate localstorage item? ?? ? ?
+* add 'rank' of your time to the localstorage record...
+* save replay data in localstorage independently of the 'playerRecord'?
+* ghost doesn't stick around after recording it and refreshing....
+
+
+cosmetic considerations
+* top-to-bottom checkpoint 'gates' are barely visible.. what should do?
+
+
+##Left Off##
+
+For the editor
+
+* Tryin to load in the images for the tack picker menu...
+  * firebase.js line 200
+
+* Add ability to crop / resize canvas
+  * Draggable handles on sides.. i guess...
+
+* probably make it so you can drive right on the track..
+  * test / edit as a toggle..
+
+* common view / styles for track list?
+
+
+###TODO
+
+New Ghost Problems
+
+* Still pretty glitchy / jumpy obviously getting desynced a bit
+* Keep investigating the 16ms delta problem
+* Make it stop after the lap is completed..
+
+
+* Add back the 'skids'
+* Add back the "get ready" screen from single.js
+
+* Inject a placeholder record for the leaderboard in the 'you' section when you load a track.. so its' not blank, but shows
+* Player will have a "-.---" .. .. .. .
+
+
+
+
+
+
+
+Fix Z-index bug
+
+* something weird between .line, .car and .skids
 
 BUGS 
 
-* When you go faster than your best lap, it shows the delta as -0.000 even though there is a bigger diff
+* 
 
-
-Ghosts
-
-* Change to record inputs intead of position
-  * Will need starting x,y,z, rotation etc then just controls
-* Fix ghosts not loading for levels  
   
 
 Ease of Experience

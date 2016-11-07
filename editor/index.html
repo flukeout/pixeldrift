@@ -1,0 +1,105 @@
+<html>
+  <head>
+    <title>Pixelracer - Track Editor</title>
+    <meta charset="utf-8">
+    
+    <link href='https://fonts.googleapis.com/css?family=Press+Start+2P' rel='stylesheet' type='text/css'>
+    <link href="https://fonts.googleapis.com/css?family=Lato:100,300,400,700,900" rel="stylesheet">
+
+    <script src="../public/js/jquery.js" type="text/javascript" charset="utf-8"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/3.5.2/firebase.js"></script>
+    <script src="../public/js/editor/firebase.js"></script>
+
+    <script src="../public/js/editor/actions.js"></script>
+    <script src="../public/js/editor/zoom.js"></script>
+    <script src="../public/js/editor/brushsize.js"></script>
+    <script src="../public/js/editor/drawline.js"></script>
+    <script src="../public/js/editor/palette.js"></script>
+    <script src="../public/js/editor/toolmenu.js"></script>
+    <script src="../public/js/editor/editor.js"></script>
+
+    <script src="../public/js/particles.js"></script>
+
+    <link rel="stylesheet/less" href="../public/css/editor.less" type="text/css">
+
+    <script>
+      less = {
+        env: "development",
+        async: false,
+        fileAsync: false,
+        poll: 1000,
+        functions: {},
+        dumpLineNumbers: "comments",
+        relativeUrls: false,
+        rootpath: ":/a.com/"
+      };
+    </script>
+    <script src="../public/js/less.js"></script>
+  </head>
+
+  <body>
+
+
+  <div class="main-wrapper">
+
+    <canvas class="editor-canvas"></canvas>  
+
+    <div class="track-editor">
+      <div class="track"></div>
+    </div>
+  
+    <div class="zoom-ui">
+      <a href="#" zoom="in" class="zoom-in">+</a>
+      <a href="#" zoom="out" class="zoom-out">-</a>
+    </div>
+
+    <div class="actions"></div>
+    <div class="palette"></div>
+    <div class="toolbelt"></div>
+    <div class="brush-sizes"></div>
+
+  </div> 
+  
+  <div class="user-bar">
+    <div class="signed-in">
+      <input maxlength="20" placeholder="name your track" class="track-name" type="text" value=""/>
+      <a class="save-track button-link" href="#">Save Track</a>
+      <a class="delete-track button-link" href="#">DELETE</a>
+      
+      <div class="right">
+        <img class="user-avatar" src="" />
+        <span class="user-name"></span>
+        <a class="your-tracks" href="#">Your tracks</a>
+        <a class="sign-out button-link" href="#">Sign Out</a>
+      </div>
+
+    </div>
+    <div class="signed-out right">
+      <a class="sign-in button-link" href="#">Sign in with Twitter</a> to save your track
+    </div>
+  </div>
+  
+  <div class="track-menu hidden">
+    <h1>Your tracks</h1><a class="hide" href="#">close</a>
+    <div class="track-list"></div>
+  </div>
+  
+  
+  <!-- /main-wrapper -->
+
+    <!--
+      <div class="player-name">
+        <span>Name</name>
+        <input class="driver-name" maxlength="3" type="text" /><a class="confirm" href="#">OK</a>
+      </div>
+    -->
+    
+
+
+  </body>
+</html>
+
+
+
+

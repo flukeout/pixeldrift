@@ -1,15 +1,12 @@
-
-// These are the replay cars
+// Creates the "old" style ghosts
+// * Series of keyframes that includes position & rotation
+// * These keyframes are interpolated between when the ghost drives
 
 function createGhost(ghostData){
-  console.log("createGhost");
-  console.log(ghostData);
 
-   // shouldn't make it if it doesn't have frames
   var ghostEl = $('<div class="ghost"><div class="body"></div></div>');
   var ghostShadow = ghostEl.find(".shadow");
   var ghostBody = ghostEl.find(".body");
-
 
   var chosenColor = trackData.carcolors[0];
 

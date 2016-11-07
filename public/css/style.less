@@ -8,7 +8,6 @@ body, html {
   position: relative;
   height: 100%;
   text-transform: uppercase;
-
 }
 
 body {
@@ -222,6 +221,9 @@ canvas.track-source {
     height: 100%;
     z-index: 10;
     transform-origin: bottom;
+    // background: ~"url(./public/img/car-body.png)" !important;
+    // background-size: 100% !important;
+    background-repeat: no-repeat;
   }
 
   .indicator {
@@ -252,7 +254,16 @@ canvas.track-source {
 
   &[mode^=under] {
     opacity: .2;
+    
+    .message {
+      display: none;
+    }
   }
+
+  &.g&[mode^=under] {
+    opacity: 0;
+  }
+
 
 }
 
@@ -472,7 +483,7 @@ canvas.track-source {
   transform-origin: bottom;
   transform: rotateX(-90deg) ;
   transform-style: preserve-3d;
-  z-index: 4;
+  z-index: 99;
 
   //Waving flag
   &:after {
@@ -729,45 +740,8 @@ canvas.track-source {
 
 }
 
-.bottom-stuff {
-  position: fixed;
-  width: 100%;
-  bottom: 50px;
-  text-align: center;
 
 
-
-  a {
-    color: white;
-    opacity: .5;
-    margin: 0 15px;
-    text-decoration: none;
-    transition: opacity .2s ease-out;
-
-    &:hover {
-      opacity: 1;
-      text-decoration: none;
-    }
-
-    .key {
-      padding: 7px 5px 5px 7px;
-      background: white;
-      margin-right: 6px;
-      color: black;
-      border-bottom: solid 4px #999;
-    }
-  }
-
-}
-
-
-.change-name {
-  color: white;
-  opacity: .4;
-  &:hover {
-    opacity: 1;
-  }
-}
 
 
 .stats-wrapper {
@@ -902,6 +876,78 @@ nav {
 
 }
 
+.element {
+  position: absolute;
+
+  z-index: 4;
+  transform-style: preserve-3d;
+
+  .line {
+    background: #277eba;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform: translateZ(1px);
+    transition: opacity .4s ease-out;
+  }
+
+  .wall {
+    position: absolute;
+    z-index: 99;
+    opacity: .4;
+    transition: all .35s cubic-bezier(0.515, -0.485, 0.395, 1.415);
+    display: none !important;
+  }
+
+
+  &.horizontal .wall {
+    width: 100%;
+    height: 60px;
+    bottom: 8px;
+    transform-origin: bottom;
+    // background-image: linear-gradient(rgba(255,255,255,0) , #277eba);
+    background: inherit;
+    transform: rotateX(-90deg);
+  }
+
+  &.vertical .wall {
+    width: 100%;
+    height: 60px;
+    top: 0px;
+    transform-origin: top;
+
+    background: inherit;
+    transform: rotateX(90deg);
+
+    // height: 100%;
+    // width: 40px;
+    // left: 8px;
+    // transform-origin: left;
+    // background: inherit;
+    // transform: rotateY(-90deg);
+  }
+  
+  &.cleared {
+    .line {
+      opacity: 0; 
+    }
+    
+    &.horizontal .wall {
+      transform: rotateX(-90deg) scaleY(0.01);
+      opacity: 0;
+    }
+
+    &.vertical .wall {
+      transform: rotateY(-90deg) scaleX(0.01);
+      opacity: 0;
+    }
+    
+  }
+}
+
+
 .finishpop .line {
   animation: finishpop .3s linear;
   animation-timing-function: ease-out;
@@ -1007,11 +1053,6 @@ nav {
 
     &:hover {
       transform: translateY(-3px);
-
-      img {
-        opacity: 1;
-        transform: scale(2.3);
-      }
     }
 
     &.track-template {
@@ -1024,80 +1065,28 @@ nav {
 
     .track-name {
       text-align: center;
-      width: 100%;
-      border-bottom: solid 2px rgba(0,0,0,.2);
       padding-bottom: 10px;
       color: white;
       opacity: 1;
       font-size: 18px;
       position: absolute;
       bottom: 8px;
-    }
-
-    .leaders {
-      margin-top: 20px;
-      min-height: 105px;
-
-      .fastest-time {
-        color: rgba(0,0,0,.5);
-        overflow: auto;
-
-        border-bottom: solid 2px #ddd;
-        padding: 9px 0 7px 26px;
-
-        background-repeat: no-repeat;
-        background-position: 0 5px;
-        background-size: 18px;
-        image-rendering: pixelated;
-
-        &:nth-child(1) {
-        background-image: ~"url(/img/medal-gold.png)";
-        }
-
-        &:nth-child(2) {
-          background-image: ~"url(/img/medal-silver.png)";
-        }
-
-        &:nth-child(3) {
-          background-image: ~"url(/img/medal-bronze.png)";
-        }
-
-        &:last-child {
-          border: none;
-        }
-
-        .name {
-          float: left;
-        }
-
-        .time {
-          text-align: right;
-          float: right;
-        }
-      }
-    }
-
-    h2 {
-      font-size: 13px;
-      margin: 5 0 10px 0;
-      padding: 0;
-      color: #3fb646;
-      // opacity: .6;
-    }
-
-    .player-rank, .player-time {
-      font-size: 20px;
-    }
-
-    .total-records {
-      opacity: .6;
-      position: relative;
-      top: -1px;
+      text-align: left;
+      padding: 10px 25px;
     }
 
     .player-time {
-      float: right;
+      padding: 10px 25px;
+      color: white;
+      position: absolute;
+      bottom: 8px;
+      right: 0;
+      font-size: 18px;
+
+
     }
+
+
 
     .medals {
       height: 15px;
@@ -1203,8 +1192,6 @@ nav {
 }
 
 
-
-
 .blank-particle {
   position: absolute;
   display: none;
@@ -1212,4 +1199,120 @@ nav {
   left: 0;
   height: 15px;
   width: 15px;
+}
+
+.skids {
+  display: none !important;
+}
+  
+.checkpoint-strobe {
+  .wall {
+  // .line,.wall {
+    animation: checkpointStrobe .15s linear;
+    animation-iteration-count: 3;
+  }
+}
+
+@keyframes checkpointStrobe {
+  50% {
+    opacity: .2;
+  }
+}
+
+
+
+
+
+
+// Square puffs emanating from explosions
+.puff {
+  background: #AAA;
+  z-index: 4;
+}
+
+// Bomb blast-line
+.blast-line {
+  transform-origin: top;
+  z-index: 4;
+}
+
+.boom {
+  position: absolute;
+  z-index: 1;
+  opacity: 1;
+  transform-style: preserve-3d;
+  transform: translateZ(100px);
+
+  .body {
+    animation: boom .5s ease-out;
+    animation-fill-mode: forward;
+    width: 100%;
+    height: 100%;
+    background: #ffb806;
+    opacity: 0;
+  }
+
+  .shock {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    animation: shock .5s ease-out;
+    animation-fill-mode: forward;
+    background: white;
+    opacity: 0;
+    z-index: 4;
+  }
+
+}
+
+@keyframes boom {
+  0% {
+    transform: scale(.95) translateZ(4px);
+    opacity: 1;
+    background: black;
+  }
+
+  3% {
+    transform: scale(.95) translateZ(4px);
+    opacity: 1;
+    background: black;
+  }
+
+  10% {
+    transform: scale(.95) translateZ(4px);
+    opacity: 1;
+    background: white;
+  }
+
+  30% {
+    background: #ffb806;
+  }
+
+  40% {
+    transform: scale(1) translateZ(4px);
+    opacity: 1;
+    background: #ffb806;
+    animation-timing-function: ease-in;
+  }
+
+  80% {
+    background: #727272;
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(.75) translateZ(20px);
+  }
+}
+
+@keyframes shock {
+  0% {
+    transform: scale(.95) translateZ(1px);
+    opacity: .4;
+    background: white;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2.5) translateZ(1px);
+  }
 }

@@ -57,3 +57,79 @@ if(car.currentPosition == "water"){
   //
   //     makeParticle(newOptions);
   //   }
+  
+  
+  
+  // pixel.el.removeClass("pop");
+  // pixel.el.width(pixel.el.width);
+  // pixel.el.addClass("pop");
+  
+  // for(var i = 0; i < getRandom(1,5); i++) {
+
+  // var options = {
+  //   x : x * this.scaling + 10,
+  //   y : y * this.scaling + 10,
+  //   angle : getRandom(0,359),
+  //   speed : 4,
+  //   speedA : -.2,
+  //   lifespan: 25,
+  //   color: this.selectedColor,
+  //  delay : 20
+  // }
+
+  // var size = getRandom(5,10);
+  // options.width = size;
+  // options.height = size;
+  // makeParticle(options);
+  // }
+  
+  
+  
+
+  .standing {
+    font-family: "Lato";
+    font-size: 18px;
+    color: rgba(255,255,255,.5);
+    position: relative;
+    margin-bottom: 15px;
+    padding: 10px 10px 10px 44px;
+    opacity: .2;
+
+    &.achieved {
+      opacity: 1;
+    }
+
+    &:after {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 3px;
+      height: 30px;
+      width: 30px;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: 100%;
+      image-rendering: pixelated;
+    }
+
+    &.gold {
+      color: gold;
+      &:after {
+        background-image: ~"url(/img/medal-gold.png)";
+      }
+    }
+
+    &.silver {
+      color: silver;
+      &:after {
+        background-image: ~"url(/img/medal-silver.png)";
+      }
+    }
+
+    &.bronze {
+      color: #CD7F32;
+      &:after {
+        background-image: ~"url(/img/medal-bronze.png)";
+      }
+    }
+  }

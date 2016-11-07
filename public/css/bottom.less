@@ -1,0 +1,103 @@
+
+.player-name {
+  z-index: 4;
+  color: white;
+  display: inline-block;
+  color: rgba(255,255,255,.5);
+
+  &[mode=input] {
+    .change-name {
+      display: none;
+    }
+    .display-name {
+      display: none;
+    }
+  }
+
+  &[mode=display] {
+    .confirm-name {
+      display: none;
+    }
+
+    input {
+      display: none;
+      
+    }
+  }
+
+  .display-name {
+    padding: 6px 0;
+    display: inline-block;
+  }
+
+  .action {
+    margin: 0;
+
+    span {
+      margin: 0;
+    }
+  }
+
+  .confirm {
+    margin: 0;
+    display: none;
+  }
+  
+  &.active {
+    .confirm {
+      display: block;
+    }
+  }
+
+  input {
+    font-size: 13px;
+    width: 155px;
+    text-align: left;
+    color: white;
+    opacity: .5;
+    background: transparent;
+    padding: 0 0 4px 0;
+    border-width: 0 0 0 0;
+    text-transform: uppercase;
+    border-bottom: solid 2px rgba(255,255,255,.5);
+    
+    
+    &:focus {
+      outline: none;
+      opacity: 1;
+      border-bottom: solid 2px rgba(255,255,255,1);
+    }
+  }
+}
+
+
+.bottom-stuff {
+  position: fixed;
+  width: 100%;
+  bottom: 50px;
+  text-align: center;
+  font-size: 13px;
+
+  a {
+    color: white;
+    opacity: .5;
+    margin: 0 15px;
+    padding: 8px 0;
+    text-decoration: none;
+    transition: opacity .2s ease-out;
+
+    &:hover {
+      opacity: 1;
+      text-decoration: none;
+    }
+
+    .key {
+      padding: 7px 5px 5px 7px;
+      background: white;
+      margin-right: 6px;
+      color: black;
+      border-bottom: solid 4px #999;
+    }
+  }
+
+}

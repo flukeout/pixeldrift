@@ -205,6 +205,7 @@ var race = {
     localStorage.setItem("lastSingleTrack",trackName);  // TODO - Probably move to the menu code
   
     this.track = trackName;
+
     this.trackShortname = trackList[trackName].shortname;
     this.lapTime = 0;
     this.bestlap = 0;

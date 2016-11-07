@@ -146,8 +146,14 @@ var editor = {
     this.hideCursor();
     
     var savedTrack = JSON.parse(localStorage.getItem("savedTrack")) || false;
+    
+    if(!savedTrack) {
+      savedTrack = {};
+      savedTrack.pixels = {};
+    }
 
     var localSettings = JSON.parse(localStorage.getItem("editorSettings"));
+
     if(localSettings) {
       this.settings = localSettings;
       this.updateView();
@@ -160,7 +166,7 @@ var editor = {
   
   loadTrack : function(savedTrack){
     
-    console.log(savedTrack);
+    
     
     this.trackHeight = savedTrack.height || 20;  // Default track size
     this.trackWidth = savedTrack.width || 20;    // 
@@ -185,7 +191,7 @@ var editor = {
         
 
         if(savedTrack.pixels[x+","+y]) {
-          var color = savedTrack.pixels[x+","+y].color || false;          
+          var color = savedTrack.pixels[x+","+y].color || false;
         } else {
           var color = false;          
         }

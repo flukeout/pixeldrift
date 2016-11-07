@@ -1,7 +1,10 @@
+
 ###Left off working on
 
 * When it loads the leaderboard, it shoudl update your 'rank' in localstorage? Should it, for what?
   * For the menu ??
+* If localstoreage has a track name that doesn't exist.. things go south..
+  * Check, and if it doesn't exist, show the track menu...
 
 
 Big stuff

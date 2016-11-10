@@ -21,7 +21,7 @@ function prepareTrack(level){
 
   image.src = href + 'public/tracks/' + level;
 
-  $(".track").css("background-image", "url(./public/tracks/"+level+")");
+  $(".track-image").css("background-image", "url(./public/tracks/"+level+")");
 
   $(image).on("load",function(){
 
@@ -40,6 +40,10 @@ function prepareTrack(level){
     var w = trackWidth * scaling / 2;
     $(".track").css("top","calc(45% - "+h+"px)");
     $(".track").css("left","calc(50% - "+w+"px)");
+
+    $(".track-image").css("top","calc(45% - "+h+"px)");
+    $(".track-image").css("left","calc(50% - "+w+"px)");
+    $(".track-image").height(trackHeight * scaling).width(trackWidth * scaling);
 
     h = h - 50;
     $(".track-shadow").css("top","calc(45% - "+h+"px)");
@@ -259,7 +263,7 @@ function addElement(positions){
     direction = "horizontal";
   }
 
-  var finishLine = $("<div class='element cleared'><div class='line'/><div class='wall'/></div>");
+  var finishLine = $("<div class='element cleared'><div class='line'/><div class='wall' /></div>");
   finishLine.attr("checkpoint", id);
   finishLine.addClass(direction);
   finishLine.css("top",startY * scaling);

@@ -1,3 +1,9 @@
+##Problems 
+
+* Open leaderboard..!
+* Where can we do the validation?
+* Do we need to go back to node?
+
 ##Improvements
 
  * Should just re-order the existing items based on new data...
@@ -9,6 +15,7 @@
  * How to do track progression?
  * Add analytics
  * Twitter / FB share (take from CSS)
+ * Add slight variation to engine noise on turns, so its not totally monotonous..
 
 ###Left off working on
 

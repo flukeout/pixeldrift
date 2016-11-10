@@ -417,14 +417,11 @@ var race = {
     options.oV = -.004;
     options.color = "black";
 
-
-    // make a particle for the shadow
     makeParticle(options);
 
-    
     makeExplosion(car.showx, car.showy, 100);
 
-    trackAnimation("finish");
+    shakeScreen();
     
     crashDebris(car.showx, car.showy, car.actualAngle, car.color);
     playSound("crash");

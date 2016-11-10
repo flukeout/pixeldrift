@@ -186,6 +186,8 @@ function tiltTrack(){
 
   if(move) {
     $(".track").css("transform","scale("+scale+") rotateX(" +ydeg+"deg) rotateY("+xdeg+"deg) translateX(" + xoff +"px) translateY(" + yoff +"px)");    
+    $(".track-image").css("transform","scale("+scale+") rotateX(" +ydeg+"deg) rotateY("+xdeg+"deg) translateX(" + xoff +"px) translateY(" + yoff +"px)");    
+
   }
 }
 

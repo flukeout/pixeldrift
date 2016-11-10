@@ -135,7 +135,7 @@ var trackList = {
     // carcolors : ["#424130"],
     carcolors : ["#1766AD"],
     trailcolor : "#1766AD",
-    lawnmower : "#b07726",
+    lawnmower : false,
     prettyname : "Offroad",
     shortname: "offroad",
     leaveSkids : false,
@@ -152,6 +152,8 @@ var trackList = {
       "#ffffff" : "finish",
       "#c99241" : "road",
       "#ebc61b" : "jump",
+      "#d59d4b" : "checkpoint",
+      "#cdac14" : "jump",
       "#b37e31" : "checkpoint",
       "#7D9941" : "checkpoint-indicator"
     }

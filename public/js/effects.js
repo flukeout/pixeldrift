@@ -171,3 +171,42 @@ function landingPuffs(xposition, yposition, size){
     makeParticle(options);
   }
 }
+
+
+function shakeScreen(){
+
+  var border = $(".track-wrapper");
+
+  border.each(function(index,el){
+
+    var styleTag = $("<style type='text/css'>* {background: pink;}</style>");
+    $("head").append(styleTag);
+
+    styleTag.html(`
+      @keyframes shake-`+index+` {
+        0% {
+          transform: translateX(`+ getRandom(-20,-10)+ `px) translateY(`+ getRandom(-20,-10)+ `px);
+        }
+        25% {
+          transform: translateX(`+ getRandom(10,15)+ `px) translateY(`+ getRandom(10,15)+ `px) rotate(`+getRandom(1,4)+`deg);
+        }
+        50% {
+          transform: translateX(`+ getRandom(-10,-5)+ `px) translateY(`+ getRandom(-10,-5)+ `px);
+        }
+        75% {
+          transform: translateX(`+ getRandom(5,10)+ `px) translateY(`+ getRandom(5,10)+ `px) rotate(`+getRandom(-1,-3)+`deg);
+        }
+      }
+    `);
+
+    $(el).css("animation","shake-" + index + " .2s ease-out");
+
+    setTimeout(function(styleTag,shakeEl) {
+      return function(){
+        styleTag.remove();
+        $(shakeEl).css("animation","");
+      };
+    }(styleTag,el),200);
+
+  });
+}

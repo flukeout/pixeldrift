@@ -316,9 +316,7 @@ function driveCar(car, lapTime) {
 
     if(movedPixelPosition && car.zPosition == 0) {
       collision = checkCollision(car.x, car.y, car.nextx, car.nexty, car.mode);
-    }
-
-  
+    }  
 
     if(collision) {
       
@@ -330,17 +328,9 @@ function driveCar(car, lapTime) {
       var currentY = car.showy - (Math.floor(car.showy / scaling) * scaling);
       var oldAngle = tempAngle;
 
-      // thisisn't good enough 
-      // var up = checkPosition(car.x, car.y - 1);
       var up = checkCollision(car.x, car.y, car.x, car.y - 1, car.mode);
-      
-      // var right = checkPosition(car.x + 1, car.y);
       var right = checkCollision(car.x, car.y, car.x + 1, car.y, car.mode);
-      
-      // var down = checkPosition(car.x, car.y + 1);
       var down = checkCollision(car.x, car.y, car.x, car.y + 1, car.mode);
-
-      // var left = checkPosition(car.x - 1, car.y);
       var left = checkCollision(car.x, car.y, car.x - 1, car.y, car.mode);
 
       var newAngle = tempAngle;
@@ -439,22 +429,28 @@ function driveCar(car, lapTime) {
           }
         }
 
-        angleChange = angleChange * .5;
+        // angleChange = angleChange * .5;
 
-        if(angleChange > 0) {
-          angleChange += 10;
-        }
-
-        if(angleChange < 0) {
-          angleChange -= 10;
-        }
+        // if(angleChange > 0) {
+        //   angleChange += 10;
+        // }
+        //
+        // if(angleChange < 0) {
+        //   angleChange -= 10;
+        // }
         
-        car.actualAngle = car.actualAngle + (1.5 * angleChange);
-        car.angle = car.angle + angleChange;
+        // car.actualAngle = car.actualAngle + (1.5 * angleChange);
+
+        car.actualAngle = car.actualAngle + angleChange;
+
+        // if(Math.abs(angleChange) < 45) {
+        //   car.angle = car.angle + angleChange;
+        // }
+
 
         car.speed = car.speed - (ferocity * car.speed);
 
-        if(car.mode == "normal" && car.type != "ghost") {
+        if(car.mode == "normal" && car.type != "ghost" && car.speed > .25 * maxspeed) {
           crashDebris(car.showx, car.showy, car.actualAngle, car.color);
         }
         

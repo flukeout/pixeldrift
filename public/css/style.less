@@ -37,12 +37,25 @@ canvas.track-source {
 .track {
   margin: 0px auto 0 auto;
   background-size: 100%;
-  image-rendering: pixelated;
-  image-rendering: -moz-crisp-edges;
   transform-style: preserve-3d;
   transform-origin: center;
   position: absolute;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  
 }
+
+.track-image {
+  position: absolute;
+  margin: 0px auto 0 auto;
+  background-size: 100%;
+  z-index: 0;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  // transform-style: preserve-3d;
+  // transform-origin: center;
+}
+
 
 .skids {
   display: block;
@@ -707,7 +720,7 @@ canvas.track-source {
   height: 100vh;
   perspective: 900px;
   transition: opacity 1s linear;
-  transform-style: preserve-3d;
+  // transform-style: preserve-3d;
 }
 
 .game-message {
@@ -1150,11 +1163,11 @@ nav {
 .beta-banner {
   background: #e6451a;
   color: white;
-  padding: 10px 15px;
+  padding: 10px 15px 10px 15px;
   font-size: 11px;
   position: fixed;
   top: 0;
-  left: 0px;
+  left: 10px;
   color: rgba(255, 255, 255, 0.6);
   line-height: 18px;
 

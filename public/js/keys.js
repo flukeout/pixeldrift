@@ -8,14 +8,36 @@ $(document).ready(function(){
     $(".track-chooser").show();
   });
 
-
   $(window).on("keydown",function(e){
+
+    // Ignore all key presses if the name change input is opened
+    if($("input.driver-name").is(":visible")) {
+      return;
+    }
+
+    if(e.keyCode == 90){
+      if(cameraFollow) {
+        cameraFollow = false;
+      } else {
+        cameraFollow = true;
+      }
+    }
+
+    if(e.keyCode == 84) {
+      toggleSound();
+    }
+
+    if(e.keyCode == 89) {
+      localStorage.removeItem("playerRecords");
+    }
 
     if(e.keyCode == 27){
       if($(".track-chooser:visible").length > 0) {
-        $(".track-chooser").hide();        
+        if(race.track){
+          $(".track-chooser").hide();
+        }
       } else {
-        $(".track-chooser").show();        
+        $(".track-chooser").show();
       }
     }
 
@@ -27,27 +49,29 @@ $(document).ready(function(){
       $(".track-chooser").show();
     }
     
+    // Driving controls
     if(e.keyCode == 37 || e.keyCode == 65) {
       keyboardcar.setDirection("steering","left-on");
     }
     if(e.keyCode == 39 || e.keyCode == 68) {
       keyboardcar.setDirection("steering","right-on");
     }
-    if(e.keyCode == 38 || e.keyCode == 90 || e.keyCode == 87) {
+    if(e.keyCode == 38 || e.keyCode == 900 || e.keyCode == 87) {
       keyboardcar.setDirection("gas","on");
     }
   });
 
   $(window).on("keyup",function(e){
+
+    // Driving controls
     if(e.keyCode == 37 || e.keyCode == 65) {
       keyboardcar.setDirection("steering","left-off");
     }
     if(e.keyCode == 39 || e.keyCode == 68) {
       keyboardcar.setDirection("steering","right-off");
     }
-    if(e.keyCode == 38 || e.keyCode == 90 || e.keyCode == 87) {
+    if(e.keyCode == 38 || e.keyCode == 900 || e.keyCode == 87) {
       keyboardcar.setDirection("gas","off");
     }
   });
-
 });

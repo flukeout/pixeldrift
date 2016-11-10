@@ -270,8 +270,18 @@ function driveCar(car, lapTime) {
   // This whole block is checking for collisions before moving basically....
   var done = false;
 
+  var count = 0; // Catches infinite loops, if there are more than 2 it blows up the car.
+
   while(done == false) {
 
+    count++;
+    if(count > 2) {
+      console.log("went infinite on collision");
+      race.explodeCar(car);
+      done = true;
+      break;
+    }
+    
     car.xV = Math.sin(car.actualAngle * (Math.PI/180)) * car.speed;
     car.yV = -1 * Math.cos(car.actualAngle * (Math.PI/180)) * car.speed;
 
@@ -308,6 +318,7 @@ function driveCar(car, lapTime) {
       collision = checkCollision(car.x, car.y, car.nextx, car.nexty, car.mode);
     }
 
+  
 
     if(collision) {
       
@@ -534,12 +545,11 @@ function driveCar(car, lapTime) {
   // Skids
 
   if(movedPixels
-     
-     && car.type != "ghost"
-     && trackData.leaveSkids
-     && car.zPosition == 0
-     && (car.currentPosition == "road" || (car.currentPosition == "overpass" && car.mode == "normal") || car.currentPosition == "checkpoint"))
-      {
+    && car.type != "ghost"
+    && trackData.leaveSkids
+    && car.zPosition == 0
+    && (car.currentPosition == "road" || (car.currentPosition == "overpass" && car.mode == "normal") || car.currentPosition == "checkpoint"))
+    {
 
     var skidAngle = 15;
     var maxOpacity = .1;
@@ -678,6 +688,8 @@ function driveCar(car, lapTime) {
   if(car.zPosition <= 0 && car.currentPosition == "void") {
     if(car.mode != "gone") {
 
+      race.willRespawn = true;
+      
       setTimeout(function(){
         if(car.type != "ghost") {
           playSound("fall");
@@ -686,7 +698,9 @@ function driveCar(car, lapTime) {
 
       setTimeout(function(){
         if(car.type != "ghost") {
-          race.quickRestart();
+          if(race.willRespawn == true) {
+            race.quickRestart(); // Only respawn the car if it hasn't already from a manual respawn
+          }
         }
       },750);
 
@@ -702,8 +716,12 @@ function driveCar(car, lapTime) {
   }
 
   // Idling animation...
+  
+
   if(car.speed == 0 && car.zPosition == 0) {
-    car.idler.addClass("idle");
+    setTimeout(function(){
+      car.idler.addClass("idle");      
+    },300);
   } else {
     car.idler.removeClass("idle");
   }
@@ -712,7 +730,11 @@ function driveCar(car, lapTime) {
   // Safe Landing
   if(car.zPosition < 0 && car.zVelocity < 0 && car.mode != "gone" && car.mode != "crashed"){
 
-    trackAnimation("carland");
+    if(car.type != "ghost") {
+      trackAnimation("carland");
+      landingPuffs(car.showx, car.showy, 10);
+    }
+
     car.idler.addClass("carlanding");
 
     setTimeout(function(el) { return function() { 
@@ -727,7 +749,7 @@ function driveCar(car, lapTime) {
     car.yRotation = 0;
   }
 
-  // Crash landing
+  // Crash landing - not sure if this does anything at all.
   if(car.zPosition < 0 && car.zVelocity < 0 && car.mode != "gone" && car.mode == "crashed"){
     car.zPosition = 0;
     car.speed = 0;
@@ -774,7 +796,7 @@ function driveCar(car, lapTime) {
     scaler = scaler + percent;
   }
   car.body.css("transform","scaleY("+scaler+")");
-
   car.desiredIndicator.css("transform", "rotateZ("+car.angleDelta+"deg)");
+
   car.shadow.css("transform", "rotateZ("+car.angle+"deg)");
 }

@@ -6,12 +6,16 @@ var replayCar = {
   gas : "off"
 }
 
-
 $(document).ready(function(){
 
   buildTrackChooser();
 
   lastTrack = localStorage.getItem("lastSingleTrack");
+  
+  if(!trackList[lastTrack]) {
+    lastTrack = false;
+  }
+
   playerRecords = JSON.parse(localStorage.getItem("playerRecords")) || false;
 
   if(!lastTrack){
@@ -22,7 +26,7 @@ $(document).ready(function(){
   }
 
   gameLoop();
-
+  
 });
 
 var race = {
@@ -65,8 +69,12 @@ var race = {
   bestlap : false,
 
   lapHistory : [],
+  
+  willRespawn: false, // Keeps track of a respawning condition....
 
   quickRestart : function(){
+
+    this.willRespawn = false;
 
     if(soundEnabled) {
       engineVol.gain.value = .15;
@@ -178,7 +186,7 @@ var race = {
 
     $(".track-wrapper").css("opacity",0);
 
-    // showMessage("GET READY!");
+    showMessage("GET READY!");
 
     cars = [];
     $(".car").remove();
@@ -314,12 +322,17 @@ var race = {
             controls : []
           }
         
-          updatePlayerRecord(this.bestGhostData);
+          updatePlayerRecord({
+            ghost : this.bestGhostData
+          });
+
           leaderBoard.newRecord(this.trackShortname, this.bestlap);
         }
 
         if(!playerRecords[race.trackShortname].ghost) {
-          updatePlayerRecord(this.newGhostData);
+          updatePlayerRecord({
+            ghost: this.newGhostData
+          });
           this.bestGhostData = JSON.parse(JSON.stringify(this.newGhostData));
         }
 
@@ -448,7 +461,9 @@ var race = {
 // Just updates the Ghost in the localstorage
 // leaderboard.js does everythign else... 
 
-function updatePlayerRecord(ghostData){
+function updatePlayerRecord(data){
+
+  // console.log(data);
 
   if(!playerRecords) {
     playerRecords = {};
@@ -457,8 +472,16 @@ function updatePlayerRecord(ghostData){
   if(!playerRecords[race.trackShortname]) {
     playerRecords[race.trackShortname] = {};
   }
+  
+  var rec = playerRecords[race.trackShortname];
+  
+  for(var k in data) {
+    var value = data[k];
+    rec[k] = value;
+  }
 
-  playerRecords[race.trackShortname].ghost = ghostData;
+  console.log("updatePlayerRecords");
+  console.log(playerRecords);
   localStorage.setItem("playerRecords",JSON.stringify(playerRecords));
 }
 

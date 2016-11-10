@@ -1,13 +1,31 @@
 
 .laps {
+  background: rgba(0,0,0,.6);
   color: white;
   text-align: center;
   margin: 0 auto;
   position: absolute;
-  width: 60%;
-  left: 20%;
-  padding: 20px 0 0 0 ;
+  width: 240px;
+  left: ~"calc(50% - 120px)";
+  padding: 20px 0 10px 0 ;
   box-sizing: border-box;
+  z-index: 6;
+  
+  h2 {
+    font-size: 16px;
+  }
+
+  .left-col {
+    display: block;
+    width: 100%;
+  }
+
+  .right-col {
+    display: block;
+    width: 50%;
+    float: right;
+    text-align: left;
+  }
 
   .lap-time {
     margin: 0 0 10px 0;
@@ -144,31 +162,6 @@
   100% {
     transform: rotateZ(359deg);
   }
-}
-
-
-
-
-.laps {
-  z-index: 6;
-  
-
-  h2 {
-    font-size: 16px;
-  }
-
-  .left-col {
-    display: block;
-    width: 100%;
-  }
-
-  .right-col {
-    display: block;
-    width: 50%;
-    float: right;
-    text-align: left;
-  }
-
 }
 
 .best-time-wrapper {

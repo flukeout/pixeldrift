@@ -3,13 +3,11 @@
     <title>Pixel Drift Club</title>
     <meta charset="utf-8">
     
-
     <link href='https://fonts.googleapis.com/css?family=Press+Start+2P' rel='stylesheet' type='text/css'>
     <link href="https://fonts.googleapis.com/css?family=Lato:100,300,400,700,900" rel="stylesheet">    
     <link rel="icon" type="image/png" sizes="196x196" href="public/img/favicon.png?2">
 
     <script src="public/js/jquery.js" type="text/javascript" charset="utf-8"></script>
-
     <script src="https://www.gstatic.com/firebasejs/3.5.2/firebase.js"></script>
 
     <script src="public/js/trackchooser.js"></script>
@@ -27,6 +25,8 @@
     <script src="public/js/keys.js"></script>
     <script src="public/js/standings.js"></script>
 
+    <link rel="stylesheet/less" href="public/css/trackchooser.less" type="text/css">
+    <link rel="stylesheet/less" href="public/css/challenge.less" type="text/css">
     <link rel="stylesheet/less" href="public/css/bottom.less" type="text/css">
     <link rel="stylesheet/less" href="public/css/leaderboard.less" type="text/css">
     <link rel="stylesheet/less" href="public/css/single.less" type="text/css">
@@ -55,18 +55,8 @@
 
     <div class="laps">
 
-      <!--
-      <div class="player-rank-wrapper">
-        <div class="player-rank">
-          <span class="current-rank">10</span><span class="count-suffix">th</span><span class="total-records">/<span class="value">80</span></span>
-        </div>
-      </div>
-      -->
-
-
         <div class="left-col">
           <div class="lap-time-wrapper">
-            <!-- <h2>This Lap</h2> -->
             <div class="lap-time">-.---</div>
           </div>
           <div class="best-time-wrapper">
@@ -83,10 +73,10 @@
 
           <div class="lap-time-wrapper">
             <span>Avg (last 3)</span>
-            <span class="avg-lap-time">-.---</span>
+            <span class="avg-lap-time">-.-</span>
             <br/>
             <span>Best avg</span>
-            <span class="avg-lap-time">-.---</span>
+            <span class="avg-lap-time">-.-</span>
 
           </div>
         </div>
@@ -114,25 +104,9 @@
         <div class="track-thumbnail">
           <div class="track-thumbnail-wrapper"></div>
           <div class="track-name"></div>
+          <div class="track-difficulty">asdf</div>
           <div class="player-time">-.---</div>
         </div>
-
-        <!--
-        <div class="player-record">
-          <h2>YOUR RANK</h2>
-
-          <div class="player-time"></div>
-
-          <div>
-            <span class="player-rank"></span><span class="total-records">/<span class="value"></span></span>
-          </div>
-
-          <div class="leaders">
-            <h2>LEADERS</h2>
-            <div class="leaders-wrapper"></div>
-          </div>
-        </div>
-          -->
       </div>
 
     </div>
@@ -142,20 +116,18 @@
 
     <div class="leaderboard">
       <h1>
-        <a type="top-rank" class="selected">TOP</a>
-        <a type="player-rank" href="#">YOU</a>
+        <!-- <a type="top-rank" class="selected">TOP</a> -->
+        <!-- <a type="player-rank" href="#">YOU</a> -->
+        Ranking
       </h1>
-      <div class="loading-message">LOADING...</div>
-
       <div class="rank-wrapper">
         <div class="loading">loading...</div>
-        <div class="top-rank players"></div>
         <div class="player-rank players"></div>
       </div>
     </div>
 
-
     <div class="bottom-stuff">
+      <a class="zoom" href="#"><span class="key">Z</span>-zoom</a>
       <a class="change-track" href="#"><span class="key">ESC</span>-menu</a>
       <a class="quick-restart" href="#"><span class="key">R</span>-Restart</a>
       <a class="toggle-sound" href="#"><span class="key">T</span>-toggle Sound</a>
@@ -166,11 +138,23 @@
         <a class="confirm-name action" href="#"><span class="key">OK</span></a>
         <a class="change-name action" href="#"><span class="key">Edit</span></a>
       </div>
-      
     </div>
+    
+    <div class="popup-overlay">
+      <div class="popup">
+        <h1>Send a Challenge</h1>
+        <p>Your friends can race against your ghost.</p>
+        <p>Your time: 2.021s</p>
+        <p>Send them this link...</p>
+        <p><a href="#">pixeldrfit.club/?challenge=12</a></p>
+      </div>
+    </div>
+    
+    <div class="beta-banner">
+      <h1>Pixel Drift Club</h1>
+      BETA! Found a problem? <br/>Tweet me <a href="https://twitter.com/flukeout">@flukeout</a>
+    </div>
+    
   </body>
 </html>
-
-
-
 

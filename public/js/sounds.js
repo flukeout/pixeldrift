@@ -4,11 +4,6 @@ $(document).ready(function(){
   });
 });
 
-$(window).on("keydown",function(e){
-  if(e.keyCode == 84) {
-    toggleSound();
-  }
-});
 
 function toggleSound(){
   if(soundEnabled){

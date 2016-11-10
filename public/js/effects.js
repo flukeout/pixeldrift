@@ -145,3 +145,29 @@ function makeExplosion(xposition, yposition, size){
     makeParticle(options);
   }
 }
+
+
+function landingPuffs(xposition, yposition, size){
+
+
+  // Make smoke puffs around the explosion
+  for(var i = 0; i < 6; i++){
+
+    var options = {
+      x : xposition,
+      y : yposition,
+      angle: getRandom(0,359),
+      zR : getRandom(-15,15),
+      z : 1,
+      scale : 1,
+      scaleV : -.04,
+      width : 15,
+      className : 'puff',
+      lifespan: 125,
+      speed : getRandom(1.25,1.75)
+    }
+
+    options.height = options.width;
+    makeParticle(options);
+  }
+}

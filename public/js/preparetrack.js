@@ -1,10 +1,15 @@
 
 function prepareTrack(level){
 
+  trackData = trackList[level];
+  
+  if(!trackData) {
+    return;
+  }
+
   canvasTrack = $("canvas.track-source");
   context = canvasTrack[0].getContext("2d");
 
-  trackData = trackList[level];
 
   var image = new Image();
   $("body").append(image);

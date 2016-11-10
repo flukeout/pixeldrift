@@ -1,15 +1,17 @@
 var scaling = 15;   // 1 pixel = 15 pixels
 
 var cars = []; //This holds the player car?
-
 var playSounds = false;
-
 var keyboardcar;
 var enginevol;    // Engine volume
 var time, delta, elapsedTime; //keep track of time between laps
 var canvasTrack, context, trackHeight, trackWidth; //Need to revisit where these gos
 var trackData = {};
 var audioContext = new AudioContext();
+var cameraFollow = false;
+
+
+
 
 // Shows a message in an overlay over the game
 
@@ -153,19 +155,21 @@ function tiltTrack(){
 
   var xtotal = 0;
   var ytotal = 0;
-
+  var move = true;
+  
   for(var i = 0; i < cars.length; i++){
     var car = cars[i];
     xtotal = xtotal + car.x;
     ytotal = ytotal + car.y;
+    if(car.mode == "gone") {
+      move = false;
+    }
   }
 
   var xavg = xtotal / cars.length || 0;
   var yavg = ytotal / cars.length || 0;
   var xdeg = 5 * (-1 + (2 * xavg / trackWidth));
   var ydeg = 45 + 5 * (1 - (2 * yavg / trackHeight));
-
-  var cameraFollow = false;
 
   var xoff = 0;
   if(cars[0] && cameraFollow) {
@@ -177,7 +181,12 @@ function tiltTrack(){
     yoff = (.5 * trackHeight * 15) - (cars[0].showy * 1);
   }
 
-  $(".track").css("transform","rotateX(" +ydeg+"deg) rotateY("+xdeg+"deg) translateX(" + xoff +"px) translateY(" + yoff +"px)");
+  // If the camera is following the car, let's soom zoom in
+  cameraFollow ? scale = 1.75 : scale = 1;
+
+  if(move) {
+    $(".track").css("transform","scale("+scale+") rotateX(" +ydeg+"deg) rotateY("+xdeg+"deg) translateX(" + xoff +"px) translateY(" + yoff +"px)");    
+  }
 }
 
 

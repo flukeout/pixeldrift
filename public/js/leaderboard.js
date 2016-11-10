@@ -4,6 +4,13 @@ var names = ["bob","bill","lammy","jammor","bingor"]; // Just for setting dummy 
 
 $(document).ready(function(){
 
+  $(".leaderboard").on("click",".share-time",function(){
+    console.log("challenge sent");
+    $(".popup-overlay").show();
+  });
+
+
+  
   $(".player-name").on("click",".confirm-name", function(){
     var newName = $(".player-name input").val();
     
@@ -27,7 +34,6 @@ $(document).ready(function(){
   });
 
   leaderBoard.init();
-  leaderBoard.showType("player-rank");
 });
 
 
@@ -44,6 +50,7 @@ var leaderBoard = {
 
   localRecords : {},
   playerName : "flukeout",
+  trackName : "",
 
   showLimit : 10,           // How many records to show...
 
@@ -83,7 +90,7 @@ var leaderBoard = {
     }
   },
 
-  // Toggles which view is shown
+  // Toggles which view is function
   // * "top times" or "player times"
   showType : function(type){
     $(".rank-wrapper").attr("mode",type);
@@ -92,6 +99,8 @@ var leaderBoard = {
   },
 
   newRecord : function(track, time) {
+  
+    // got a new record
     
     if(!this.playerRecordKey) {
       var key = this.addRecord(track, this.playerName, time);
@@ -104,11 +113,13 @@ var leaderBoard = {
       this.localRecords[track] = {};
     }
     
-    this.localRecords[track].key = this.playerRecordKey || false;
-    this.localRecords[track].lapTime = time;
-    this.localRecords[track].name = this.playerName;
+    // What does this update? 
+    updatePlayerRecord({
+      key : this.playerRecordKey || false,
+      lapTime : time,
+      name : this.playerName
+    });
 
-    localStorage.setItem("playerRecords",JSON.stringify(this.localRecords));
     
     this.getTrackRecords(this.trackName);
   },
@@ -123,18 +134,25 @@ var leaderBoard = {
     });
     
     this.showTrackRecords();
-    
-
-    // if we update a record... we shoudl refresh the view...
   },
   
   
   // Starts changing tracks...
   changeTracks : function(trackName){
     this.playerRecordKey = false;
+    this.trackName = trackName;
     this.getTrackRecords(trackName);
+
+    // Gotta check what we have...
+    var time = "-.---";
+    this.localRecords = JSON.parse(localStorage.getItem("playerRecords")) || {}; 
+    if(this.localRecords[trackName]){
+      var localRecord = this.localRecords[trackName]
+      var time = formatTime(localRecord.lapTime);
+    }
+
     $(".lap-time").text("0.000");
-    $(".best-time").text("-.---");
+    $(".best-time").text(time);
   },
 
 
@@ -144,10 +162,13 @@ var leaderBoard = {
 
     this.playerRecordRef = false;
 
-
     $(".leaderboard .loading").show();
 
-    var localRecord = this.localRecords[trackName] || false;
+    var localRecords = JSON.parse(localStorage.getItem("playerRecords")) || false;
+
+    if(localRecords) {
+      var localRecord = localRecords[trackName] || false;
+    }
 
     if(localRecord) {
       this.playerRecordKey = localRecord.key || false;
@@ -163,7 +184,6 @@ var leaderBoard = {
     firebase.database().ref('/leaderboard/' + trackName)
       .orderByChild('time')
       .once('value').then(function(snapshot) {
-        console.log("HUH");
 
         var i = 0;
 
@@ -177,19 +197,19 @@ var leaderBoard = {
           var c = child.val();
           
           var item = {
-            name: c.name,
+            name: c.name || "unknown_xx",
             time : c.time,
             key : child.key,
             place : i
           }
-
+          
           i++;
           
           if(child.key == that.playerRecordKey) {
             that.playerRecordRef = item;
           }
-
           that.trackRecords.push(item)
+
         });
         that.showTrackRecords();
     });
@@ -211,15 +231,6 @@ var leaderBoard = {
 
     $(".players .entry").remove(); // Nuke all existing records
 
-    // Populate the top 10 list
-    for(var i = 0; i < this.showLimit; i++) {
-      var record = this.trackRecords[i];
-      if(record) {
-        $(".leaderboard .top-rank").append(that.makeLeaderBoardEl(record.place + 1, record.name, record.time));
-      }
-    }
-    
-
     // We need to inject  player record in there if we dont't find it... 
     // Populate the list around the player's time & highlight player
 
@@ -239,20 +250,24 @@ var leaderBoard = {
         $(".leaderboard .player-rank").append(that.makeLeaderBoardEl(record.place + 1, record.name, record.time, type));
       }
     }
-
-
   },
   
   
   // Creats a leaderboard element to inject
   makeLeaderBoardEl : function(rank,name,time, type) {
-    var displayName = name.substring(0,7);
+    var displayName = name.substring(0,12);
 
     var recordEl = $("<div class='entry'/>");
-    type ? recordEl.addClass(type) : false;
+
     recordEl.append("<div class='rank'>" + rank + "</div>");
     recordEl.append("<div class='time'>" + formatTime(time) + "</div>");
     recordEl.append("<div class='name'>" + displayName + "</div>");
+
+    if(type == "player") {
+      recordEl.addClass(type);
+      recordEl.append("<div class='share-time'>Send Challenge</div>");
+    }
+
     return recordEl;
   },
 
@@ -272,6 +287,7 @@ var leaderBoard = {
 
   // Adds a record into firebase..
   // we won't use this though, we'll be more careful...
+  // ...and returns the key!
   addRecord : function(trackName, name, time) {
     
     var trackLeaderboard = firebase.database().ref('leaderboard/' + trackName);

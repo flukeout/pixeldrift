@@ -1,6 +1,5 @@
 $(document).ready(function(){
   
-  
   $(".zoom-ui").on("click","a",function(){
 
     $(".track").css("transition", "transform .25s cubic-bezier(0.005, 1.000, 0.420, 1.590)");

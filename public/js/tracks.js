@@ -2,18 +2,22 @@ var playerAchievements = {}; // So that we can remember.. what you have gotten..
 var trackData = {}; //Place holder for current track -  gets populated, yo.
 
 var includeTracks = [
-  "twitter",
-  "html5",
-  "offroad",
-  "yellow",
-  "darkloop",
-  "chasm",
-  "ampersand",
-  "turbo8",
-  "testground",
+  // "twitter",
+  // "html5",
+
   "oval",
+  "turbo8",
+  "ampersand",
+  "chasm",
+  "darkloop",
   "superjump",
-  "grass"
+  "yellow",
+  "splash",
+  "offroad"
+
+  // "grass",
+  // "testground",  
+
 ]
 
 var trackTimes = {
@@ -115,7 +119,7 @@ var trackList = {
     shortname : "splash",
     carcolors : ["#ffffff"],
     trailcolor : "#ffffff",
-    leaveSkids : false,
+    leaveSkids : true,
     difficulty : "expert",
     laps : 3,
     hexes : {
@@ -128,8 +132,9 @@ var trackList = {
   },
   "offroad.png" : {
     filename : "offroad.png",
-    carcolors : ["#424130"],
-    trailcolor : "#424130",
+    // carcolors : ["#424130"],
+    carcolors : ["#1766AD"],
+    trailcolor : "#1766AD",
     lawnmower : "#b07726",
     prettyname : "Offroad",
     shortname: "offroad",
@@ -147,7 +152,8 @@ var trackList = {
       "#ffffff" : "finish",
       "#c99241" : "road",
       "#ebc61b" : "jump",
-      "#b37e31" : "checkpoint"
+      "#b37e31" : "checkpoint",
+      "#7D9941" : "checkpoint-indicator"
     }
   },
   "yellow.png" : {
@@ -164,7 +170,8 @@ var trackList = {
       "#ffffff" : "finish",
       "#e7dc2a" : "road",
       "#8d8512" : "jump",
-      "#e0d525" : "checkpoint"
+      "#e0d525" : "checkpoint",
+      "#9FCC12" : "checkpoint-indicator"
     }
   },
   "noirjump.png" : {
@@ -274,6 +281,7 @@ var trackList = {
       "#747474" : "overpass",
       "#7dba3d" : "lamp",
       "#e6d918" : "jump",
+      "#c1912b" : "wall",
       "#606060" : "checkpoint",
       "#277eba" : "checkpoint-indicator"
     }

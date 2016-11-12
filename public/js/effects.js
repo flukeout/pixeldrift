@@ -39,7 +39,10 @@ function crashDebris(x, y, angle, color) {
 // Throws a grass pixel into the air
 // TODO - probably shouldn't pass the whole car object into this
 
-function mowGrass(car) {
+function mowGrass(car, percent, type) {
+
+    if(!type) { type = "grass"; }
+    if(!percent) { percent = 1; }
 
     var groundColor = checkRGB(car.x,car.y);
 
@@ -50,16 +53,32 @@ function mowGrass(car) {
       }
     }
 
-    var newColor = rgbToHex(groundColor[0],groundColor[1],groundColor[2]);
-    ctx.fillStyle = "#" + newColor;
-    ctx.fillRect(car.x * scaling, car.y * scaling, scaling, scaling);
+    // Particle color for the particle debris that gets kicked up
+    var particleColor = checkRGB(car.x, car.y);
+    // If it's a skid (for dirt) we make it a bit darker
+    if(type == "skid") {
+      for(var i = 0; i < 3; i++){
+        particleColor[i] -= 20;
+        if(particleColor[i] < 0) {
+          particleColor[i] = 0;
+        }
+      }
+    }
+    particleColor = "#" + rgbToHex(particleColor[0],particleColor[1],particleColor[2]);
+
+    // New color is for the ground..
+    var newGroundColor = rgbToHex(groundColor[0],groundColor[1],groundColor[2]);
+    if(type == "grass") {
+      ctx.fillStyle = "#" + newGroundColor;
+      ctx.fillRect(car.x * scaling, car.y * scaling, scaling, scaling);
+    }
 
     var options = {
       x : car.showx,
       y : car.showy,
       width : 15,
       height: 15,
-      zV: 3.5,
+      zV: 3.5 * percent,
       gravity : .15,
 
       xRv : getRandom(-1,1),
@@ -69,7 +88,7 @@ function mowGrass(car) {
       xV : getRandom(-1.5,1.5),
       yV : getRandom(-1.5,1.5),
       lifespan: 50,
-      color: checkColor(car.x,car.y)
+      color: particleColor
     }
 
     makeParticle(options);

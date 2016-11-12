@@ -80,7 +80,7 @@ var race = {
       engineVol.gain.value = .15;
     }
 
-    $("[checkpoint]").removeClass("cleared");
+    $("[checkpoint]").addClass("cleared");
 
     spawnCars();
     
@@ -352,10 +352,9 @@ var race = {
 
     } else {
       // Player missed checkpoints
-
-      $("[checkpoint]:not(.cleared)").each(function(el){
-        addAnimationClass($(this), "checkpoint-strobe");
-      });
+      // $("[checkpoint]:not(.cleared)").each(function(el){
+      //   addAnimationClass($(this), "checkpoint-strobe");
+      // });
 
       playSound("bump");
       

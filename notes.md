@@ -1,8 +1,30 @@
 ##Problems 
 
-* Open leaderboard..!
+* Leaderboard entries are easy to spoof.
 * Where can we do the validation?
 * Do we need to go back to node?
+
+* After crashing before starting a lap, the checkpoints dont work
+
+**Solution**
+
+* Create a node service that is responsible for..
+  * Adding a new record
+  * Updating an existing record
+
+**How will this work?**
+
+* When a new score is submitted, it needs to be validated. Some things we can use...
+  * Minimum time to finish the track
+  * Minimum number of checkpoints (we know this per track)
+
+* We can submit the ghost data to this service along with the lap time and it can try to validate it
+  * Are all of the commands sensical?
+  * Do all of the keypresses happen with increasing timestamps?
+
+* What prevents someone from creating a fake replay JSON to submit to all tracks one by one??
+  * Should I bother with this? Or no?
+
 
 ##Improvements
 

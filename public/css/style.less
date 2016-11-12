@@ -42,18 +42,14 @@ canvas.track-source {
   position: absolute;
   image-rendering: pixelated;
   image-rendering: -moz-crisp-edges;
-  
 }
 
 .track-image {
   position: absolute;
   margin: 0px auto 0 auto;
   background-size: 100%;
-  z-index: 0;
   image-rendering: pixelated;
   image-rendering: -moz-crisp-edges;
-  // transform-style: preserve-3d;
-  // transform-origin: center;
 }
 
 
@@ -720,7 +716,7 @@ canvas.track-source {
   height: 100vh;
   perspective: 900px;
   transition: opacity 1s linear;
-  // transform-style: preserve-3d;
+  transform-style: preserve-3d;
 }
 
 .game-message {
@@ -901,8 +897,8 @@ nav {
     left: 0;
     width: 100%;
     height: 100%;
-    // transform: translateZ(1px);
     transition: opacity .4s ease-out;
+    transform: translateZ(.5px);
   }
 
   .wall {
@@ -910,7 +906,6 @@ nav {
     z-index: 99;
     opacity: .4;
     transition: all .35s cubic-bezier(0.515, -0.485, 0.395, 1.415);
-    // display: none !important;
   }
 
   &.horizontal .wall {
@@ -918,7 +913,6 @@ nav {
     height: 60px;
     bottom: 8px;
     transform-origin: bottom;
-    // background-image: linear-gradient(rgba(255,255,255,0) , #277eba);
     background: inherit;
     transform: rotateX(-90deg);
   }
@@ -955,6 +949,7 @@ nav {
   animation: finishpop .3s linear;
   animation-timing-function: ease-out;
 }
+
 
 @keyframes finishpop {
   0% {
@@ -1049,16 +1044,25 @@ nav {
   
 .checkpoint-strobe {
   .wall {
-  // .line,.wall {
     animation: checkpointStrobe .15s linear;
     animation-iteration-count: 3;
   }
 }
 
 @keyframes checkpointStrobe {
-  50% {
-    opacity: .2;
+  0% {
+    opacity: 0;
   }
+  49% {
+    opacity: 0;
+  }
+  50% {
+    opacity: .4;
+  }
+  99% {
+    opacity: .4;
+  }
+
 }
 
 

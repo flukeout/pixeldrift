@@ -16,7 +16,7 @@ function toggleSound(){
 }
 
 var soundContext = new AudioContext();
-var soundEnabled = false;
+var soundEnabled = true;
 
 var url = window.location;
 var path = url.pathname;

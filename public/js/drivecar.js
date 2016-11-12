@@ -539,7 +539,6 @@ function driveCar(car, lapTime) {
   car.idler.css("transform","rotateY("+car.tilt+"deg) translateZ(0px)")
   
   // Skids
-
   if(movedPixels
     && car.type != "ghost"
     && trackData.leaveSkids
@@ -563,8 +562,36 @@ function driveCar(car, lapTime) {
     ctx.fillStyle = "rgba(0,0,0,"+opacity+")";
     ctx.fillRect(car.x * scaling, car.y * scaling, scaling, scaling);
   }
+
+  // Corner Mower - kicks up dirt & particles when turning
+  if(movedPixels
+    && car.type != "ghost"
+    && trackData.skidMower
+    && car.zPosition == 0
+    && car.currentPosition != "overpass")
+    {
+
+    var skidAngle = 15;
+    var maxOpacity = .1;
+    var angleDelta = Math.abs(car.actualAngle - car.angle);
+    var percent = 0;
+
+    if(angleDelta > skidAngle) {
+      percent = (angleDelta - skidAngle) / skidAngle;
+      if(percent > 1) {
+        percent = 1;
+      }
+    }
+    
+    if(percent > .5) {
+      mowGrass(car, percent, "skid");
+    }
+  }
+
+
   
   if(car.type != "ghost") {
+  
     // Skid Sounds
     var skidAngle = 15;
     var maxOpacity = .2;
@@ -587,7 +614,6 @@ function driveCar(car, lapTime) {
     }
 
     // Engine Sounds
-  
     var minpitch = 1;
     var maxpitch;
   
@@ -608,9 +634,9 @@ function driveCar(car, lapTime) {
     if(engineSource) {
       engineSource.playbackRate.value = enginePitch;
     }
-    
   }
 
+  // Handle overpasses
   if(car.mode == "normal") {
     if(car.currentPosition == "road" && nextPosition == "ledge" ) {
       car.mode = "under";
@@ -621,7 +647,7 @@ function driveCar(car, lapTime) {
     }
   }
 
-  // Soft ledge 
+  // Soft ledge
   if(car.mode == "normal") {
     if(car.currentPosition == "road" && nextPosition == "softledge" ) {
       car.mode = "under-soft";

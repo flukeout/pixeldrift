@@ -1,7 +1,6 @@
 ## Settings
 
-Do persistent settings & icons 
-
+* Track chooser is not displaying records correctly.. BUT WHY SIR WHY WHY WHY WHY WHY WHY W HY WHYW Hhljljkk...
 
 
 ##Left Off

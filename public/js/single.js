@@ -165,7 +165,7 @@ var race = {
 
     $(".track-wrapper").css("opacity",0);
 
-    // showMessage("GET READY!");
+    showMessage("GET READY!");
 
     cars = [];
     $(".car").remove();
@@ -262,7 +262,6 @@ var race = {
     // Adds each ghost car
     for(var i = 0; i < this.ghostCarData.length; i++) {
       var data = this.ghostCarData[i];
-      console.log("adding from finishlap");
       this.addNewGhost(data);
     }
     
@@ -324,15 +323,12 @@ var race = {
       this.currentlap++;
 
     } else {
-
       playSound("bump");
       this.lapTime = 0;
     }
     
-    
     // Reset the ghost no matter what if we've got one
     if(this.activeGhostCars.length < 1 && this.bestGhostData.controls.length > 0) {
-      console.log("adding from somewhere");
       this.addNewGhost({
         time : this.bestlap,
         name : "frank",

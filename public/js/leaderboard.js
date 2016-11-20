@@ -88,7 +88,6 @@ var leaderBoard = {
 
   // Adds a new record!
   newRecord : function(name, time, ghostData) {
-    console.log("new rec....... . . . . .");
 
     // Check if there is a local record for this leaderboard
     

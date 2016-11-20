@@ -1,7 +1,7 @@
 function buildTrackChooser(){
 
   //Get records from localstorage
-  var playerRecords = JSON.parse(localStorage.getItem("playerRecords")) || {};
+  // var playerRecords = JSON.parse(localStorage.getItem("playerRecords")) || {};
   
   for(var i = 0; i < includeTracks.length; i++) {
       
@@ -13,9 +13,11 @@ function buildTrackChooser(){
       trackOption.removeClass("track-template");
       trackOption.attr("track", trackName);
 
-      var pRecord = playerRecords[trackName] || {};
+      var playerRecord = JSON.parse(localStorage.getItem(trackName)) || {};
 
-      trackOption.find(".player-time").text(formatTime(pRecord.lapTime));
+      
+
+      trackOption.find(".player-time").text(formatTime(playerRecord.time));
       trackOption.find(".track-difficulty").text(track.difficulty);
 
       trackOption.find(".track-thumbnail-wrapper").css("background-image","url(./public/tracks/" + track.filename + ")");

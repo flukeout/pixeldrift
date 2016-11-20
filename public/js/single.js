@@ -186,10 +186,6 @@ var race = {
   // Tells the leaderboard to change the leaderboard too
   changeTrack: function(trackName){
 
-    console.log("Do we have this track??? - ??? - ??? - ??? - ??? - ??? - ??? - ");
-    console.log(trackName);
-    console.log(includeTracks.indexOf(trackName));
-
     $(".track-wrapper").css("opacity",0);
     $(".track-wrapper").hide();
 

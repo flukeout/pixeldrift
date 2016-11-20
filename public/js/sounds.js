@@ -1,11 +1,27 @@
 $(document).ready(function(){
+
   $(".toggle-sound").on("click",function(){
     toggleSound();
   });
+
+
 });
 
 
+function allSoundsLoaded() {
+  startEngine();
+  startSkid();
+  var soundSetting = localStorage.getItem("sound") || "on";
+  if(soundSetting == "on") {
+    enableSound();
+  } else {
+    disableSound();
+  }
+}
+
 function toggleSound(){
+  addAnimationClass($(".toggle-sound"), "icon-pop");
+
   if(soundEnabled){
     disableSound();
   } else {
@@ -15,10 +31,6 @@ function toggleSound(){
 
 var soundContext = new AudioContext();
 var soundEnabled = true;
-
-// setTimeout(function(){
-//   disableSound();
-// },1000)
 
 var url = window.location;
 var path = url.pathname;
@@ -78,6 +90,8 @@ for(var key in sounds) {
   loadSound(key);
 }
 
+var soundsLoaded = 0;
+
 function loadSound(name){
 
   var url = sounds[name].url;
@@ -92,6 +106,10 @@ function loadSound(name){
   request.onload = function() {
     soundContext.decodeAudioData(request.response, function(newBuffer) {
       sounds[name].buffer = newBuffer;
+      soundsLoaded++;
+      if(soundsLoaded == Object.keys(sounds).length) {
+        allSoundsLoaded();
+      }
     });
   }
   request.send();
@@ -107,7 +125,7 @@ function playSound(name){
 
   if(buffer){
     var source = soundContext.createBufferSource(); // creates a sound source
-    source.buffer = buffer;                    // tell the source which sound to play
+    source.buffer = buffer;                         // tell the source which sound to play
     
     var volume = soundContext.createGain();
     volume.gain.value = soundVolume;
@@ -153,11 +171,6 @@ function startSkid() {
 	
 }
 
-setTimeout(function(){
-  startSkid();
-}, 3000);
-
-
 var engineBuffer;
 var engineVol;
 var engineSource;
@@ -166,6 +179,7 @@ var enginePitch = 1;
 function startEngine() {
 	
   var engineBuffer = sounds["engine"].buffer;
+  
   if(engineBuffer){
 
     engineVol = soundContext.createGain();
@@ -186,18 +200,18 @@ function startEngine() {
 	
 }
 
-setTimeout(function(){
-  startEngine();
-}, 3000);
-
 function enableSound(){
+  localStorage.setItem("sound","on");
   soundEnabled = true;
   engineVol.gain.value = .15;
   maxSkidGain = .3;
+  $(".toggle-sound").addClass("sound-on");
 }
 
 function disableSound(){
+  $(".toggle-sound").removeClass("sound-on");
   soundEnabled = false;
   engineVol.gain.value = 0;
   maxSkidGain = 0;
+  localStorage.setItem("sound","off");
 }

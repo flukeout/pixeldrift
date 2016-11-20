@@ -1,4 +1,5 @@
 
+
 .player-name {
   z-index: 4;
   color: white;
@@ -12,6 +13,10 @@
     .display-name {
       display: none;
     }
+    
+    .icon-helmet { 
+      opacity: 1;
+    }
   }
 
   &[mode=display] {
@@ -21,7 +26,6 @@
 
     input {
       display: none;
-      
     }
   }
 
@@ -55,6 +59,7 @@
     width: 155px;
     text-align: left;
     color: white;
+    text-transform: none;
     opacity: .5;
     background: transparent;
     padding: 0 0 4px 0;
@@ -86,6 +91,7 @@
     opacity: .5;
     margin: 0 15px;
     padding: 8px 0;
+    display: inline-block;
     text-decoration: none;
     transition: opacity .2s ease-out;
 
@@ -103,4 +109,72 @@
     }
   }
 
+  .icon {
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    display: inline-block;
+    height: 32px;
+    width: 32px;
+    line-height: 0;
+    position: relative;
+    top: 8px;
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin-right: 4px;
+  }
+
+  .zoom .icon {
+    background-image: ~"url(./public/img/icon-camera.png)";
+  }
+  
+  .change-track .icon {
+    background-image: ~"url(./public/img/icon-menu.png)";
+  }
+
+  .quick-restart .icon {
+    background-image: ~"url(./public/img/icon-restart.png)";
+  }
+
+  .toggle-music .icon {
+    background-image: ~"url(./public/img/icon-music.png)";
+  }
+
+  .toggle-sound .icon {
+    background-image: ~"url(./public/img/icon-sound-off.png)";
+  }
+
+
+  .icon-helmet {
+    background-image: ~"url(./public/img/icon-helmet.png)";
+    opacity: .5;
+    margin-right: 9px;
+    top: 9px;
+  }
+
+  .toggle-sound.sound-on .icon {
+    background-image: ~"url(./public/img/icon-sound-on.png)";
+  }
+
+}
+
+
+.icon-pop {
+  animation: iconpop .25s ease-out;
+}
+
+@keyframes iconpop {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  40%{
+    transform: scale(.9);
+  }
+  80%{
+    transform: scale(1.1);
+  }
+  100%{
+    transform: scale(1);
+  }
 }

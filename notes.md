@@ -1,3 +1,9 @@
+## Settings
+
+Do persistent settings & icons 
+
+
+
 ##Left Off
 
 * Hid the share and invite buttons in leaderboard

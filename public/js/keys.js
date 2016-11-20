@@ -1,11 +1,24 @@
 $(document).ready(function(){
 
+  var cameraMode = localStorage.getItem("cameraFollow") || false;
+
+  if(cameraMode == "true") {
+    zoomInCamera();
+  } else {
+    zoomOutCamera();
+  }
+
   $(".quick-restart").on("click",function(){
+    addAnimationClass($(".quick-restart"), "icon-pop");
     race.quickRestart();
   });
 
   $(".change-track").on("click",function(){
     $(".track-chooser").show();
+  });
+
+  $(".zoom").on("click",function(){
+    toggleCamera();
   });
 
   $(window).on("keydown",function(e){
@@ -16,11 +29,7 @@ $(document).ready(function(){
     }
 
     if(e.keyCode == 90){
-      if(cameraFollow) {
-        cameraFollow = false;
-      } else {
-        cameraFollow = true;
-      }
+      toggleCamera();
     }
 
     if(e.keyCode == 84) {
@@ -43,6 +52,7 @@ $(document).ready(function(){
 
     if(e.keyCode == 82){
       race.quickRestart();
+      addAnimationClass($(".quick-restart"), "icon-pop");
     }
 
     if(e.keyCode == 67){
@@ -75,3 +85,24 @@ $(document).ready(function(){
     }
   });
 });
+
+
+function toggleCamera(){
+  addAnimationClass($(".zoom"), "icon-pop");
+  if(cameraFollow) {
+    zoomOutCamera();
+  } else {
+    zoomInCamera();
+  }
+}
+
+function zoomInCamera(){
+  cameraFollow = true;
+  localStorage.setItem("cameraFollow",true);
+}
+
+function zoomOutCamera(){
+  cameraFollow = false;
+  localStorage.setItem("cameraFollow",false);
+}
+

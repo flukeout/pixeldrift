@@ -64,7 +64,7 @@ function launchDude(x, y, angle) {
     o: 3.5,
     oV : -.05,
 
-    className : "little-dude-" + Math.round(getRandom(1,6)),
+    className : "little-dude-" + Math.round(getRandom(1,9)),
     lifespan: 100,
   }
   makeParticle(options);
@@ -182,6 +182,7 @@ function mowGrass(car, percent, type) {
 }
 
 
+// Removes and adds a class for doing an animation
 function addAnimationClass(el, className) {
   el.removeClass(className).width(el.width());
   el.addClass(className);

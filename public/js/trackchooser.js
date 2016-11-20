@@ -32,9 +32,8 @@ function buildTrackChooser(){
         leaderBoard.changeLeaderboard(track);
         race.changeTrack(track);
 
-
         // Nukes out any ?leaderboard= parameters in the address bar
-        window.history.replaceState( {} , 'Pixel Drift Club!', '/' );
+        window.history.replaceState( {} , 'Pixel Drift Club!', window.location.pathname );
         $(".track-chooser").hide();
       });
     }

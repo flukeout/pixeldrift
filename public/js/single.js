@@ -1,4 +1,5 @@
-var playerRecords, lastTrack;
+// var playerRecords, lastTrack;
+// var lastTrack;
 
 // For keeping track of what the replay car is doing (for recording?)
 var replayCar = {
@@ -10,19 +11,24 @@ $(document).ready(function(){
 
   buildTrackChooser();
 
-  lastTrack = localStorage.getItem("lastSingleTrack");
+  var lastTrack = localStorage.getItem("lastSingleTrack");
   
   if(!trackList[lastTrack]) {
     lastTrack = false;
   }
+  
+  var leaderboardID = getParameterByName('leaderboard');
 
-  playerRecords = JSON.parse(localStorage.getItem("playerRecords")) || false;
-
-  if(!lastTrack){
-    $(".track-chooser").show();
+  if(leaderboardID) {
+    // if we are trying to load a custom leaderboard   
+    leaderBoard.changeLeaderboard(leaderboardID);
   } else {
-    race.changeTrack(lastTrack);
-    race.startTrial();
+    if(!lastTrack){
+      $(".track-chooser").show();
+    } else {
+      leaderBoard.changeLeaderboard(lastTrack);
+      race.changeTrack(lastTrack);
+    }
   }
 
   gameLoop();
@@ -34,38 +40,40 @@ var race = {
   // Ghost stuff... might want to simplify this stuff to just get commands, will be more lifelike.
   ghostRecording : false,
   ghostData : [],
+  
+  ghostCarData : [],
 
   // The ghost data last recorded
-  newGhostData : {
+  tempGhostData : {
     start : false,
-    lapTime : false,
     controls : []
   },
   
-  // Keeps track of the best ghost data
+    
+  // Keeps track of the best ghost data,
+  // for the current player!
   bestGhostData : {
     start : {},
-    lapTime : 99999999999999999,
     controls : []
   },
-  
+
   playerName : "flooky-poo",
   
-  newGhostCars : [], // array of the 'new' style ghosts!
+  activeGhostCars : [], // array of the 'new' style ghosts! These are the ones that are in play..
 
-  tinyGhostData : [],
+  
   ghostFrameIndex : 0,
-  ghostPlayData : [],
-  ghostPlaying : false,
+  
+  // ghostPlaying : false,
 
   updateTime : false,
   currentlap: 0,
   lapTime : 0,
 
   track : "",
+
   trackShortname : "",
 
-  ghostCars : [],
   bestlap : false,
 
   lapHistory : [],
@@ -89,27 +97,24 @@ var race = {
     this.ghostRecording = false;
 
     this.updateTime = false;
-    this.ghostPlaying = false;
+    // this.ghostPlaying = false;
     
-    this.newGhostData = {
+    // Reset the ghost data after each lap, this is what we will be recording into
+    this.tempGhostData = {
       start : false,
       lapTime : false,
       controls : []
     }
     
-    for(var i = 0; i < this.newGhostCars.length; i++) {
-      var ghostCar = this.newGhostCars[i];
+    // Nuke all existing ghosts...
+    for(var i = 0; i < this.activeGhostCars.length; i++) {
+      var ghostCar = this.activeGhostCars[i];
       ghostCar.el.remove();
     }
     
-    this.newGhostCars = [];
+    this.activeGhostCars = [];
     
     $(".lap-time").text(formatTime(race.lapTime));
-
-    for(var i = 0; i < this.ghostCars.length; i++){
-      var ghost = this.ghostCars[i];
-      ghost.reset();
-    }
 
     for(var k in cars){
       var c = cars[k];
@@ -126,72 +131,45 @@ var race = {
         }
       }
     }
-
   },
-
-  addGhost : function(ghostData) {
-
-    var newGhost = createGhost(ghostData);
-
-    $(".track").append(newGhost.el);
-
-    if(this.currentlap == 0) {
-      newGhost.status = "idle";
-    }
-
-    this.ghostCars.push(newGhost);
-  },
+  
   
   // Removes all ghosts from the race
   // Remove all ghost car elements from the .track
-  killGhosts : function(){
-    for(var i = 0; i < this.ghostCars.length; i++) {
-      var ghost = this.ghostCars[i];
-      ghost.el.remove();
-    }
-    this.ghostCars = [];
-  },
+  // Loads player's ghost from localStorage
 
+  loadPlayerGhost : function(){
 
-  // Loads ghost from localstorage..?
-  loadGhost : function(){
-
-    var trackRecord = false;
-
-    if(playerRecords){
-      trackRecord = playerRecords[race.trackShortname] || false;
-
-      if(trackRecord.ghost) {
-        this.bestGhostData = trackRecord.ghost;
-      } else {
-        this.bestGhostData = {
-          start : {},
-          lapTime : 99999999999999999,
-          controls : []
-        }
-      }
-    }
-
-    this.newGhostData = {
-      start : false,
-      lapTime : false,
+    this.bestGhostData = {
+      start : {},
       controls : []
     }
 
+    var ghostData = leaderBoard.getLocalGhost();
+
+    if(ghostData){
+      if(ghostData.ghost) {
+        this.bestGhostData = ghostData.ghost;
+      }
+    } 
+
+    this.tempGhostData = {
+      start : false,
+      controls : []
+    }
   },
-  
+
   
   // When the track first loads
   startTrial: function(){
 
     $(".track-wrapper").css("opacity",0);
 
-    showMessage("GET READY!");
+    // showMessage("GET READY!");
 
     cars = [];
     $(".car").remove();
 
-    // Adds a new car after one second
     setTimeout(function(){
       var car = newCar("single", {"showname" : false, "trailColor" : trackData.trailcolor});
       cars.push(car);
@@ -204,36 +182,52 @@ var race = {
 
   },
 
+  // Changes the current track
+  // Tells the leaderboard to change the leaderboard too
   changeTrack: function(trackName){
+
+    console.log("Do we have this track??? - ??? - ??? - ??? - ??? - ??? - ??? - ");
+    console.log(trackName);
+    console.log(includeTracks.indexOf(trackName));
 
     $(".track-wrapper").css("opacity",0);
     $(".track-wrapper").hide();
 
     prepareTrack(trackName);
-    localStorage.setItem("lastSingleTrack",trackName);  // TODO - Probably move to the menu code
+
+    localStorage.setItem("lastSingleTrack",trackName);
   
     this.track = trackName;
+    this.trackShortname = trackName;
 
-    this.trackShortname = trackList[trackName].shortname;
     this.lapTime = 0;
     this.bestlap = 0;
     this.currentlap = 0;
     this.ghostRecording = false;
-    this.ghostPlayData = [];
-    this.ghostPlaying = false;
-
     this.updateTime = false;
 
-    this.loadGhost(); // Gets a ghost, if available... 
 
-    leaderBoard.changeTracks(this.trackShortname);
+    leaderBoard.trackName = trackName;
+    
+    this.loadPlayerGhost(); // Loads up player ghost (from leaderBoard.js);
+    
+    this.startTrial();
+    
   },
   
   
+  addGhostCarData : function(data) {
+    this.ghostCarData.push(data);
+  },
+  
   // Adds a ghost from ghost data
+  // appends it to the track..
+  
   addNewGhost : function(data){
+
+    // console.log("Adding new ghost car",data);
     
-    var ghostData = JSON.parse(JSON.stringify(data));
+    var ghostData = data.ghost;
 
     var newGhost = newCar("ghost", {
       type : "ghost",
@@ -245,27 +239,37 @@ var race = {
       turningVelocity : ghostData.start.turningVelocity,
       speed : ghostData.start.speed,
       controls : ghostData.controls,
-      frameIndex : false
+      frameIndex : false,
+      showname : false,
+      driver : data.name
+      
     });
 
-    this.newGhostCars.push(newGhost);
+    this.activeGhostCars.push(newGhost);
   },
-    
   
   // Whenever the car crosses the finish...
   finishLap : function(car){
 
-    //Kill all ghosts...
-    for(var i = 0; i < this.newGhostCars.length; i++) {
-      var ghostCar = this.newGhostCars[i];
-      ghostCar.el.remove();
-    }
-    
-    this.newGhostCars = [];
-
     if(car.type == "ghost") {
       return;
     }
+
+    //Kill all ghosts...
+    for(var i = 0; i < this.activeGhostCars.length; i++) {
+      var ghostCar = this.activeGhostCars[i];
+      ghostCar.el.remove();
+    }
+    this.activeGhostCars = [];
+    
+
+    // Adds each ghost car
+    for(var i = 0; i < this.ghostCarData.length; i++) {
+      var data = this.ghostCarData[i];
+      console.log("adding from finishlap");
+      this.addNewGhost(data);
+    }
+    
 
     if(trackData.checkPoints == car.checkpoints.length || car.laps == 0) {
 
@@ -273,7 +277,7 @@ var race = {
 
       this.ghostRecording = true;
       this.updateTime = false;
-      this.ghostPlaying = true;
+      // this.ghostPlaying = true;
 
       $(".delta-time").show();
 
@@ -310,57 +314,37 @@ var race = {
         
         if(this.lapTime < this.bestlap || !this.bestlap) {
           this.bestlap = this.lapTime;
-
-          this.newGhostData.lapTime = this.lapTime;
-        
-          this.bestGhostData = JSON.parse(JSON.stringify(this.newGhostData));
-          
-          // Reset ghost data
-          this.newGhostData = {
-            start : false,
-            lapTime : false,
-            controls : []
-          }
-        
-          updatePlayerRecord({
-            ghost : this.bestGhostData
-          });
-
-          leaderBoard.newRecord(this.trackShortname, this.bestlap);
+          this.bestGhostData = JSON.parse(JSON.stringify(this.tempGhostData));
+          leaderBoard.newRecord(this.playerName, this.bestlap, this.bestGhostData);
         }
 
-        if(!playerRecords[race.trackShortname].ghost) {
-          updatePlayerRecord({
-            ghost: this.newGhostData
-          });
-          this.bestGhostData = JSON.parse(JSON.stringify(this.newGhostData));
-        }
-
-        // What if it doesn't havea ghost... we need to add one....
+        this.bestGhostData = JSON.parse(JSON.stringify(this.tempGhostData));
         
         $(".delta-time").text(timeString);
         $(".best-time-wrapper").show();
         $(".best-time").text(formatTime(this.bestlap));
       }
 
-
-      if(this.newGhostCars.length < 1 && this.bestGhostData.controls.length > 0) {
-        this.addNewGhost(this.bestGhostData);
-      }
-  
       this.currentlap++;
 
     } else {
-      // Player missed checkpoints
-      // $("[checkpoint]:not(.cleared)").each(function(el){
-      //   addAnimationClass($(this), "checkpoint-strobe");
-      // });
 
       playSound("bump");
-      
       this.lapTime = 0;
     }
     
+    
+    // Reset the ghost no matter what if we've got one
+    if(this.activeGhostCars.length < 1 && this.bestGhostData.controls.length > 0) {
+      console.log("adding from somewhere");
+      this.addNewGhost({
+        time : this.bestlap,
+        name : "frank",
+        ghost: this.bestGhostData
+      });
+    }
+    
+
     // Do no matter what...
 
     $("[checkpoint]").removeClass("cleared");
@@ -368,9 +352,8 @@ var race = {
 
     // Reset this shit?????
 
-    this.newGhostData = {
+    this.tempGhostData = {
       start : false,
-      lapTime : false,
       controls : []
     }
 
@@ -379,61 +362,31 @@ var race = {
     
   },
   
+  // Explodes the car
   explodeCar: function(car, tempAngle){
-
-	  engineVol.gain.value = 0;
-    // make a particle for the exploded car
-    var options = {
-      x : car.showx,
-      y : car.showy,
-      angle: car.actualAngle * -1 + getRandom(-10,10),
-      speed : getRandom(1,2),
-      
-      zRv : getRandom(-5,5),
-      xRv : getRandom(-20,20),
-      yRv : getRandom(-20,20),
-
-      gravity : .15,
-      bounce : true,
-      
-      zV : getRandom(8,10),
-      color: car.color,
-      width: 15,
-      o: 3.5,
-      oV : -.05,
-      height: 15,
-      
-      lifespan: 100,
-    }
-    makeParticle(options);
-      
-    options.gravity = 0;
-    options.xRv = 0;
-    options.yRv = 0;
-    options.zV = 0;
-    options.gravity = 0;
-    options.o = .3;
-    options.oV = -.004;
-    options.color = "black";
-
-    makeParticle(options);
-
+   
+    launchCar(car.showx, car.showy, car.actualAngle, car.color);
+    launchDude(car.showx, car.showy, car.actualAngle);
     makeExplosion(car.showx, car.showy, 100);
-
-    shakeScreen();
-    
+    shakeScreen();    
     crashDebris(car.showx, car.showy, car.actualAngle, car.color);
+
     playSound("crash");
     
-    // engine volume off
-    
+    // Engine volume off
+
+	  engineVol.gain.value = 0;
     car.mode = "gone";
     car.el.hide();
 
     var that = this;
 
+    race.willRespawn = true;
+
     setTimeout(function(){
-      that.quickRestart();
+      if(race.willRespawn == true) {
+        that.quickRestart();
+      }
     },1800);
     
   },
@@ -457,29 +410,7 @@ var race = {
 // Just updates the Ghost in the localstorage
 // leaderboard.js does everythign else... 
 
-function updatePlayerRecord(data){
 
-  // console.log(data);
-
-  if(!playerRecords) {
-    playerRecords = {};
-  }
-
-  if(!playerRecords[race.trackShortname]) {
-    playerRecords[race.trackShortname] = {};
-  }
-  
-  var rec = playerRecords[race.trackShortname];
-  
-  for(var k in data) {
-    var value = data[k];
-    rec[k] = value;
-  }
-
-  console.log("updatePlayerRecords");
-  console.log(playerRecords);
-  localStorage.setItem("playerRecords",JSON.stringify(playerRecords));
-}
 
 var ticks = 0;
 function gameLoop() {
@@ -499,8 +430,8 @@ function gameLoop() {
   if(keyboardcar && race.ghostRecording) {
 
     // Add the start to the beginning of the replay 
-    if(race.newGhostData.start == false) {
-      race.newGhostData.start = {
+    if(race.tempGhostData.start == false) {
+      race.tempGhostData.start = {
         "showx" : keyboardcar.showx,
         "showy" : keyboardcar.showy,
         "angle" : keyboardcar.angle,
@@ -512,12 +443,14 @@ function gameLoop() {
     }
 
     // If there are any changes in controls, we add them to ghost controls
+    // or if we dont' have any controsl yet!
 
-    if(keyboardcar.direction != replayCar.direction || keyboardcar.gas != replayCar.gas) {
+    if(keyboardcar.direction != replayCar.direction || keyboardcar.gas != replayCar.gas || race.tempGhostData.controls.length == 0) {
+
       replayCar.direction = keyboardcar.direction;
       replayCar.gas = keyboardcar.gas;
 
-      race.newGhostData.controls.push({
+      race.tempGhostData.controls.push({
         "time" : race.lapTime,
         "gas" : replayCar.gas,
         "direction" : replayCar.direction,
@@ -533,8 +466,8 @@ function gameLoop() {
   }
 
   // Drive the ghost cars... .. .. .. .. .. .. .. ..
-  for(var i = 0; i < race.newGhostCars.length; i++){
-    var newGhost = race.newGhostCars[i];
+  for(var i = 0; i < race.activeGhostCars.length; i++){
+    var newGhost = race.activeGhostCars[i];
     driveCar(newGhost, race.lapTime);
   }
 

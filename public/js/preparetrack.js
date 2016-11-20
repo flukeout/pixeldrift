@@ -1,4 +1,3 @@
-
 function prepareTrack(level){
 
   trackData = trackList[level];
@@ -19,9 +18,10 @@ function prepareTrack(level){
 
   var href = url.href.replace("#","");
 
-  image.src = href + 'public/tracks/' + level;
-
-  $(".track-image").css("background-image", "url(./public/tracks/"+level+")");
+  // image.src = href + 'public/tracks/' + trackData.filename;
+  image.src = './public/tracks/' + trackData.filename;
+  
+  $(".track-image").css("background-image", "url(./public/tracks/"+trackData.filename+")");
 
   $(image).on("load",function(){
 

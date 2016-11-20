@@ -1,3 +1,76 @@
+// All the cool effects, like particles, explosions, etc!
+
+// make a particle for the exploded car
+function launchCar(x, y, angle, color) {
+  var options = {
+    x : x,
+    y : y,
+    angle: angle * -1 + getRandom(-10,10),
+    speed : getRandom(1,2),
+  
+    zRv : getRandom(-5,5),
+    xRv : getRandom(-20,20),
+    yRv : getRandom(-20,20),
+
+    gravity : .15,
+    bounce : true,
+  
+    zV : getRandom(8,10),
+    color: color,
+    width: 15,
+    o: 3.5,
+    oV : -.05,
+    height: 15,
+  
+    lifespan: 100,
+  }
+  makeParticle(options);
+  
+  // This makes the shadow particle
+  options.gravity = 0;
+  options.xRv = 0;
+  options.yRv = 0;
+  options.zV = 0;
+  options.gravity = 0;
+  options.o = .3;
+  options.oV = -.004;
+  options.color = "black";
+
+  makeParticle(options);
+  
+}
+
+
+// Scatters a bit of debris on the track when the car hits a wall.
+
+function launchDude(x, y, angle) {
+
+  var options = {
+    x : x,
+    y : y,
+    angle: angle * -1 + getRandom(-10,10),
+    speed : getRandom(1,2),
+    width: 50,
+    height: 50,
+
+    xR : -90,
+    zRv : getRandom(-2,2),
+    xRv : getRandom(-10,10),
+
+    zV : getRandom(4,8),
+    gravity : .15,
+    bounce : true,
+
+    o: 3.5,
+    oV : -.05,
+
+    className : "little-dude-" + Math.round(getRandom(1,6)),
+    lifespan: 100,
+  }
+  makeParticle(options);
+  
+}
+
 // Scatters a bit of debris on the track when the car hits a wall.
 
 function crashDebris(x, y, angle, color) {
@@ -163,6 +236,8 @@ function makeExplosion(xposition, yposition, size){
     options.speed = 1 + (4 * (1 - options.width / 50)); // The bigger the particle, the lower the speed
     makeParticle(options);
   }
+  
+ 
 }
 
 

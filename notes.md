@@ -1,16 +1,154 @@
+##Left Off
+
+* Hid the share and invite buttons in leaderboard
+
+* When loading a global track with no localRecord, it plays the last ghost I think...
+
+* Display names on custom leaderboards...
+
+* Handle UX for creating, loading & displaying custom leaderboards.
+  * Add share icons to the custom leaderboard...
+
+## Custom Leaderboards
+
+
+* For custom leaderboards, add..
+ * Owner name?
+ * Owner key? - why, what does it matter?
+ * Allow them to be deleted?
+
+* Probably we'll have to separate changing tracks and the leaderboard
+  * leaderboard will have to tell the track what track to use, since it will be custom..
+  * 
+
+* getLocalGhost is using the wrong path... 
+
+* What if there is a local record, but no corresponding firebase record?
+  * Should we add it to the leaderboard, or wait for a new one?
+
+* When switching to a different track, it tries to play the last track's ghost
+* make sure we nuke bestghost from single.js
+
+* Up next - should test if making & loading custom leaderboards works as expected
+
+* Also make it so that the leaderboard can have records, a track, name etc..
+* We can check.. if that stuff exists..?
+
+/leaderboards/oval/ {
+  type : custom or global
+  track: oval,
+  owner_key : key,
+  owner_name : blam,
+  records : []
+}
+
+* Plays the wrong ghost still when switching tracks
+* make it so that ifyou have a custom leaderboard, it loads a track from that leaderboard
+* So looks like now i just have to block the ghosts from being added to teh "global boards" in leaderboard.js
+  * addFirebaseRecord
+  * updateFirebaserRecord
+
+Leaderboard entry item structure is...
+
+key : {
+  name : "flukeout",
+  time : 2000,
+  ghost : {
+    controls : [],
+    start : {}
+  }
+}
+
+* Where i left off
+* made a unified leaderboard system, so far adding a record into it each time
+
+one problem is that every new lap , the ghost from the player gets added over and over to the 'new cars' i think...
+will need to double check, but now guitar time.
+
+
+
+##Working on
+
+Okay so where we really left off was that we have..
+
+* newGhostCars - this gets reset every lap, and the player ghost is added into it
+* but, the leaderboard only adds the ghosts from the leaderboard once, so they get nuked
+
+What we need to do is..
+
+* Have a separate array of ghost data, then add thew newGhostCars from that every lap
+* And also add the players best ghost to that too...
+* rename newGhostCars to activeGhostCars or something, for clarity
+
+
+leaderboard.changeLeaderboard()
+
+  * making it so that you can load any ole leaderboard, 
+  * any any ole local leaderboard
+
+
+For ghosts, probably have to do it this way..
+
+ * Load the leaderboard ghosts into a separate variable
+ * Then each lap, add from that..
+
+Where I left off..
+
+* Looks like i left off being able to load either the global leaderboard
+* OR a local challange leaderboard
+  * Loads the ghosts from the leaderboard if they're available..
+  
+
+
+##Bugs
+
+* Put back 'get ready' message, just off for dev
+
+So, within a challenge, what do I want to do..
+
+* Update the leaderboard!
+* Do i want to keep things locally too?
+* Like a challenges object in localStorage? With..
+  * That players record / key for their record?
+  * So if they get a good time, we need to scope localStorage & firebase Storage
+  
+  playerRecords
+
+  * /trackname
+    * ghost
+    * lapTime
+    * key
+    * name
+
+  challenges
+
+  * /challange_id
+    * ghost
+    * lapTime
+    * key
+    * name
+  
+  
+  
+
+##Keep an Eye On
+
+* Sometimes the ghost data doesn't have a frame at the [0] time frame, which it always should
+
+
+
+
+
 ##Problems 
 
-* Leaderboard entries are easy to spoof.
-* Where can we do the validation?
-* Do we need to go back to node?
-
-* After crashing before starting a lap, the checkpoints dont work
+* Leaderboard entries are easy to "hack"
 
 **Solution**
 
 * Create a node service that is responsible for..
   * Adding a new record
   * Updating an existing record
+
 
 **How will this work?**
 
@@ -28,6 +166,7 @@
 
 ##Improvements
 
+ * Add a sorting to the track list (in the menu)
  * Should just re-order the existing items based on new data...
  * Fix up collisions, shit gets craaaazy inside tight levels...
  * Display "rank" on the level menu?

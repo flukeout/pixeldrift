@@ -11,8 +11,6 @@ var audioContext = new AudioContext();
 var cameraFollow = false;
 
 
-
-
 // Shows a message in an overlay over the game
 
 function showMessage(message){
@@ -63,7 +61,6 @@ function trackAnimation(type){
       $(".track-wrapper").removeClass("trackpop");
     },200);
   }
-
 }
 
 
@@ -80,6 +77,7 @@ function getCar(id){
 }
 
 function checkPosition(x,y){
+
 
   var p = context.getImageData(x, y, 1, 1).data;
 
@@ -301,7 +299,6 @@ function newCar(id,config){
     nexty : 0,
 
     // lapTime : 0, // for ghosts
-    
 
     lastx : 0,
     lasty : 0,
@@ -518,6 +515,8 @@ function newCar(id,config){
 
   car.body.css("background", chosenColor);
   indicator.css("border-color", chosenColor);
+  
+  // car.nameEl.css("color",chosenColor);
 
   desiredIndicator.css("border-color", "pink");
 
@@ -544,4 +543,11 @@ function sortRecords(x,y) {
   if(x.lapTime == y.lapTime) {
     return 0;
   }
+}
+
+function getParameterByName(name) {
+  name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+  var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+    results = regex.exec(location.search);
+  return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }

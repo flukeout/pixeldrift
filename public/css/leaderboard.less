@@ -2,34 +2,33 @@
   position: absolute;
   right: 0;
   height: 100%;
-  width: 175px;
-  padding: 20px;
+  width: 185px;
+  padding: 15px 20px;
   overflow-y: scroll;
-  font-size: 12px;
+  font-size: 11px;
   transform-origin: top;
   color: rgba(255,255,255,.4);
 
-  .share-time {
+  .green-button {
     background: #95BC2A;
     color: white;
-    padding: 10px;
-    margin: 10px 0 0 0 ;
+    padding: 8px 8px 5px 8px;
+    font-size: 11px;
+    margin: 8px 0;
     cursor: pointer;
     border-bottom: solid 2px #71891B;
     position: relative;
     border-radius: 2px;
     top: 0;
-    line-height: 16px;
+    line-height: 18px;
+    text-align: center;
     
     &:hover {
       opacity: .95;
     }
     
     &:active {
-      margin-bottom: 2px;
-      top: 2px;
-      padding: 10px 10px 8px 10px;
-      border-bottom: solid 2px transparent;
+      opacity: .4;
     }
   }
 
@@ -39,22 +38,20 @@
   }
 
   h1 {
-    margin: 0 0 15px 0;
     text-align: right;
+    line-height: 140%;
     position: relative;
     width: 100%;
     text-align: center;
-    display: flex;
     color: white;
     font-size: 16px;
     text-decoration: none;
     flex: 1;
     cursor: pointer;
-    padding: 0 0 10px 0;
-    margin: 0 0 10px 0;
-    opacity: 1;
+    padding: 0 0 8px 0;
+    margin: 0 0 12px 0;
+    opacity: .5;
     border-bottom: solid 3px rgba(255,255,255,.6);
-
     
     a {
       color: white;
@@ -78,26 +75,50 @@
     }
   }
 
+  .leaderboard-author {
+    margin: 12px 0;
+    text-align: center;
+
+    .author-name {
+      color: rgba(255,255,255,.7);
+      text-transform: none;
+    }
+  }
+
   .time {
     display: inline-block;
-    font-size: 16px;
+    font-size: 14px;
   }
   
   .rank {
     display: inline-block;
-    opacity: .6;
-    font-size: 12px;
+    opacity: .8;
+    font-size: 14px;
+  }
+  
+  .player .rank {
+    opacity: 1;
+  }
+
+  .player {
+    .time {
+      font-size: 18px;
+    }
+    
+    .name {
+      margin-top: 10px;
+    }
+
+    .rank {
+      font-size: 18px;
+    }
   }
   
   .name {
-    opacity: .6;
-  }
-
-  .name {
     display: block;
     text-align: right;
-    font-size: 12px;
-    margin-top: 12px;
+    margin-top: 6px;
+    opacity: .8;
     text-transform: none;
   }
   
@@ -117,9 +138,6 @@
     }
   }
 
-  .rank {
-    min-width: 30px;
-  }
 
   .entry {
     border-bottom: solid 2px rgba(255,255,255,.2);
@@ -136,5 +154,15 @@
       border: none;
     }
   }
+}
 
+
+// Hiding thsese for now..
+
+.make-leaderboard {
+  display: none;
+}
+
+.share-leaderboard {
+  display: none;
 }

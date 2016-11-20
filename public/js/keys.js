@@ -28,7 +28,7 @@ $(document).ready(function(){
     }
 
     if(e.keyCode == 89) {
-      localStorage.removeItem("playerRecords");
+      localStorage.removeItem("oval");
     }
 
     if(e.keyCode == 27){

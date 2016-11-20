@@ -1,10 +1,6 @@
-
-
 function driveCar(car, lapTime) {
 
   if(car.type == "ghost") {
-
-    // console.log("driving ghost", lapTime);
 
     var useControl; // Controls to run this frame... 
     
@@ -18,8 +14,6 @@ function driveCar(car, lapTime) {
     }
     
     if(i > car.frameIndex) {
-
-
       var xdelta = Math.round(Math.abs(car.showx - useControl.showx));
       var ydelta = Math.round(Math.abs(car.showy - useControl.showy)); 
       var diff = Math.abs(lapTime - useControl.time);
@@ -36,17 +30,14 @@ function driveCar(car, lapTime) {
       car.steeringVelocity = useControl.steeringVelocity;
       car.turningVelocity = useControl.turningVelocity;
 
-
       car.frameIndex = i;
     }
   }
 
 
-
   var frameAdjuster = delta / 16.67;
 
   // Properties adjusted for framerate
-
   var maxspeed =            car.maxspeed * frameAdjuster;
   var speed =               car.speed * frameAdjuster;
   var steeringAccel =       car.steeringAccel * frameAdjuster;
@@ -55,7 +46,6 @@ function driveCar(car, lapTime) {
   var turningAccel =        car.turningAccel * frameAdjuster;
   var acceleration =        car.acceleration * frameAdjuster;
   var turboBoost =          car.turboBoost * frameAdjuster;
-
 
   car.x = Math.round(car.showx / scaling);
   car.y = Math.round(car.showy / scaling);
@@ -276,7 +266,6 @@ function driveCar(car, lapTime) {
 
     count++;
     if(count > 2) {
-      console.log("went infinite on collision");
       race.explodeCar(car);
       done = true;
       break;
@@ -471,7 +460,6 @@ function driveCar(car, lapTime) {
     
     if(car.mode != "gone") {
 
-
       setTimeout(function(){
         if(car.type != "ghost") {
           playSound("fall");
@@ -665,11 +653,18 @@ function driveCar(car, lapTime) {
 
 
   // Only count the finish line left to right...
-  if(car.currentPosition == "finish"){
+  if(car.currentPosition == "finish" && car.type != "ghost"){
     if(car.x > car.nextx) {
       race.finishLap(car);
       car.lapTime = 0;
     }
+  }
+
+  // If it's a ghost
+  if(car.currentPosition == "finish" && car.type == "ghost"){
+    car.body.css("opacity",0);
+    car.shadow.remove();
+    car.nameEl.css("opacity",0);
   }
 
   //JUMPING

@@ -14,6 +14,15 @@ body {
   transition: background .05s linear;
 }
 
+.main-wrapper {
+  width: ~"calc(100% - 215px)" ;
+  position: absolute;
+  height: 100%;
+  left: 0;
+  top: 0;
+}
+
+
 input {
   font-family: 'Press Start 2P';
 }
@@ -121,12 +130,14 @@ canvas.track-source {
 
   .name {
     position: absolute;
+    text-transform: none;
     width: 200px;
     color: white;
+    text-shadow: 0px -1px 0px rgba(0,0,0,.4);
     left: ~"calc(50% - 100px)";
     text-align: center;
-    font-size: 12px;
-    opacity: .8;
+    font-size: 9px;
+    opacity: .65;
     transform: rotateX(-70deg) translateY(-30px);
     transition: opacity .2s ease-out;
     z-index: 1;
@@ -1191,4 +1202,38 @@ nav {
       text-decoration: underline;
     }
   }
+}
+
+
+
+.little-dude-1,
+.little-dude-2,
+.little-dude-3,
+.little-dude-4,
+.little-dude-5,
+.little-dude-6
+{
+  position: absolute;
+  background-image: ~"url(./public/img/little-dude-1.png)";
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+}
+
+
+.little-dude-2 {
+  background-image: ~"url(./public/img/little-dude-2.png)" !important;
+}
+.little-dude-3 {
+  background-image: ~"url(./public/img/little-dude-3.png)" !important;
+}
+.little-dude-4 {
+  background-image: ~"url(./public/img/little-dude-4.png)" !important;
+}
+.little-dude-5 {
+  background-image: ~"url(./public/img/little-dude-5.png)" !important;
+}
+.little-dude-6 {
+  background-image: ~"url(./public/img/little-dude-6.png)" !important;
 }

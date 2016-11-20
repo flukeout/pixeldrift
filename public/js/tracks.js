@@ -4,9 +4,8 @@ var trackData = {}; //Place holder for current track -  gets populated, yo.
 var includeTracks = [
   // "twitter",
   // "html5",
-
   "oval",
-  "turbo8",
+  "turbo-8",
   "ampersand",
   "chasm",
   "darkloop",
@@ -14,11 +13,11 @@ var includeTracks = [
   "yellow",
   "splash",
   "offroad"
-
   // "grass",
   // "testground",  
-
 ]
+
+
 
 var trackTimes = {
   "offroad.png" : {
@@ -89,10 +88,9 @@ var trackTimes = {
 }
 
 var trackList = {
-  "html5.png" : {
+  "html5" : {
     filename : "html5.png",
     carcolors : ["#d04415"],
-    shortname : "html5",
     prettyname: "HTML 5",
     trailcolor : "#d04415",
     leaveSkids : false,
@@ -114,9 +112,8 @@ var trackList = {
       "#c25115" : "jump"
     }
   },
-  "splash.png" : {
+  "splash" : {
     filename : "splash.png",
-    shortname : "splash",
     carcolors : ["#ffffff"],
     trailcolor : "#ffffff",
     leaveSkids : true,
@@ -130,14 +127,13 @@ var trackList = {
       "#151515" : "jump"
     }
   },
-  "offroad.png" : {
+  "offroad" : {
     filename : "offroad.png",
     // carcolors : ["#424130"],
     carcolors : ["#1766AD"],
     trailcolor : "#1766AD",
     lawnmower : false,
     prettyname : "Offroad",
-    shortname: "offroad",
     leaveSkids : false,
     skidMower : true,
     difficulty : "expert",
@@ -159,14 +155,13 @@ var trackList = {
       "#7D9941" : "checkpoint-indicator"
     }
   },
-  "yellow.png" : {
+  "yellow" : {
     filename : "yellow.png",
     carcolors : ["#424130"],
     trailcolor : "#424130",
-    shortname : "yellow",
     prettyname : "Yellow Road",
     leaveSkids : false,
-    difficulty : "medium",
+    difficulty : "intermediate",
     laps : 5,
     hexes : {
       "#eee76a" : "road",
@@ -177,11 +172,10 @@ var trackList = {
       "#9FCC12" : "checkpoint-indicator"
     }
   },
-  "noirjump.png" : {
+  "darkloop" : {
     filename : "noirjump.png",
     carcolors : ["#db0fed"],
     trailcolor : "#db0fed",
-    shortname : "darkloop",
     prettyname : "Dark Loop",
     leaveSkids : true,
     difficulty : "expert",
@@ -198,11 +192,10 @@ var trackList = {
       "#f4c5fa" : "checkpoint-indicator"
     }
   },
-  "superjump.png" : {
+  "superjump" : {
     filename : "superjump.png",
     carcolors : ["#ffffff"],
     trailcolor : "#32a6dc",
-    shortname : "superjump",
     leaveSkids : true,
     difficulty : "expert",
     laps : 5,
@@ -218,14 +211,13 @@ var trackList = {
       "#707070" : "checkpoint"
     }
   },
-  "chasm.png" : {
+  "chasm" : {
     filename : "chasm.png",
     carcolors : ["#ffffff"],
     trailcolor : "#32a6dc",
     lawnmower : "#8fcf4b",
     leaveSkids : true,
     difficulty : "expert",
-    shortname: "chasm",
     prettyname : "The Chasm",
     laps : 5,
     hexes : {
@@ -236,11 +228,10 @@ var trackList = {
       "#707070" : "checkpoint"
     }
   },
-  "moon.png" : {
+  "moon" : {
     filename : "moon.png",
     carcolors : ["#ffffff"],
     trailcolor : "#32a6dc",
-    shortname : "moon",
     leaveSkids : false,
     lapt : 0,
     hexes : {
@@ -249,11 +240,10 @@ var trackList = {
       "#b0a13c" : "jump"
     }
   },
-  "twitter.png" : {
+  "twitter" : {
     filename : "twitter.png",
     carcolors : ["#ffffff"],
     trailcolor : "#32a6dc",
-    shortname : "twitter",
     leaveSkids : true,
     difficulty : "intermediate",
     laps : 5,
@@ -263,12 +253,11 @@ var trackList = {
       "#707070" : "checkpoint"
     }
   },
-  "ampersand.png" : {
+  "ampersand" : {
     filename : "ampersand.png",
     carcolors : ["#ffffff"],
     trailcolor : "#32a6dc",
     lawnmower : "#8fcf4b",
-    shortname : "ampersand",
     prettyname : "Ampersand",
     difficulty : "intermediate",
     laps : 6,
@@ -289,11 +278,10 @@ var trackList = {
       "#277eba" : "checkpoint-indicator"
     }
   },
-  "oval-8.png" : {
+  "oval-8" : {
     filename : "oval-8.png",
     carcolors : ["#ffffff"],
     trailcolor : "#32a6dc",
-    shortname : "figure8",
     laps : 10,
     leaveSkids : true,
     lawnmower : "#8fcf4b",
@@ -313,11 +301,10 @@ var trackList = {
       "#d4c921" : "jump"
     }
   },
-  "oval.png" : {
+  "oval" : {
     filename : "oval.png",
     carcolors : ["#ffffff"],
     trailcolor : "#32a6dc",
-    shortname : "oval",
     laps : 12,
     difficulty : "beginner",
     leaveSkids : true,
@@ -331,11 +318,10 @@ var trackList = {
       "#d5d5d5" : "wall"
     }
   },
-  "turbo-8.png" : {
+  "turbo-8" : {
     filename : "turbo-8.png",
     carcolors : ["#ffffff"],
     trailcolor : "#32a6dc",
-    shortname : "turbo8",
     prettyname : "Turbo 8",
     lawnmower : "#60aa1f",
     difficulty : "intermediate",
@@ -359,7 +345,7 @@ var trackList = {
       "#d5d5d5" : "wall"
     }
   },
-  "grass.png" : {
+  "grass" : {
     filename : "grass.png",
     carcolors : ["#ffffff"],
     trailcolor : "#32a6dc",
@@ -387,7 +373,7 @@ var trackList = {
 
     }
   },
-  "testground.png" : {
+  "testground" : {
     filename : "testground.png",
     carcolors : ["#ffffff"],
     trailcolor : "#32a6dc",

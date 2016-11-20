@@ -7,16 +7,18 @@ $(document).ready(function(){
 
 function toggleSound(){
   if(soundEnabled){
-    soundEnabled = false;
     disableSound();
   } else {
-    soundEnabled = true;
     enableSound();
   }
 }
 
 var soundContext = new AudioContext();
 var soundEnabled = true;
+
+// setTimeout(function(){
+//   disableSound();
+// },1000)
 
 var url = window.location;
 var path = url.pathname;
@@ -199,4 +201,3 @@ function disableSound(){
   engineVol.gain.value = 0;
   maxSkidGain = 0;
 }
-

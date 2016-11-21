@@ -175,6 +175,8 @@ var leaderBoard = {
     if(this.localRecord){
       var time = formatTime(this.localRecord.time);
       race.bestlap = this.localRecord.time;
+    } else {
+      race.bestlap = 0;
     }
 
     $(".lap-time").text("0.000");
@@ -338,7 +340,7 @@ var leaderBoard = {
 
   // Updates a firebase record 
   updateFirebaseRecord : function(key, name, time, ghostData) {
-    console.log("Updating existing firebase record");  
+
 
     var recordRef = firebase.database().ref(this.firebasePath + '/records/' + key);
 
@@ -360,7 +362,6 @@ var leaderBoard = {
   // This barely happens, just when tehre isn't a 'global' leaderboard, and someone is the first entry in it
   // TODO - not sure if this is required...
   initLeaderboard(){
-    console.log("initLeaderboard")
 
     var firebaseLeaderboard = firebase.database().ref(this.firebasePath);
     var that = this;

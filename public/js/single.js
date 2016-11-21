@@ -197,7 +197,7 @@ var race = {
     this.trackShortname = trackName;
 
     this.lapTime = 0;
-    this.bestlap = 0;
+    // this.bestlap = 0; // Removed this because it's set by leaderBoard anyway...
     this.currentlap = 0;
     this.ghostRecording = false;
     this.updateTime = false;
@@ -272,7 +272,6 @@ var race = {
 
       this.ghostRecording = true;
       this.updateTime = false;
-      // this.ghostPlaying = true;
 
       $(".delta-time").show();
 
@@ -306,7 +305,7 @@ var race = {
         }
 
         timeString = timeString + formatTime(Math.abs(this.lapTime - this.bestlap));
-        
+
         if(this.lapTime < this.bestlap || !this.bestlap) {
           this.bestlap = this.lapTime;
           this.bestGhostData = JSON.parse(JSON.stringify(this.tempGhostData));

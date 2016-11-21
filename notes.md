@@ -2,6 +2,11 @@
 
 * Track chooser is not displaying records correctly.. BUT WHY SIR WHY WHY WHY WHY WHY WHY W HY WHYW Hhljljkk...
 
+**BUG**
+
+* Your first time around the track registers as 'new record' after refreshing, even if it's slower
+  * than your localRecord...
+  * Must not be getting set properly (race.bestlap?)
 
 ##Left Off
 

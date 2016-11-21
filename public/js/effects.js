@@ -64,7 +64,7 @@ function launchDude(x, y, angle) {
     o: 3.5,
     oV : -.05,
 
-    className : "little-dude-" + Math.round(getRandom(1,9)),
+    className : "little-dude-" + Math.round(getRandom(1,10)),
     lifespan: 100,
   }
   makeParticle(options);

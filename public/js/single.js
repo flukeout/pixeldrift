@@ -312,8 +312,6 @@ var race = {
           leaderBoard.newRecord(this.playerName, this.bestlap, this.bestGhostData);
         }
 
-        this.bestGhostData = JSON.parse(JSON.stringify(this.tempGhostData));
-        
         $(".delta-time").text(timeString);
         $(".best-time-wrapper").show();
         $(".best-time").text(formatTime(this.bestlap));
